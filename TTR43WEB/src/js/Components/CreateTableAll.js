@@ -2,24 +2,16 @@
 import React, { Component } from "react";
 import Table from "./Table";
 
-const CreateTableAll = (props) => {
-    const data = props.data;
+const CreateTableAll = ({tableData}) => {
     return (
-        <div>
+        <>
             {
-                Object.keys(data).map((item, i) => {
-                    return (<Table key={i} name={item} datum={data[item]} className="striped highlight" />);
+                Object.keys(tableData).map((item, i) => {
+                    return (<Table key={i} name={item} datum={tableData[item]} className="striped highlight hide" />);
                 })
             }
-        </div>
+        </>
     );
-};
-
-CreateTableAll.prototype = {
-    datas: PropTypes.object
-};
-CreateTableAll.defaultProps = {
-    datas: {}
 };
 
 export default CreateTableAll;

@@ -10,3 +10,21 @@ body {
 details {
     display: block;
 }
+
+.selected {
+    background-color: #ffa1a1 !important;
+    transform: translate3d(1rem, 1rem, 1rem);
+    box-shadow: -1rem -0.2rem 0.4em olive, 1rem 0.2rem 0.4em red;
+}
+
+.deselected {
+    background-color: inherit;
+}
+
+.hide {
+    display: none;
+}
+
+.show {
+    display: block;
+}

@@ -1,4 +1,5 @@
 {
+	"parser": "babel-eslint",
 	"env": {
 		"browser": true,
 		"commonjs": true,
@@ -10,7 +11,13 @@
 	],
 	"parserOptions": {
 		"ecmaFeatures": {
-			"jsx": true
+			"jsx": true,
+			"modules": true,
+			"experimentalObjectRestSpread": true,
+			"arrowFunctions": true,
+			"blockBindings": true,
+			"restParams": true,
+			"spread": true
 		},
 		"ecmaVersion": 2018,
 		"sourceType": "module",
@@ -20,6 +27,10 @@
 		"react"
 	],
 	"rules": {
+		"comma-dangle": 0,
+		"react/jsx-uses-vars": 1,
+		"react/display-name": 1,
+		"no-unexpected-multiline": "warn",
 		"no-const-assign": "warn",
 		"no-this-before-super": "warn",
 		"no-undef": "warn",

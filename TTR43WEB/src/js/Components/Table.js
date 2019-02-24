@@ -1,50 +1,86 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
-import { AjaxPOSTAsync } from "../utils.js";
 
 class Table extends Component {
-
+    static propTypes = {
+        datum: PropTypes.array.isRequired,
+        name: PropTypes.string.isRequired,
+        className: PropTypes.string
+    };
+    static defaultProps = {
+        className: ""
+    };
     constructor(props) {
         super(props);
         this.state = {
-            list: props.datum,
+            datum: props.datum
         };
+        this.listSend = {};
         this.onDismiss = this.onDismiss.bind(this);
+        this.onGetId = this.onGetId.bind(this);
     }
-    static getDerivedStateFromError(error) {
-        // Update state so the next render will show the fallback UI.
-        console.dir(error);
-        return { hasError: true };
-    }
+    // static getDerivedStateFromError(error) {
+    //     // Update state so the next render will show the fallback UI.
+    //     console.dir(error);
+    //     return { hasError: true };
+    // }
 
-    componentDidCatch(error, info) {
-        console.dir(error);
-        console.dir(info);
-        logErrorToMyService(error, info);
-    }
+    // componentDidCatch(error, info) {
+    //     console.dir(error);
+    //     console.dir(info);
+    //     //logErrorToMyService(error, info);
+    // }
+    
+
 
     onDismiss(id) {
         const isNotId = item => item.id !== id;
-        const updatedList = this.state.list.filter(isNotId);
+        const updatedList = this.state.datum.filter(isNotId);
         this.setState({ list: updatedList });
     }
 
-    replacer(item) {
-        return item.replace(/([A-Z])/g, " $1").replace(/^./, function (str) { return str.toUpperCase(); });
-        return item.toLocaleLowerCase().replace(new RegExp("_", "g"), " ");
+    onDetails(event) {
+        const that = event.target;
+        that.parentElement.querySelector("table").classList.toggle("hide");
     }
 
-    CreateTH(data) {
-        const datum = data;
-        if (!datum) {
+    onGetId(event, id) {
+
+        const that = event.target;
+        const parent = event.target.parentElement;
+        const table = event.target.closest("table");
+        const dataSrc = table.getAttribute("data-src");
+
+        that.parentElement.classList.toggle("selected");
+        table.querySelectorAll("tr").forEach((el) => {
+            if (el !== parent) {
+                el.classList.remove("selected");
+            }
+        });
+
+        this.listSend[dataSrc + "Id"] = id;
+        this.listSend[dataSrc + "Name"] = dataSrc;
+
+        console.log(this.listSend);
+    }
+
+    replacer(item) {
+        return item.replace(/([A-Z])/g, " $1").replace(/^./,
+            (str) => {
+                return str.toUpperCase();
+            });
+    }
+
+    CreateTH(dataHeader) {
+        if (!dataHeader) {
             return (
                 <tr></tr>
             );
         } else {
             return (
-                <tr key={datum.id}>
+                <tr key={dataHeader.id}>
                     {
-                        Object.keys(datum).map((item, i) =>
+                        Object.keys(dataHeader).map((item, i) =>
                             <th key={i}>
                                 {this.replacer(item)}
                             </th>
@@ -55,22 +91,17 @@ class Table extends Component {
         }
     }
 
-    onGet(id) {
-        console.log(id);
-    }
-
-    CreateTR(data) {
-        const datum = data;
+    CreateTR(dataBody) {
         return (
-            <tr key={datum.id} onClick={() => this.onGet(datum.id)}>
+            <tr key={dataBody.id} onClick={(e) => this.onGetId(e, dataBody.id)}>
                 {
-                    Object.keys(datum).map((item, i) => {
+                    Object.keys(dataBody).map((item, i) => {
                         if (item.toUpperCase() === "ID") {
                             return <th key={i}>
-                                {datum[item]}
+                                {dataBody[item]}
                                 <span>
                                     <button
-                                        onClick={() => this.onDismiss(datum.id)}
+                                        onClick={() => this.onDismiss(dataBody.id)}
                                         type="button"
                                         className="btn-floating btn-small waves-effect waves-light red"
                                     >
@@ -80,7 +111,7 @@ class Table extends Component {
                             </th>;
                         } else {
                             return <td key={i} title={item}>
-                                {datum[item]}
+                                {dataBody[item]}
                             </td>;
                         }
                     })
@@ -90,21 +121,22 @@ class Table extends Component {
     }
 
     render() {
-        const temp = this.state.list;
+        const temp = this.state.datum;
         return (
-            <details><summary>{this.props.name}</summary>
-                <table className={this.props.className}>
+            <div className="card" ><p onClick={(e) => this.onDetails(e)}>{this.props.name}</p>
+                <table className={this.props.className} data-src={this.props.name}>
                     <caption><p>{this.props.name}</p></caption>
                     <thead>
                         {this.CreateTH(temp[0])}
                     </thead>
                     <tbody>
-                        {temp.map((data) => this.CreateTR(data))}
+                        {temp.map((currentValue) => this.CreateTR(currentValue))}
                     </tbody>
                 </table>
-            </details>
+            </div>
         );
     }
+
 }
 
 export default Table;

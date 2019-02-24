@@ -27,6 +27,7 @@ namespace TTR43WEB
         public void ConfigureServices(IServiceCollection services)
         {
             var ConnectionString = Configuration.GetConnectionString("DefaultConnection");
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -35,7 +36,7 @@ namespace TTR43WEB
             });
 
             services.AddDbContext<DataContext>(options => options.UseSqlServer(ConnectionString));
-            //services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration["Data:SportStoreProducts:ConnectionString"]));
+            //services.AddDbContext<DataContext>(options => options.UseSqlServer(Configuration["Data:SportStoreProducts:ConnectionString"]));
 
             //services.AddTransient<ITable, EFTable>();
             services.AddScoped<ITable, EFTable>();

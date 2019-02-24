@@ -28,10 +28,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    AjaxPOSTAsync(urlControlActionGetAllTable, dataSend, "POST").then((datas) => {
+    AjaxPOSTAsync(urlControlActionGetAllTable, dataSend, "POST").then((datum) => {
 
         ReactDOM.render(
-            <CreateTableAll data={datas} />,
+            <CreateTableAll tableData={datum} />,
             document.getElementById("react-container")
         );
     }).catch((error) => {
@@ -40,14 +40,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-
 document.getElementById("attach").addEventListener("click", () => {
     AjaxPOSTAsync(urlControlActionGetTable, null, "POST").then((data) => {
         console.dir(data);
     }).catch((error) => {
         console.error(error);
     });
-})
+});
 
 
 
