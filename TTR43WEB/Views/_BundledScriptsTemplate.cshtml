@@ -1,0 +1,28 @@
+﻿@{
+    StringBuilder jsUrl = default;
+    string replace = "../../wwwroot";
+    string insert = "";
+}
+
+<!--.JS-->
+    <% for (var item in htmlWebpackPlugin.files.chunks) { %>
+@{
+    jsUrl = new StringBuilder("<%= htmlWebpackPlugin.files.chunks[item].entry %>");
+    jsUrl.Replace(replace, insert);
+    <script src=@jsUrl></script>
+}
+    <% } %>
+
+    <% if (htmlWebpackPlugin.options.unsupportedBrowser) { %>
+<style>
+    .unsupported-browser {
+        display: none;
+    }
+</style>
+<div class="unsupported-browser">
+    Sorry, your browser is not supported.  Please upgrade to
+    the latest version or switch your browser to use this site.
+    See <a href="http://outdatedbrowser.com/">outdatedbrowser.com</a>
+    for options.
+</div>
+    <% } %>

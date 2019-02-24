@@ -1,0 +1,14 @@
+﻿@{
+    StringBuilder cssUrl = default;
+    string replace = "../../wwwroot";
+    string insert = "";
+}
+
+<!--.CSS-->
+    <% for (var css in htmlWebpackPlugin.files.css) { %>
+@{
+    cssUrl = new StringBuilder("<%= htmlWebpackPlugin.files.css[css] %>");
+    cssUrl.Replace(replace, insert);
+    <link href=@cssUrl rel="stylesheet">
+}
+    <% } %>

@@ -1,0 +1,35 @@
+﻿@{
+    string Index = @Url.Action("Index", "Home");
+    string Table = @Url.Action("Table", "Home");
+}
+
+<nav>
+    <div class="nav-wrapper">
+        <a href="@Index" class="brand-logo">Index</a>
+        <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+        <ul class="right hide-on-med-and-down">
+            <li><a href="@Table">@nameof(Table)</a></li>
+            <li><a href="badges.html">Components</a></li>
+            <li><a href="collapsible.html">Javascript</a></li>
+            <li><a href="mobile.html">Mobile</a></li>
+        </ul>
+    </div>
+</nav>
+
+<ul class="sidenav" id="mobile-demo">
+    <li><a href="@Table">@nameof(Table)</a></li>
+    <li><a href="badges.html">Components</a></li>
+    <li><a href="collapsible.html">Javascript</a></li>
+    <li><a href="mobile.html">Mobile</a></li>
+</ul>
+
+<script>
+    try {
+        document.addEventListener('DOMContentLoaded', function () {
+            var elems = document.querySelectorAll('.sidenav');
+            var instances = M.Sidenav.init(elems, {});
+        });
+    } catch (e) {
+
+    }
+</script>
