@@ -3,39 +3,26 @@ import React, { Component } from "react";
 
 class Table extends Component {
     static propTypes = {
-        datum: PropTypes.array.isRequired,
+        dataContex: PropTypes.array.isRequired,
         name: PropTypes.string.isRequired,
-        className: PropTypes.string
+        //stateChange: PropTypes.function.isRequired
     };
     static defaultProps = {
-        className: ""
     };
     constructor(props) {
         super(props);
         this.state = {
-            datum: props.datum
+            dataContex: props.dataContex,
+            score: 0
         };
-        this.listSend = {};
-        this.onDismiss = this.onDismiss.bind(this);
-        this.onGetId = this.onGetId.bind(this);
+        //this.onDismiss = this.onDismiss.bind(this);
+        //this.onGetId = this.onGetId.bind(this);
+        //this.onDetails = this.onDetails.bind(this);
     }
-    // static getDerivedStateFromError(error) {
-    //     // Update state so the next render will show the fallback UI.
-    //     console.dir(error);
-    //     return { hasError: true };
-    // }
-
-    // componentDidCatch(error, info) {
-    //     console.dir(error);
-    //     console.dir(info);
-    //     //logErrorToMyService(error, info);
-    // }
-    
-
 
     onDismiss(id) {
         const isNotId = item => item.id !== id;
-        const updatedList = this.state.datum.filter(isNotId);
+        const updatedList = this.state.dataContex.filter(isNotId);
         this.setState({ list: updatedList });
     }
 
@@ -58,13 +45,21 @@ class Table extends Component {
             }
         });
 
-        this.listSend[dataSrc + "Id"] = id;
-        this.listSend[dataSrc + "Name"] = dataSrc;
+        const tmpList = {
+            [dataSrc]: {
+                Id: id,
+                Name: dataSrc
+            }
+        };
 
-        console.log(this.listSend);
+        this.setState((state, props) => {
+            return { score: state.score + 1 };
+        });
+
+        this.props.stateChange(tmpList);
     }
 
-    replacer(item) {
+    _replacer(item) {
         return item.replace(/([A-Z])/g, " $1").replace(/^./,
             (str) => {
                 return str.toUpperCase();
@@ -82,7 +77,7 @@ class Table extends Component {
                     {
                         Object.keys(dataHeader).map((item, i) =>
                             <th key={i}>
-                                {this.replacer(item)}
+                                {this._replacer(item)}
                             </th>
                         )
                     }
@@ -121,10 +116,10 @@ class Table extends Component {
     }
 
     render() {
-        const temp = this.state.datum;
+        const temp = this.state.dataContex;
         return (
-            <div className="card" ><p onClick={(e) => this.onDetails(e)}>{this.props.name}</p>
-                <table className={this.props.className} data-src={this.props.name}>
+            <div className="card"><p onClick={(e) => this.onDetails(e)}>{this.props.name}</p>
+                <table className="striped highlight hide" data-src={this.props.name}>
                     <caption><p>{this.props.name}</p></caption>
                     <thead>
                         {this.CreateTH(temp[0])}
@@ -136,7 +131,6 @@ class Table extends Component {
             </div>
         );
     }
-
 }
 
 export default Table;

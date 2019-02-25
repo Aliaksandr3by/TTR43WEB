@@ -133,7 +133,7 @@ export const getBrowserType = () => {
 
 export const genTable = (data, title = "", className = "striped highlight") => {
 
-    const TableRowHeader = (datas, id = "ID") => {
+    const TableRowHeader = (datas) => {
         let tmpString = ``;
         for (let item in datas) {
             tmpString += `<th>${item.toLocaleLowerCase().replace(new RegExp("_", "g"), " ")}</th>`;
@@ -173,7 +173,7 @@ export const genTable = (data, title = "", className = "striped highlight") => {
     };
 
     let rootLogText = "";
-    Array.from(data).map((items, i) => {
+    Array.from(data).map((items) => {
         rootLogText += TableRowData(items);
     });
 

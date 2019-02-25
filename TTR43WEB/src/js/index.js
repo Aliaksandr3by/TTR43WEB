@@ -1,15 +1,14 @@
 /*global urlControlActionGetAllTable*/
+/*global urlControlActionGetTable*/
 
 import React from "react";
 import ReactDOM from "react-dom";
-import PropTypes from "prop-types";
 import "materialize-css";
-//import "@babel/polyfill";
-import "core-js";
+import "@babel/polyfill";
 
 import { AjaxPOSTAsync, createElementWithAttr, genTable } from "./utils.js";
 
-import CreateTableAll from "./Components/CreateTableAll";
+import CreateTableAll from "./Components/TableAll";
 import "../scss/index.scss";
 
 const rootElement = document.getElementById("react-container") || document.querySelector("body");
@@ -31,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
     AjaxPOSTAsync(urlControlActionGetAllTable, dataSend, "POST").then((datum) => {
 
         ReactDOM.render(
-            <CreateTableAll tableData={datum} />,
+            <CreateTableAll dataContex={datum} />,
             document.getElementById("react-container")
         );
     }).catch((error) => {
@@ -46,6 +45,28 @@ document.getElementById("attach").addEventListener("click", () => {
     }).catch((error) => {
         console.error(error);
     });
+});
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    try {
+        const cava = document.querySelector("body").appendChild(createElementWithAttr("button", {
+            "id": "cava",
+            "class": "btn",
+            "data-action": "cava",
+            "textContent": "cava"
+        }));
+        cava.addEventListener("click", () => {
+            AjaxPOSTAsync("https://gipermall.by/catalog/item_95308.html", null, "GET").then((data) => {
+                console.dir(data);
+            }).catch((error) => {
+                console.error(error);
+            });
+        });
+
+    } catch (error) {
+        console.dir(error);
+    }
 });
 
 
