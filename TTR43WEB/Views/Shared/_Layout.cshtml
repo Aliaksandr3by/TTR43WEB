@@ -18,12 +18,13 @@
         @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha256-azvvU9xKluwHFJ0Cpgtf0CYzK7zgtOznnzxV4924X1w=" crossorigin="anonymous" />*@
         <partial name="_BundledCSS" />
     </environment>
-    
+
     <script>
         const urlControlActionGetAllTable = "@Url.Action("GetAllTable", "Home")";
         const urlControlActionGetTable = "@Url.Action("GetTable", "Home")";
         const urlControlActionGetUseData = "@Url.Action("GetUseData", "Home")";
         const urlControlActionGetTabl = "@Url.Action("GetTabl", "Home")";
+        const urlControlActionGetCoastAsync = "@Url.Action("GetCoastAsync", "Home")";
 
     </script>
 
@@ -33,7 +34,7 @@
         <header class="row" role="navigation">
             <partial name="_GetNavPartial" />
         </header>
-        <main id="main" class="row" role="main" >
+        <main id="main" class="row" role="main">
             @RenderBody()
         </main>
         <footer id="footer" class="row" role="status">
@@ -43,8 +44,8 @@
 
     <environment include="Development">
         @*<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/popper.min.js" integrity="sha256-/ANLkdxSQduAVQeiNIfmaO0V4eR8kell64GgSRn+ggY=" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.2.1/js/bootstrap.js" integrity="sha256-K0KkaRh1fs/UYfKcnzBK9G/X7HgzuaeVI1hJPS8Sxs4=" crossorigin="anonymous"></script>*@
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/popper.min.js" integrity="sha256-/ANLkdxSQduAVQeiNIfmaO0V4eR8kell64GgSRn+ggY=" crossorigin="anonymous"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.2.1/js/bootstrap.js" integrity="sha256-K0KkaRh1fs/UYfKcnzBK9G/X7HgzuaeVI1hJPS8Sxs4=" crossorigin="anonymous"></script>*@
         <partial name="_BundledScripts" />
 
     </environment>

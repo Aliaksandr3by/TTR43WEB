@@ -1,11 +1,12 @@
-﻿import PropTypes from "prop-types";
+import PropTypes from "prop-types";
 import React, { Component } from "react";
-import Table from "./Table";
+import CoastGoodsResult from "./CoastGoodsResult";
 
-class CreateTableAll extends Component {
+class CoastGoods extends Component {
     static propTypes = {
-        dataContex: PropTypes.object.isRequired,
+        dataContex: PropTypes.array.isRequired,
     };
+
     constructor(props) {
         super(props);
         this.state = {
@@ -18,17 +19,13 @@ class CreateTableAll extends Component {
             return { dataChange: Object.assign(state.dataChange, object)};
         });
     }
-    onGet(event) {
-        console.dir(this.state);
-    }
     render() {
         const data = this.state.dataContex;
         return (
-            <React.Fragment >
-                <button className="btn-floating" onClick={(e) => this.onGet(e)}>getState</button>
+            <React.Fragment>
                 {
                     Object.keys(data).map((item, i) => {
-                        return (<Table key={i} name={item} stateChange={this.handleChangeState} dataContex={data[item]}/>);
+                        return (<CoastGoodsResult key={i} name={item} stateChange={this.handleChangeState} dataContex={data[item]}/>);
                     })
                 }
             </React.Fragment>
@@ -36,4 +33,4 @@ class CreateTableAll extends Component {
     }
 }
 
-export default CreateTableAll;
+export default CoastGoods;

@@ -11,12 +11,27 @@ using TTR43WEB.Filters;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
 using Newtonsoft.Json.Linq;
+using AngleSharp;
+using TTR43WEB.Models;
+using Newtonsoft;
 
 namespace TTR43WEB.Controllers
 {
+
     public class HomeController : Controller
     {
         private readonly ITable itableRepository;
+
+        public async Task<IActionResult> GetCoastAsync([FromBody]JObject dataSend)
+        {
+            DataSend dataSendObj = dataSend.ToObject<DataSend>();
+            var description = await GetDataFromGipermall.GetDescriptionResult(dataSendObj.url);
+            var result = Json(new
+            {
+                description
+            });
+            return result;
+        }
 
         public HomeController(ITable tabl)
         {

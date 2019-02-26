@@ -9,6 +9,7 @@ import "@babel/polyfill";
 import { AjaxPOSTAsync, createElementWithAttr, genTable } from "./utils.js";
 
 import CreateTableAll from "./Components/TableAll";
+import CoastGoods from "./Components/CoastGoods";
 import "../scss/index.scss";
 
 const rootElement = document.getElementById("react-container") || document.querySelector("body");
@@ -17,57 +18,89 @@ const footerElement = document.getElementById("footer") || document.querySelecto
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    const dataSend = {
-        language: "RU",
-        table_4_1: {
-            BUILD: "1",
-            DESIGN_TEMPERATURE: 1,
-            RELATIVE_AIR_HUMIDITY: 2,
-            ID: "qweqweq3"
-        }
-    };
 
-    AjaxPOSTAsync(urlControlActionGetAllTable, dataSend, "POST").then((datum) => {
+    const reactContainer = document.getElementById("react-container");
 
-        ReactDOM.render(
-            <CreateTableAll dataContex={datum} />,
-            document.getElementById("react-container")
-        );
-    }).catch((error) => {
-        console.error(error);
-    });
+    if (reactContainer) {
+        const dataSend = {
+            language: "RU",
+            table_4_1: {
+                BUILD: "1",
+                DESIGN_TEMPERATURE: 1,
+                RELATIVE_AIR_HUMIDITY: 2,
+                ID: "qweqweq3"
+            }
+        };
 
-});
+        AjaxPOSTAsync(urlControlActionGetAllTable, dataSend, "POST").then((datum) => {
+            ReactDOM.render(
+                <CreateTableAll dataContex={datum} />,
+                reactContainer
+            );
+        }).catch((error) => {
+            console.error(error);
+        });
+    }
 
-document.getElementById("attach").addEventListener("click", () => {
-    AjaxPOSTAsync(urlControlActionGetTable, null, "POST").then((data) => {
-        console.dir(data);
-    }).catch((error) => {
-        console.error(error);
-    });
-});
-
-
-document.addEventListener("DOMContentLoaded", () => {
-    try {
-        const cava = document.querySelector("body").appendChild(createElementWithAttr("button", {
-            "id": "cava",
-            "class": "btn",
-            "data-action": "cava",
-            "textContent": "cava"
-        }));
-        cava.addEventListener("click", () => {
-            AjaxPOSTAsync("https://gipermall.by/catalog/item_95308.html", null, "GET").then((data) => {
-                console.dir(data);
+    const coastContainer = document.getElementById("coast-container");
+    if (coastContainer) {
+        AjaxPOSTAsync(urlControlActionGetCoastAsync,
+            {
+                "url": ["https://gipermall.by/catalog/item_95308.html", "https://gipermall.by/catalog/item_26042.html"]
+            },
+            "POST")
+            .then((datum) => {
+                console.dir(datum);
+                ReactDOM.render(
+                    Object.keys(datum).map((item, i) => {
+                        return (<CoastGoods key={i} dataContex={datum[item]} />);
+                    }),
+                    document.getElementById("coast-container")
+                );
             }).catch((error) => {
                 console.error(error);
             });
-        });
-
-    } catch (error) {
-        console.dir(error);
     }
+
+
 });
+
+
+
+// document.addEventListener("DOMContentLoaded", () => {
+//     try {
+//         const cava = document.querySelector("body").appendChild(createElementWithAttr("button", {
+//             "id": "cava",
+//             "class": "btn",
+//             "data-action": "cava",
+//             "textContent": "cava"
+//         }));
+//         const dataSend = {
+//             "url": "https://gipermall.by/catalog/item_95308.html"
+//         };
+//         cava.addEventListener("click", () => {
+//             AjaxPOSTAsync(urlControlActionGetCoastAsync, dataSend, "POST").then((data) => {
+
+//                 cava.textContent = data.coast;
+
+//                 let dfd = document.getElementById("cavaResult");
+//                 if (!dfd) {
+//                     dfd = document.querySelector("body").appendChild(createElementWithAttr("div", {
+//                         "id": "cavaResult",
+//                         "class": "",
+//                         "data-action": "result"
+//                     }));
+//                 }
+//                 dfd.innerHTML = data.description;
+//             }).catch((error) => {
+//                 console.error(error);
+//             });
+//         });
+
+//     } catch (error) {
+//         console.dir(error);
+//     }
+// });
 
 
 

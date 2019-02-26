@@ -7,8 +7,6 @@ class Table extends Component {
         name: PropTypes.string.isRequired,
         //stateChange: PropTypes.function.isRequired
     };
-    static defaultProps = {
-    };
     constructor(props) {
         super(props);
         this.state = {
@@ -38,7 +36,7 @@ class Table extends Component {
         const table = event.target.closest("table");
         const dataSrc = table.getAttribute("data-src");
 
-        that.parentElement.classList.toggle("selected");
+        that.parentElement.classList.add("selected");
         table.querySelectorAll("tr").forEach((el) => {
             if (el !== parent) {
                 el.classList.remove("selected");

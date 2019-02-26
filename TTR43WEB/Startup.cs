@@ -72,6 +72,7 @@ namespace TTR43WEB
                 routes.MapRoute(name: "Table", template: "{controller=Home}/{action=Table}/{id?}");
                 routes.MapRoute(name: "GetAllTable", template: "{controller=Home}/{action=GetAllTable}/{id?}");
                 routes.MapRoute(name: "GetTabl", template: "{controller=Home}/{action=GetTabl}/{id?}/{Henry?}/{Ford?}"); 
+                routes.MapRoute(name: "GetCoastAsync", template: "{controller=Home}/{action=GetCoastAsync}/{id?}"); 
             });
         }
     }
