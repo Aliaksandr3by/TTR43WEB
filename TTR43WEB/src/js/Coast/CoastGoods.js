@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import CoastGoodsResult from "./CoastGoodsResult";
+import CoastTextareaUrl from "./CoastTextareaUrl";
 
 class CoastGoods extends Component {
     static propTypes = {
@@ -10,14 +11,8 @@ class CoastGoods extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            dataContex: props.dataContex,
-            dataChange: {},
+            dataContex: props.dataContex
         };
-    }
-    handleChangeState = (object) => {
-        this.setState((state, props) => {
-            return { dataChange: Object.assign(state.dataChange, object)};
-        });
     }
     render() {
         const data = this.state.dataContex;
@@ -25,7 +20,7 @@ class CoastGoods extends Component {
             <React.Fragment>
                 {
                     Object.keys(data).map((item, i) => {
-                        return (<CoastGoodsResult key={i} name={item} stateChange={this.handleChangeState} dataContex={data[item]}/>);
+                        return (<CoastGoodsResult key={i} name={item} dataContex={data[item]} />);
                     })
                 }
             </React.Fragment>

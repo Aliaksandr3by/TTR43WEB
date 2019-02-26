@@ -9,7 +9,7 @@ import "@babel/polyfill";
 import { AjaxPOSTAsync, createElementWithAttr, genTable } from "./utils.js";
 
 import CreateTableAll from "./Components/TableAll";
-import CoastGoods from "./Components/CoastGoods";
+import AppCoast from "./Coast/AppCoast";
 import "../scss/index.scss";
 
 const rootElement = document.getElementById("react-container") || document.querySelector("body");
@@ -44,22 +44,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const coastContainer = document.getElementById("coast-container");
     if (coastContainer) {
-        AjaxPOSTAsync(urlControlActionGetCoastAsync,
-            {
-                "url": ["https://gipermall.by/catalog/item_95308.html", "https://gipermall.by/catalog/item_26042.html"]
-            },
-            "POST")
-            .then((datum) => {
-                console.dir(datum);
-                ReactDOM.render(
-                    Object.keys(datum).map((item, i) => {
-                        return (<CoastGoods key={i} dataContex={datum[item]} />);
-                    }),
-                    document.getElementById("coast-container")
-                );
-            }).catch((error) => {
-                console.error(error);
-            });
+        ReactDOM.render(
+            <AppCoast />,
+            document.getElementById("coast-container")
+        );
     }
 
 
