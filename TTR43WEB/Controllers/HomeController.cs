@@ -25,7 +25,7 @@ namespace TTR43WEB.Controllers
         public async Task<IActionResult> GetCoastAsync([FromBody]JObject dataSend)
         {
             DataSend dataSendObj = dataSend.ToObject<DataSend>();
-            var description = await GetDataFromGipermall.GetDescriptionResult(dataSendObj.url);
+            var description = await GetDataFromGipermall.GetDescriptionResult(dataSendObj.value);
             var result = Json(new
             {
                 description

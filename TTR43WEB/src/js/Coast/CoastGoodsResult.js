@@ -3,23 +3,20 @@ import React, { Component } from "react";
 
 class CoastGoodsResult extends Component {
     static propTypes = {
-        dataContex: PropTypes.object.isRequired,
+        dataResult: PropTypes.object.isRequired,
     };
     constructor(props) {
         super(props);
-        this.state = {
-            dataContex: props.dataContex,
-            dataChange: {},
-        };
     }
 
     render() {
-        const data = this.state.dataContex;
+        const data = this.props.dataResult;
         return (
             <ul>
                 {
                     Object.keys(data).map((item, i) => {
-                        return (<li key={i}>{item} {data[item]}</li>);
+                        return (<li key={i}>{item} {data[item]}
+                        </li>);
                     })
                 }
             </ul>

@@ -8,26 +8,30 @@ class AppCoast extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            dataContex: {
-            },
-            dataUrl: {
-                "url": ["https://gipermall.by/catalog/item_95308.html", "https://gipermall.by/catalog/item_26042.html"]
+            dataResult: {
             }
         };
     }
-    handleChangeState = (object) => {
+
+    handleStateResult = (object) => {
         this.setState((state, props) => {
-            return { dataContex: Object.assign(state.dataContex, object) };
+            return { dataResult: Object.assign(state.dataResult, object) };
         });
     }
     render() {
-        const data = this.state.dataContex;
+        const data = this.state.dataResult;
         return (
             <React.Fragment>
-                <CoastTextareaUrl stateChange={this.handleChangeState} data={ this.state.dataUrl} />
+                <CoastTextareaUrl
+                    stateChangeResult={this.handleStateResult}
+                />
                 {
                     Object.keys(data).map((item, i) => {
-                        return (<CoastGoods key={i} name={item} stateChange={this.handleChangeState} dataContex={data[item]} />);
+                        return (<CoastGoods 
+                            key={i} 
+                            name={item} 
+                            stateChangeResult={this.handleStateResult}
+                            dataResult={data[item]} />);
                     })
                 }
             </React.Fragment>

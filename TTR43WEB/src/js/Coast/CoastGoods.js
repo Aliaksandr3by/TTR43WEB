@@ -1,26 +1,42 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import CoastGoodsResult from "./CoastGoodsResult";
-import CoastTextareaUrl from "./CoastTextareaUrl";
 
 class CoastGoods extends Component {
     static propTypes = {
-        dataContex: PropTypes.array.isRequired,
+        dataResult: PropTypes.array.isRequired,
+        name: PropTypes.string.isRequired,
+        stateChangeResult: PropTypes.func.isRequired,
     };
-
     constructor(props) {
         super(props);
-        this.state = {
-            dataContex: props.dataContex
-        };
+    }
+    onDismiss(e, itemDelete, nameDelete) {
+        const newArray = this.props.dataResult.filter((item, i)=> {
+            return i !== Number(itemDelete);
+        });
+        //delete this.props.dataResult[itemDelete];
+        const tmp = {[nameDelete]: newArray};
+        this.props.stateChangeResult(tmp);
     }
     render() {
-        const data = this.state.dataContex;
+        let data = this.props.dataResult;
         return (
             <React.Fragment>
                 {
                     Object.keys(data).map((item, i) => {
-                        return (<CoastGoodsResult key={i} name={item} dataContex={data[item]} />);
+                        return (
+                            <React.Fragment key={i}>
+                                <a onClick={(e) => this.onDismiss(e, item, this.props.name)} className="btn-floating btn-small waves-effect waves-light red">
+                                    <i className="material-icons">remove</i>
+                                </a>
+                                <CoastGoodsResult
+                                    nameObject={this.props.name}
+                                    nameArrey={item}
+                                    dataResult={data[item]}
+                                />
+                            </React.Fragment>
+                        );
                     })
                 }
             </React.Fragment>

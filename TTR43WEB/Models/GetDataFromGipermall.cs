@@ -9,7 +9,7 @@ namespace TTR43WEB.Models
 {
     public class DataSend
     {
-        public string[] url { get; set; }
+        public string[] value { get; set; }
     }
     public static class GetDataFromGipermall
     {
