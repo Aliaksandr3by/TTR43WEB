@@ -43,7 +43,7 @@ namespace TTR43WEB.Controllers
             return View(itableRepository.Table41);
         }
 
-        public IActionResult Table()
+        public IActionResult Gipermall()
         {
             return View();
         }

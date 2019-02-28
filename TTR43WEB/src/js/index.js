@@ -53,7 +53,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-
+const getJade = ()=> {
+    let a1, a2;
+    a1 = document.querySelector(".fotorama__nav__shaft.fotorama__grab").querySelectorAll("img");
+    a2 = Array.from(a1).map((item, i) => {
+        return item.getAttribute("src");
+    });
+    document.write(`${a2.join("<br>")}`);
+};
 
 // document.addEventListener("DOMContentLoaded", () => {
 //     try {

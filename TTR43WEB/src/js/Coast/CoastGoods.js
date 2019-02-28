@@ -12,11 +12,11 @@ class CoastGoods extends Component {
         super(props);
     }
     onDismiss(e, itemDelete, nameDelete) {
-        const newArray = this.props.dataResult.filter((item, i)=> {
+        const newArray = this.props.dataResult.filter((item, i) => {
             return i !== Number(itemDelete);
         });
         //delete this.props.dataResult[itemDelete];
-        const tmp = {[nameDelete]: newArray};
+        const tmp = { [nameDelete]: newArray };
         this.props.stateChangeResult(tmp);
     }
     render() {
@@ -25,6 +25,14 @@ class CoastGoods extends Component {
             <React.Fragment>
                 {
                     Object.keys(data).map((item, i) => {
+
+
+                        // if (Object.keys(data[item]).length === 0) {
+                        //     return (<React.Fragment key={i}>
+                        //         <div className="input-field col s12"><span className="helper-text" data-error="wrong" data-success="right">{this.props.name}</span></div>
+                        //     </React.Fragment>)
+                        //         ;
+                        // }
                         return (
                             <React.Fragment key={i}>
                                 <a onClick={(e) => this.onDismiss(e, item, this.props.name)} className="btn-floating btn-small waves-effect waves-light red">

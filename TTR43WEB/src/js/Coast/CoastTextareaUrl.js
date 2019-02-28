@@ -15,7 +15,11 @@ class CoastTextareaUrl extends Component {
     }
     dataTmp() {
         const data = window.localStorage.getItem("dataTmp");
-        return data ? JSON.parse(data) : ["https://gipermall.by/catalog/item_95308.html", "https://gipermall.by/catalog/item_26042.html", "https://gipermall.by/catalog/item_203031.html"];
+        return data ? JSON.parse(data) : [
+            "https://gipermall.by/catalog/item_95308.html", 
+            "https://gipermall.by/catalog/item_26042.html", 
+            "https://gipermall.by/catalog/item_769905.html", 
+            "https://gipermall.by/catalog/item_203031.html"];
     }
     handleChange(event) {
         this.setState({ value: event.target.value });
@@ -23,7 +27,7 @@ class CoastTextareaUrl extends Component {
     getData(e) {
         try {
             const that = e.target.textContent;
-            const dataTmp = that.split(",");
+            const dataTmp = that.split(/\s|,/);
             const dataSend = {
                 value: dataTmp
             };

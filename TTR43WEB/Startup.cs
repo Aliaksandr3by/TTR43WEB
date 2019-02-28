@@ -70,6 +70,7 @@ namespace TTR43WEB
             {
                 routes.MapRoute(name: "default", template: "{controller=Home}/{action=Index}/{id?}");
                 routes.MapRoute(name: "Table", template: "{controller=Home}/{action=Table}/{id?}");
+                routes.MapRoute(name: "Gipermall", template: "{controller=Home}/{action=Gipermall}/{id?}");
                 routes.MapRoute(name: "GetAllTable", template: "{controller=Home}/{action=GetAllTable}/{id?}");
                 routes.MapRoute(name: "GetTabl", template: "{controller=Home}/{action=GetTabl}/{id?}/{Henry?}/{Ford?}"); 
                 routes.MapRoute(name: "GetCoastAsync", template: "{controller=Home}/{action=GetCoastAsync}/{id?}"); 
