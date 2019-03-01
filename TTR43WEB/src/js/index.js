@@ -62,44 +62,6 @@ const getJade = () => {
     document.write(`${a2.join("<br>")}`);
 };
 
-
-// document.addEventListener("DOMContentLoaded", () => {
-//     try {
-//         const cava = document.querySelector("body").appendChild(createElementWithAttr("button", {
-//             "id": "cava",
-//             "class": "btn",
-//             "data-action": "cava",
-//             "textContent": "cava"
-//         }));
-//         const dataSend = {
-//             "url": "https://gipermall.by/catalog/item_95308.html"
-//         };
-//         cava.addEventListener("click", () => {
-//             AjaxPOSTAsync(urlControlActionGetCoastAsync, dataSend, "POST").then((data) => {
-
-//                 cava.textContent = data.coast;
-
-//                 let dfd = document.getElementById("cavaResult");
-//                 if (!dfd) {
-//                     dfd = document.querySelector("body").appendChild(createElementWithAttr("div", {
-//                         "id": "cavaResult",
-//                         "class": "",
-//                         "data-action": "result"
-//                     }));
-//                 }
-//                 dfd.innerHTML = data.description;
-//             }).catch((error) => {
-//                 console.error(error);
-//             });
-//         });
-
-//     } catch (error) {
-//         console.dir(error);
-//     }
-// });
-
-
-
 // document.addEventListener("DOMContentLoaded", () => {
 //     try {
 //         const tableDive = mainElement.appendChild(createElementWithAttr("div", {

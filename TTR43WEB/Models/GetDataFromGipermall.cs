@@ -27,27 +27,37 @@ namespace TTR43WEB.Models
 
         static async Task<Dictionary<string, string>> GetDescription(string url, string selectors)
         {
-            var cells = await Task.Run(() => GetDataAngleSharp(url, selectors));
-
-            Dictionary<string, string> keyValuePairs = new Dictionary<string, string>();
-
-            foreach (var item_ul in cells)
+            try
             {
+                var cells = await Task.Run(() => GetDataAngleSharp(url, selectors));
 
-                foreach (var item_li in item_ul.QuerySelectorAll("li"))
+                Dictionary<string, string> keyValuePairs = new Dictionary<string, string>();
+
+                foreach (var item_ul in cells)
                 {
-                    var a1 = item_li.QuerySelector("strong").TextContent.ToString();
-                    var a2 = item_li.QuerySelector("span").TextContent.ToString();
-                    keyValuePairs.Add(a1, a2);
+
+                    foreach (var item_li in item_ul.QuerySelectorAll("li"))
+                    {
+                        var a1 = item_li.QuerySelector("strong").TextContent.ToString();
+                        var a2 = item_li.QuerySelector("span").TextContent.ToString();
+                        keyValuePairs.Add(a1, a2);
+                    }
                 }
-            }
 
-            if (cells.Length <= 0)
+                if (cells.Length <= 0)
+                {
+                    keyValuePairs.Add("error", url.ToString());
+                }
+
+                return keyValuePairs;
+            }
+            catch (Exception ex)
             {
-                keyValuePairs.Add("error", url.ToString());
+                return new Dictionary<string, string>
+                {
+                    [ex.Source] = ex.Message
+                };
             }
-
-            return keyValuePairs;
         }
         private static string ParseActCoast(string tmp = "")
         {
@@ -70,12 +80,22 @@ namespace TTR43WEB.Models
         }
         static async Task<Dictionary<string, string>> GetElement(string url, string selectors, string name = "Неизвестно", Func<string, string> func = null)
         {
-            var data = (await Task.Run(() => GetDataAngleSharp(url, selectors))).FirstOrDefault()?.TextContent;
-            var result = new Dictionary<string, string>
+            try
             {
-                [name] = func != null ? func(data) : data
-            };
-            return result;
+                var data = (await Task.Run(() => GetDataAngleSharp(url, selectors))).FirstOrDefault()?.TextContent;
+                var result = new Dictionary<string, string>
+                {
+                    [name] = func != null ? func(data) : data
+                };
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new Dictionary<string, string>
+                {
+                    [ex.Source] = ex.Message
+                };
+            }
         }
 
         public static async Task<List<Dictionary<string, string>>> GetDescriptionResult(string[] urls)

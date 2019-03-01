@@ -1,7 +1,6 @@
 ﻿@{
     string Index = @Url.Action("Index", "Home");
-    string Table = @Url.Action("Gipermall", "Home");
-    string liTable = $"<li><a href=\"{Table}\">@nameof({Table})</a></li>";
+    string Gipermall = @Url.Action("Gipermall", "Home");
 }
 
 <nav>
@@ -9,13 +8,13 @@
         <a href="@Index" class="brand-logo">Index</a>
         <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
         <ul class="right hide-on-med-and-down">
-            <li><a href="@Table">@nameof(Table)</a></li>
+            <li><a href="@Gipermall">@nameof(Gipermall)</a></li>
         </ul>
     </div>
 </nav>
 
 <ul class="sidenav" id="mobile-demo">
-    <li><a href="@Table">@nameof(Table)</a></li>
+    <li><a href="@Gipermall">@nameof(Gipermall)</a></li>
 </ul>
 
 <script>
