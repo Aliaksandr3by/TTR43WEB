@@ -29,7 +29,9 @@ class CoastTextareaUrl extends Component {
             let dataTmp;
             switch (_this.tagName) {
                 case "TEXTAREA":
-                    dataTmp = _that.textContent.split(/\s|,/);
+                    dataTmp = (_that.textContent.split(/\s|,|\s,/)).filter((item, i) => {
+                        return item !== "";
+                    });
                     break;
                 case "BUTTON":
                     dataTmp = this.state.value;

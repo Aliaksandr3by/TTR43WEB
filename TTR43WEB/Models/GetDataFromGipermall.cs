@@ -59,7 +59,7 @@ namespace TTR43WEB.Models
                 };
             }
         }
-        private static string ParseActCoast(string tmp = "")
+        private static decimal ParseActCoast(string tmp = "")
         {
             try
             {
@@ -71,21 +71,21 @@ namespace TTR43WEB.Models
                     string coast = item.Value.Replace("р", string.Empty).Replace("к.", string.Empty);
                     result = decimal.Parse(coast, CultureInfo.InvariantCulture);
                 }
-                return result.ToString("C2");
+                return result;
             }
             catch (Exception)
             {
-                return tmp;
+                return default;
             }
         }
-        static async Task<Dictionary<string, string>> GetElement(string url, string selectors, string name = "Неизвестно", Func<string, string> func = null)
+        static async Task<Dictionary<string, string>> GetElement(string url, string selectors, string name = "Неизвестно", Func<string, decimal> func = null)
         {
             try
             {
                 var data = (await Task.Run(() => GetDataAngleSharp(url, selectors))).FirstOrDefault()?.TextContent;
                 var result = new Dictionary<string, string>
                 {
-                    [name] = func != null ? func(data) : data
+                    [name] = func != null ? func(data).ToString("C2") : data
                 };
                 return result;
             }
