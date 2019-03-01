@@ -22,6 +22,24 @@ namespace TTR43WEB.Controllers
     {
         private readonly ITable itableRepository;
 
+        public HomeController(ITable tabl)
+        {
+            itableRepository = tabl;
+        }
+
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        public IActionResult Gipermall()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ContentTypeJson]
+        [AccessControlAllow]
         public async Task<IActionResult> GetCoastAsync([FromBody]JObject dataSend)
         {
             DataSend dataSendObj = dataSend.ToObject<DataSend>();
@@ -31,21 +49,6 @@ namespace TTR43WEB.Controllers
                 description
             });
             return result;
-        }
-
-        public HomeController(ITable tabl)
-        {
-            itableRepository = tabl;
-        }
-
-        public IActionResult Index()
-        {
-            return View(itableRepository.Table41);
-        }
-
-        public IActionResult Gipermall()
-        {
-            return View();
         }
 
         [HttpGet]

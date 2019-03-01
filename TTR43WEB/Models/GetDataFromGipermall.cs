@@ -2,29 +2,32 @@
 using AngleSharp.Dom;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace TTR43WEB.Models
 {
     public class DataSend
     {
+        /// <summary>
+        /// URL товара
+        /// </summary>
         public string[] value { get; set; }
     }
     public static class GetDataFromGipermall
     {
-        static async Task<IHtmlCollection<IElement>> _getDataAngleSharp(string url, string selectors)
+        static async Task<IHtmlCollection<IElement>> GetDataAngleSharp(string url, string selectors)
         {
             var config = Configuration.Default.WithDefaultLoader();
-            var address = url;
-            var document = await BrowsingContext.New(config).OpenAsync(address);
-            var cells = document.QuerySelectorAll(selectors);
-            return cells;
+            var document = await BrowsingContext.New(config).OpenAsync(url);
+            return document.QuerySelectorAll(selectors);
         }
 
-        static async Task<Dictionary<string, string>> _getDescription(string url)
+        static async Task<Dictionary<string, string>> GetDescription(string url, string selectors)
         {
-            var cells = await Task.Run(() => _getDataAngleSharp(url, "ul.description"));
+            var cells = await Task.Run(() => GetDataAngleSharp(url, selectors));
 
             Dictionary<string, string> keyValuePairs = new Dictionary<string, string>();
 
@@ -46,16 +49,35 @@ namespace TTR43WEB.Models
 
             return keyValuePairs;
         }
-        static async Task<string> _getName(string url, string selectors = "div.breadcrumbs span")
+        private static string ParseActCoast(string tmp = "")
         {
-            var cellsPrice = (await Task.Run(() => _getDataAngleSharp(url, selectors))).FirstOrDefault()?.TextContent; //TextContent = "29р.99к.
-            return cellsPrice ?? "отсутствует";
+            try
+            {
+                Regex regex = new Regex(@"^\d*р.\d*к.", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+                MatchCollection matches = regex.Matches(tmp);
+                decimal result = default;
+                foreach (Match item in matches)
+                {
+                    string coast = item.Value.Replace("р", string.Empty).Replace("к.", string.Empty);
+                    result = decimal.Parse(coast, CultureInfo.InvariantCulture);
+                }
+                return result.ToString("C2");
+            }
+            catch (Exception)
+            {
+                return tmp;
+            }
         }
-        static async Task<string> _getPrice(string url, string selectors = "form.forms div.price")
+        static async Task<Dictionary<string, string>> GetElement(string url, string selectors, string name = "Неизвестно", Func<string, string> func = null)
         {
-            var cellsPrice = (await Task.Run(() => _getDataAngleSharp(url, selectors))).FirstOrDefault()?.TextContent; //TextContent = "29р.99к.
-            return cellsPrice ?? "отсутствует";
+            var data = (await Task.Run(() => GetDataAngleSharp(url, selectors))).FirstOrDefault()?.TextContent;
+            var result = new Dictionary<string, string>
+            {
+                [name] = func != null ? func(data) : data
+            };
+            return result;
         }
+
         public static async Task<List<Dictionary<string, string>>> GetDescriptionResult(string[] urls)
         {
             List<Dictionary<string, string>> temp = new List<Dictionary<string, string>>();
@@ -65,16 +87,12 @@ namespace TTR43WEB.Models
             {
                 foreach (var item in urls)
                 {
-                    var tmp0 = new Dictionary<string, string>
-                    {
-                        ["Название: "] = await Task.Run(() => _getName(item))
-                    };
-                    var tmp1 = await Task.Run(() => _getDescription(item));
-                    var tmp2 = new Dictionary<string, string>
-                    {
-                        ["Цена: "] = await Task.Run(() => _getPrice(item))
-                    };
-                    keyValuePairs = tmp0.Concat(tmp1).Concat(tmp2).ToDictionary(x => x.Key, x => x.Value);
+                    keyValuePairs = (await Task.Run(() => GetElement(item, "div.breadcrumbs span", "Название")))
+                        .Concat(await Task.Run(() => GetElement(item, "div.products_card form.forms div.price_byn div.price", "Цена", ParseActCoast)))
+                        .Concat(await Task.Run(() => GetElement(item, "div.products_card form.forms div.price_byn div.price div.old_price", "Цена без скидки", ParseActCoast)))
+                        .Concat(await Task.Run(() => GetElement(item, "div.products_card form.forms div.price_byn small.kg", "Размерность")))
+                        .Concat(await Task.Run(() => GetDescription(item, "ul.description")))
+                        .ToDictionary(x => x.Key, x => x.Value);
                     temp.Add(keyValuePairs);
                 }
             }
@@ -82,7 +100,7 @@ namespace TTR43WEB.Models
             {
                 temp.Add(new Dictionary<string, string>
                 {
-                    [ex.Source] = ex.Message
+                    [ex.StackTrace] = ex.Message
                 });
             }
             return temp;
