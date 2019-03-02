@@ -9,23 +9,28 @@ using System.Threading.Tasks;
 
 namespace TTR43WEB.Models
 {
-    public class DataSend
+    public class GetDataFromGipermall
     {
-        /// <summary>
-        /// URL товара
-        /// </summary>
-        public string[] value { get; set; }
-    }
-    public static class GetDataFromGipermall
-    {
-        static async Task<IHtmlCollection<IElement>> GetDataAngleSharp(string url, string selectors)
+        readonly private Product _product;
+        public GetDataFromGipermall(Product product)
+        {
+            this._product = product;
+        }
+
+        private async Task<IHtmlCollection<IElement>> GetDataAngleSharp(string url, string selectors)
         {
             var config = Configuration.Default.WithDefaultLoader();
             var document = await BrowsingContext.New(config).OpenAsync(url);
             return document.QuerySelectorAll(selectors);
         }
 
-        static async Task<Dictionary<string, string>> GetDescription(string url, string selectors)
+        /// <summary>
+        /// Метод определяет цену
+        /// </summary>
+        /// <param name="tmp"></param>
+        /// <returns>возвращает цену / безу без скидки</returns>
+
+        async Task<Dictionary<string, string>> GetDescription(string url, string selectors)
         {
             try
             {
@@ -59,18 +64,25 @@ namespace TTR43WEB.Models
                 };
             }
         }
-        private static decimal ParseActCoast(string tmp = "")
+
+        private decimal?[] ParseCost(string tmp = "")
         {
             try
             {
-                Regex regex = new Regex(@"^\d*р.\d*к.", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+                Regex regex = new Regex(@"\d*р.\d*к.", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+
                 MatchCollection matches = regex.Matches(tmp);
-                decimal result = default;
+
+                var result = new decimal?[matches.Count];
+
+                int index = 0;
                 foreach (Match item in matches)
                 {
-                    string coast = item.Value.Replace("р", string.Empty).Replace("к.", string.Empty);
-                    result = decimal.Parse(coast, CultureInfo.InvariantCulture);
+                    result[index++] = decimal.Parse(
+                        s: item.Value.Replace("р", string.Empty).Replace("к.", string.Empty),
+                        provider: CultureInfo.InvariantCulture);
                 }
+
                 return result;
             }
             catch (Exception)
@@ -78,14 +90,55 @@ namespace TTR43WEB.Models
                 return default;
             }
         }
-        static async Task<Dictionary<string, string>> GetElement(string url, string selectors, string name = "Неизвестно", Func<string, decimal> func = null)
+        async Task<Dictionary<string, string>> GetElement(string url, string selectors, Func<string, decimal?[]> func = null)
+        {
+            try
+            {
+                var data = (await Task.Run(() => GetDataAngleSharp(url, selectors))).FirstOrDefault()?.TextContent;
+                var result = new Dictionary<string, string>();
+                var tmp = func(data);
+
+                string _getDec(int i){
+                    return tmp?[i]?.ToString("C2") ?? String.Empty;
+                }
+
+                switch (tmp.Length)
+                {
+                    case 0:
+                        result.Add("Цена:", "");
+                        result.Add("Цена без скидки:", "");
+                        break;
+                    case 1:
+                        result.Add("Цена:", _getDec(0));
+                        result.Add("Цена без скидки:", "");
+
+                        break;
+                    case 2:
+                        result.Add("Цена:", _getDec(0));
+                        result.Add("Цена без скидки:", _getDec(1));
+                        break;
+                }
+
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new Dictionary<string, string>
+                {
+                    [ex.Source] = ex.Message
+                };
+            }
+        }
+        async Task<Dictionary<string, string>> GetElement(string url, string selectors, string name = "Неизвестно")
         {
             try
             {
                 var data = (await Task.Run(() => GetDataAngleSharp(url, selectors))).FirstOrDefault()?.TextContent;
                 var result = new Dictionary<string, string>
                 {
-                    [name] = func != null ? func(data).ToString("C2") : data
+                    [name] = data
                 };
                 return result;
             }
@@ -98,7 +151,7 @@ namespace TTR43WEB.Models
             }
         }
 
-        public static async Task<List<Dictionary<string, string>>> GetDescriptionResult(string[] urls)
+        public async Task<List<Dictionary<string, string>>> GetDescriptionResult(string[] urls)
         {
             List<Dictionary<string, string>> temp = new List<Dictionary<string, string>>();
             Dictionary<string, string> keyValuePairs = null;
@@ -108,9 +161,8 @@ namespace TTR43WEB.Models
                 foreach (var item in urls)
                 {
                     keyValuePairs = (await Task.Run(() => GetElement(item, "div.breadcrumbs span", "Название")))
-                        .Concat(await Task.Run(() => GetElement(item, "div.products_card form.forms div.price_byn div.price", "Цена", ParseActCoast)))
-                        .Concat(await Task.Run(() => GetElement(item, "div.products_card form.forms div.price_byn div.price div.old_price", "Цена без скидки", ParseActCoast)))
-                        .Concat(await Task.Run(() => GetElement(item, "div.products_card form.forms div.price_byn small.kg", "Размерность")))
+                        .Concat(await Task.Run(() => GetElement(item, "div.products_card form.forms div.price_byn div.price", ParseCost)))
+                        .Concat(await Task.Run(() => GetElement(item, "div.products_card form.forms div.price_byn small.kg", "Размерность:")))
                         .Concat(await Task.Run(() => GetDescription(item, "ul.description")))
                         .ToDictionary(x => x.Key, x => x.Value);
                     temp.Add(keyValuePairs);
