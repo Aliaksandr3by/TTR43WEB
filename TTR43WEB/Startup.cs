@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TTR43WEB.Data;
+using TTR43WEB.Models.Attachment;
+using TTR43WEB.Models.Gipermall;
 
 namespace TTR43WEB
 {
@@ -26,8 +28,6 @@ namespace TTR43WEB
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var ConnectionString = Configuration.GetConnectionString("DefaultConnection");
-
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -35,10 +35,10 @@ namespace TTR43WEB
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddDbContext<DataContext>(options => options.UseSqlServer(ConnectionString));
-            //services.AddDbContext<DataContext>(options => options.UseSqlServer(Configuration["Data:SportStoreProducts:ConnectionString"]));
+            services.AddDbContext<ATTACHMENTMDFContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<ContextGipermall>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnectionProduct")));
 
-            //services.AddTransient<ITable, EFTable>();
+            services.AddTransient<Product, Product>();
             services.AddScoped<ITable, EFTable>();
             //services.AddSingleton<ITable, EFTable>();
 

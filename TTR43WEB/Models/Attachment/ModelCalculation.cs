@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Collections.ObjectModel;
 
-namespace TTR43WEB.Models
+namespace TTR43WEB.Models.Attachment
 {
 
     delegate void MyEventHandler();

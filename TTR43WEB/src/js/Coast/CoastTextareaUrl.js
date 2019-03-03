@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { AjaxPOSTAsync } from "../utils.js";
+import { form } from './../../../obj/Release/netcoreapp2.2/win10-x64/PubTmp/Out/wwwroot/public/js/app.development.bundle';
 
 class CoastTextareaUrl extends Component {
     static propTypes = {
@@ -9,7 +10,7 @@ class CoastTextareaUrl extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            "value": this.dataTmp(),
+            "idGoods": this.dataTmp(),
         };
         this.handleChange = this.handleChange.bind(this);
     }
@@ -20,37 +21,39 @@ class CoastTextareaUrl extends Component {
         ];
     }
     handleChange(event) {
-        this.setState({ value: event.target.value });
+        this.setState({ "idGoods": event.target.value });
     }
     getData(e) {
         try {
             const _this = e.currentTarget;
             const _that = e.target;
             let dataTmp;
+
             switch (_this.tagName) {
                 case "TEXTAREA":
-                    dataTmp = (_that.textContent.split(/\s|,|\s,/)).filter((item, i) => {
+                    dataTmp = (_that.textContent.replace(/'|«|»|\\|"/g, "").split(/\s|,|\s,/)).filter((item, i) => {
                         return item !== "";
                     });
                     break;
                 case "BUTTON":
-                    dataTmp = this.state.value;
+                    dataTmp = this.state.idGoods;
                     break;
                 default:
                     break;
             }
 
-            const dataSend = {
-                value: dataTmp
-            };
             window.localStorage.setItem("dataTmp", JSON.stringify(dataTmp));
-            AjaxPOSTAsync(urlControlActionGetCoastAsync, dataSend, "POST")
-                .then((datum) => {
-                    this.props.stateChangeResult(datum);
 
-                }).catch((error) => {
-                    console.error(error);
-                });
+            Array.from(dataTmp).forEach((element, i) => {
+                AjaxPOSTAsync(urlControlActionGetCoastAsync, { "idGoods": element }, "POST")
+                    .then((datum) => {
+                        this.props.stateChangeResult(datum.description);
+
+                    }).catch((error) => {
+                        console.error(error);
+                    });
+            });
+
         } catch (error) {
             console.error(error);
         }
@@ -62,8 +65,8 @@ class CoastTextareaUrl extends Component {
                     onChange={this.handleChange}
                     onBlur={(e) => this.getData(e)}
                     cols="40"
-                    rows="3"
-                    value={this.state.value}
+                    rows="7"
+                    value={this.state.idGoods}
                 />
                 <button
                     onClick={(e) => this.getData(e)}

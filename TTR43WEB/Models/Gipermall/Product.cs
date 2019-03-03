@@ -1,44 +1,48 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TTR43WEB.Models
+namespace TTR43WEB.Models.Gipermall
 {
     public class DataSend
     {
         /// <summary>
         /// URL товара
         /// </summary>
-        public string[] value { get; set; }
+        public string IdGoods { get; set; }
+
+        //public IEnumerator GetEnumerator()
+        //{
+        //    foreach (var item in idGoods)
+        //    {
+        //        yield return $@"https://gipermall.by/catalog/item_{idGoods}.html";
+        //    }
+        //}
     }
+
+    [Table("Product")]
     public class Product
     {
-        public List<string> Products { get; } = new List<string>() {
-                "Название",
-                "Цена",
-                "Цена без скидки",
-                "Размерность",
-                "Артикул",
-                "Штрих-код",
-                "Страна производства",
-                "Торговая марка",
-                "Масса / Объем",
-                "Цена за 1 кг"
-            };
-
-        public Product()
-        {
-
-        }
-
+        [Key]
         [HiddenInput(DisplayValue = false)]
         [Display(Name = "Id")]
         public int Id { get; set; }
 
-        [Display(Name = "Название")]
+        [Display(Name = "Время")]
+        //[Required(ErrorMessage = "Время?")]
+        public DateTime Date { get; set; }
+
+        [Display(Name = "Адрес")]
+        [Required(ErrorMessage = "Адрес?")]
+        [Url]
+        public string Url { get; set; }
+
+        [Display(Name = "Название?")]
         [Required(ErrorMessage = "Название")]
         //[RegularExpression(@"\w*", ErrorMessage = "Please enter a valid Name")]
         public string Name { get; set; }

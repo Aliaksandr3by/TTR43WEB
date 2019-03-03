@@ -12,8 +12,9 @@ using Microsoft.EntityFrameworkCore;
 using System.Text;
 using Newtonsoft.Json.Linq;
 using AngleSharp;
-using TTR43WEB.Models;
 using Newtonsoft;
+using TTR43WEB.Models.Gipermall;
+using TTR43WEB.Models.Attachment;
 
 namespace TTR43WEB.Controllers
 {
@@ -21,10 +22,11 @@ namespace TTR43WEB.Controllers
     public class HomeController : Controller
     {
         private readonly ITable itableRepository;
-
-        public HomeController(ITable tabl)
+        private Product _product;
+        public HomeController(ITable tabl, Product product)
         {
             itableRepository = tabl;
+            _product = product;
         }
 
         public IActionResult Index()
@@ -40,18 +42,19 @@ namespace TTR43WEB.Controllers
         [HttpPost]
         [ContentTypeJson]
         [AccessControlAllow]
-        public async Task<IActionResult> GetCoastAsync([FromBody]JObject dataSend)
+        public async Task<IActionResult> GetCoastAsync([FromBody]JObject idGoods)
         {
-            DataSend dataSendObj = dataSend.ToObject<DataSend>();
-            Product _product = new Product();
+            DataSend dataSendObj = idGoods.ToObject<DataSend>();
+
             GetDataFromGipermall getDataFromGipermall = new GetDataFromGipermall(_product);
 
-            var description = await getDataFromGipermall.GetDescriptionResult(dataSendObj.value);
+            var description = await getDataFromGipermall.GetFullDescriptionResult(dataSendObj.IdGoods);
 
             var result = Json(new
             {
                 description
             });
+
             return result;
         }
 

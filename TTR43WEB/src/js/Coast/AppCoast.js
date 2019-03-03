@@ -2,20 +2,23 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import CoastTextareaUrl from "./CoastTextareaUrl";
 import CoastGoods from "./CoastGoods";
+import Table from "../Components/Table";
 
 class AppCoast extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            dataResult: {
-            }
+            dataResult: []
         };
     }
-
+    onDetails(event) {
+        const that = event.target;
+        that.parentElement.querySelector("table").classList.toggle("hide");
+    }
     handleStateResult = (object) => {
         this.setState((state, props) => {
-            return { dataResult: Object.assign(state.dataResult, object) };
+            return { dataResult: [...state.dataResult, object] };
         });
     }
     render() {
@@ -25,15 +28,25 @@ class AppCoast extends Component {
                 <CoastTextareaUrl
                     stateChangeResult={this.handleStateResult}
                 />
-                {
-                    Object.keys(data).map((item, i) => {
-                        return (<CoastGoods 
-                            key={i} 
-                            name={item} 
-                            stateChangeResult={this.handleStateResult}
-                            dataResult={data[item]} />);
-                    })
-                }
+                <div className="card"><p onClick={(e) => this.onDetails(e)}>"yrtyry"</p>
+                    <table className="striped highlight hide" data-src={this.props.name}>
+                        <caption><p>{this.props.name}</p></caption>
+                        <thead>
+
+                        </thead>
+                        <tbody>
+                            {
+                                Array.from(data).map((item, i) => {
+                                    return (<CoastGoods
+                                        key={i}
+                                        handleStateResult={this.handleStateResult}
+                                        dataResult={item} />
+                                    );
+                                })
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </React.Fragment>
         );
     }

@@ -4,7 +4,7 @@ import React, { Component } from "react";
 class Table extends Component {
     static propTypes = {
         dataContex: PropTypes.array.isRequired,
-        name: PropTypes.string.isRequired,
+        name: PropTypes.string,
         //stateChange: PropTypes.function.isRequired
     };
     constructor(props) {

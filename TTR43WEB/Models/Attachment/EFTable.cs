@@ -5,14 +5,15 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.DependencyInjection;
+using TTR43WEB.Data;
 
-namespace TTR43WEB.Data
+namespace TTR43WEB.Models.Attachment
 {
     public class EFTable : ITable
     {
-        private readonly DataContext context;
+        private readonly ATTACHMENTMDFContext context;
 
-        public EFTable(DataContext ctx) => context = ctx;
+        public EFTable(ATTACHMENTMDFContext ctx) => context = ctx;
 
         public IQueryable<Table41> Table41 => context.Table41;
 
