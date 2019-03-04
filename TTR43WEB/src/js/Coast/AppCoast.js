@@ -4,7 +4,9 @@ import CoastTextareaUrl from "./CoastTextareaUrl";
 import CoastGoods from "./CoastGoods";
 
 class AppCoast extends Component {
-
+    static propTypes = {
+        name: PropTypes.string.isRequired
+    };
     constructor(props) {
         super(props);
         this.state = {
@@ -22,24 +24,37 @@ class AppCoast extends Component {
     }
     render() {
         const data = this.state.dataResult;
+        const dataHeader = this.state.dataResult[0] || {};
         return (
             <React.Fragment>
-                <CoastTextareaUrl
-                    stateChangeResult={this.handleStateResult}
-                />
+                <CoastTextareaUrl stateChangeResult={this.handleStateResult} />
                 <div className="card"><p onClick={(e) => this.onDetails(e)}>+</p>
-                    <table className="striped highlight hide" data-src={this.props.name}>
+                    <table className="striped highlight responsive-table hide" data-src={this.props.name}>
                         <caption><p>{this.props.name}</p></caption>
                         <thead>
-
+                            <tr>
+                                {
+                                    Object.keys(dataHeader).map((item, i) =>
+                                        (<th key={i}>
+                                            {
+                                                item.replace(/([A-Z])/g, " $1").replace(/^./,
+                                                    (str) => {
+                                                        return str.toUpperCase();
+                                                    })
+                                            }
+                                        </th>)
+                                    )
+                                }
+                            </tr>
                         </thead>
                         <tbody>
                             {
                                 Array.from(data).map((item, i) => {
-                                    return (<CoastGoods
-                                        key={i}
-                                        handleStateResult={this.handleStateResult}
-                                        dataResult={item} />
+                                    return (
+                                        <CoastGoods
+                                            key={i}
+                                            handleStateResult={this.handleStateResult}
+                                            dataResult={item} />
                                     );
                                 })
                             }

@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         AjaxPOSTAsync(urlControlActionGetAllTable, dataSend, "POST").then((datum) => {
             ReactDOM.render(
-                <CreateTableAll name="Main table" dataContex={datum} />,
+                <CreateTableAll dataContex={datum} />,
                 reactContainer
             );
         }).catch((error) => {
@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const coastContainer = document.getElementById("coast-container");
     if (coastContainer) {
         ReactDOM.render(
-            <AppCoast />,
+            <AppCoast name="Main table"/>,
             document.getElementById("coast-container")
         );
     }
@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 const getJade = () => {
     let a1, a2;
-    a1 = document.querySelector(".fotorama__nav__shaft.fotorama__grab").querySelectorAll("img");
+    a1 = document.querySelector("div.sixteen.wide.column.fr-view").querySelectorAll("img");
     a2 = Array.from(a1).map((item, i) => {
         return item.getAttribute("src");
     });

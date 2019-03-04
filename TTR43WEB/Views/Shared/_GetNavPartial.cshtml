@@ -1,6 +1,7 @@
 ﻿@{
     string Index = @Url.Action("Index", "Home");
     string Gipermall = @Url.Action("Index", "Gipermall");
+    string gipermall = "Гипермол";
 }
 
 <nav>
@@ -8,13 +9,13 @@
         <a href="@Index" class="brand-logo">Index</a>
         <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
         <ul class="right hide-on-med-and-down">
-            <li><a href="@Gipermall">@nameof(Gipermall)</a></li>
+            <li><a asp-controller="Gipermall" asp-action="Index" >gipermall</a></li>
         </ul>
     </div>
 </nav>
 
 <ul class="sidenav" id="mobile-demo">
-    <li><a href="@Gipermall">@nameof(Gipermall)</a></li>
+    <li><a asp-controller="Gipermall" asp-action="Index" >gipermall</a></li>
 </ul>
 
 <script>

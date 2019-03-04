@@ -17,9 +17,9 @@ class CoastGoods extends Component {
             <tr>
                 {
                     Object.keys(data).map((item, i) =>
-                        (<tr key={i}>
-                            {item} {data[item]}
-                        </tr>)
+                        (<td key={i}>
+                            {data[item]}
+                        </td>)
                     )
                 }
             </tr>

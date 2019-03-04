@@ -35,10 +35,12 @@ namespace TTR43WEB
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddDbContext<ATTACHMENTMDFContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDbContext<ContextGipermall>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnectionProduct")));
+
+            services.AddDbContext<ATTACHMENTMDFContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
+            services.AddDbContext<ContextGipermall>(options => options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnectionProduct"]));
 
             services.AddTransient<Product, Product>();
+            services.AddScoped<IGipermollTableData, GipermollTable>();
             services.AddScoped<ITable, EFTable>();
             //services.AddSingleton<ITable, EFTable>();
 
@@ -72,8 +74,7 @@ namespace TTR43WEB
                 routes.MapRoute(name: "Table", template: "{controller=Home}/{action=Table}/{id?}");
                 routes.MapRoute(name: "GetAllTable", template: "{controller=Home}/{action=GetAllTable}/{id?}");
                 routes.MapRoute(name: "GetTabl", template: "{controller=Home}/{action=GetTabl}/{id?}/{Henry?}/{Ford?}"); 
-
-                routes.MapRoute(name: "Index", template: "{controller=Gipermall}/{action=Index}/{id?}");
+                routes.MapRoute(name: "IndexGipermall", template: "{controller=Gipermall}/{action=Index}/{id?}");
                 routes.MapRoute(name: "GetCoastAsync", template: "{controller=Gipermall}/{action=GetCoastAsync}/{id?}"); 
             });
         }

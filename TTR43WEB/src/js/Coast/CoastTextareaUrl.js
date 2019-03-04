@@ -1,7 +1,6 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { AjaxPOSTAsync } from "../utils.js";
-import { form } from './../../../obj/Release/netcoreapp2.2/win10-x64/PubTmp/Out/wwwroot/public/js/app.development.bundle';
 
 class CoastTextareaUrl extends Component {
     static propTypes = {
@@ -10,7 +9,8 @@ class CoastTextareaUrl extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            "idGoods": this.dataTmp(),
+            idGoods: this.dataTmp(),
+            textarea: this.dataTmp()
         };
         this.handleChange = this.handleChange.bind(this);
     }
@@ -21,7 +21,7 @@ class CoastTextareaUrl extends Component {
         ];
     }
     handleChange(event) {
-        this.setState({ "idGoods": event.target.value });
+        this.setState({ "textarea": event.target.value });
     }
     getData(e) {
         try {
@@ -66,7 +66,7 @@ class CoastTextareaUrl extends Component {
                     onBlur={(e) => this.getData(e)}
                     cols="40"
                     rows="7"
-                    value={this.state.idGoods}
+                    value={this.state.textarea}
                 />
                 <button
                     onClick={(e) => this.getData(e)}

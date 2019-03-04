@@ -21,15 +21,17 @@ namespace TTR43WEB.Controllers
 
     public class GipermallController : Controller
     {
+        private readonly IGipermollTableData gipermollTableData;
         private readonly Product _product;
-        public GipermallController(Product product)
+        public GipermallController(IGipermollTableData gipermollTable, Product product)
         {
+            gipermollTableData = gipermollTable;
             _product = product;
         }
 
         public IActionResult Index()
         {
-            return View();
+            return View(gipermollTableData.Products);
         }
 
         [HttpPost]

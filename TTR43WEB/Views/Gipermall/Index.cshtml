@@ -1,8 +1,35 @@
-﻿@{
+﻿@model IQueryable<Product>
+
+@{
     Layout = "_Layout";
 }
 
 <div id="coast-container"></div>
+
+<div class="wrapper">
+    <table class="striped highlight">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Price Without Discount</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var items in Model)
+            {
+                <tr>
+                    <td><a target="_blank" href="@items.Url">@items.Name</a></td>
+                    <td>@items.Price</td>
+                    <td>@items.PriceWithoutDiscount</td>
+                    <td>@items.Date</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
 
 @section Scripts {
     @{

@@ -140,6 +140,8 @@ namespace TTR43WEB.Models.Gipermall
                         s: keyValuePairs["Цена за 1 кг:"],
                         provider: CultureInfo.InvariantCulture);
 
+
+
                     db.Products.Add(_product);
                     db.SaveChanges();
 

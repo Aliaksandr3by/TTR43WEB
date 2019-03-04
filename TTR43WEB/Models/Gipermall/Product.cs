@@ -9,14 +9,6 @@ using System.Threading.Tasks;
 
 namespace TTR43WEB.Models.Gipermall
 {
-    public class DataSend
-    {
-        /// <summary>
-        /// URL товара
-        /// </summary>
-        public string IdGoods { get; set; }
-    }
-
     [Table("Product")]
     public class Product
     {
@@ -29,7 +21,8 @@ namespace TTR43WEB.Models.Gipermall
         /// "Время"
         /// </summary>
         [Display(Name = "Время")]
-        //[Required(ErrorMessage = "Время?")]
+        [Required(ErrorMessage = "Время?")]
+        [DataType(DataType.DateTime)]
         public DateTime Date { get; set; }
 
         /// <summary>
@@ -38,12 +31,13 @@ namespace TTR43WEB.Models.Gipermall
         [Display(Name = "Адрес")]
         [Required(ErrorMessage = "Адрес?")]
         [Url]
+        [DataType(DataType.Url)]
         public string Url { get; set; }
 
         /// <summary>
         /// "Название"
         /// </summary>
-        [Display(Name = "Название?")]
+        [Display(Name = "Название", Description = "Название товара")]
         [Required(ErrorMessage = "Название")]
         //[RegularExpression(@"\w*", ErrorMessage = "Please enter a valid Name")]
         public string Name { get; set; }

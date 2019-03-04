@@ -28,3 +28,19 @@ details {
 .show {
     display: block;
 }
+
+
+@media screen and (min-width: 992px) {
+
+    .wrapper {
+        overflow-x: auto;
+    }
+    
+    td {
+        max-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+}

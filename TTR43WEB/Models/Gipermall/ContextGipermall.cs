@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Protocols;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace TTR43WEB.Models.Gipermall
 
         public ContextGipermall() 
         {
-            //Database.EnsureCreated();
+            Database.EnsureCreated();
         }
 
         public ContextGipermall(DbContextOptions<ContextGipermall> options) : base(options)
