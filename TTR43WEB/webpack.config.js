@@ -76,12 +76,8 @@ module.exports = (env, argv) => {
                     ],
                 },
                 {
-                    test: /\.ts$/,
-                    use: "ts-loader"
-                },
-                {
                     test: /\.(sa|sc|c)ss$/,
-                    exclude: /node_modules/,
+                    exclude: /(node_modules|bower_components)/,
                     use: [
                         {
                             loader: devMode ? "style-loader" : MiniCssExtractPlugin.loader,
@@ -124,15 +120,6 @@ module.exports = (env, argv) => {
             ],
         },
         plugins: [
-            // new webpack.ProvidePlugin({
-            //     $: "jquery",
-            //     jQuery: "jquery",
-            //     "window.jQuery": "jquery",
-            //     Popper: ["popper.js", "default"],
-            //     React: "react",
-            //     ReactDOM: "react-dom",
-            //     PropTypes: "prop-types",
-            // }),
             new webpack.SourceMapDevToolPlugin({
                 filename: "[file].map",
                 lineToLine: devMode ? false : true,

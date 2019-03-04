@@ -16,10 +16,11 @@ class CoastGoods extends Component {
         return (
             <tr>
                 {
-                    Object.keys(data).map((item, i) => {
-                        return (<tr key={i}>{item} {data[item]}
-                        </tr>);
-                    })
+                    Object.keys(data).map((item, i) =>
+                        (<tr key={i}>
+                            {item} {data[item]}
+                        </tr>)
+                    )
                 }
             </tr>
         );

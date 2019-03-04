@@ -2,7 +2,6 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import CoastTextareaUrl from "./CoastTextareaUrl";
 import CoastGoods from "./CoastGoods";
-import Table from "../Components/Table";
 
 class AppCoast extends Component {
 
@@ -28,7 +27,7 @@ class AppCoast extends Component {
                 <CoastTextareaUrl
                     stateChangeResult={this.handleStateResult}
                 />
-                <div className="card"><p onClick={(e) => this.onDetails(e)}>"yrtyry"</p>
+                <div className="card"><p onClick={(e) => this.onDetails(e)}>+</p>
                     <table className="striped highlight hide" data-src={this.props.name}>
                         <caption><p>{this.props.name}</p></caption>
                         <thead>

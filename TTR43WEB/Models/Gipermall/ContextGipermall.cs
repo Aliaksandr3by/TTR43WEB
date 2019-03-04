@@ -8,18 +8,6 @@ namespace TTR43WEB.Models.Gipermall
 {
     public class ContextGipermall : DbContext
     {
-        public List<string> ProductsName { get; } = new List<string>() {
-                "Название",
-                "Цена",
-                "Цена без скидки",
-                "Размерность",
-                "Артикул",
-                "Штрих-код",
-                "Страна производства",
-                "Торговая марка",
-                "Масса / Объем",
-                "Цена за 1 кг"
-            };
         public DbSet<Product> Products { get; set; }
 
         public ContextGipermall() 

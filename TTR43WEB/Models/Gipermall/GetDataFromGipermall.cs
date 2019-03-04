@@ -65,24 +65,15 @@ namespace TTR43WEB.Models.Gipermall
             }
         }
 
-        private decimal?[] ParseCost(string tmp = "")
+        private decimal? ParseCost(string tmp = "", string rex = "")
         {
             try
             {
-                Regex regex = new Regex(@"\d*р.\d*к.", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
-
+                Regex regex = new Regex(rex, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
                 MatchCollection matches = regex.Matches(tmp);
-
-                var result = new decimal?[matches.Count];
-
-                int index = 0;
-                foreach (Match item in matches)
-                {
-                    result[index++] = decimal.Parse(
-                        s: item.Value.Replace("р", string.Empty).Replace("к.", string.Empty),
+                decimal result = decimal.Parse(
+                        s: matches.FirstOrDefault().Value.Replace("р", string.Empty).Replace("к.", string.Empty),
                         provider: CultureInfo.InvariantCulture);
-                }
-
                 return result;
             }
             catch (Exception)
@@ -90,131 +81,74 @@ namespace TTR43WEB.Models.Gipermall
                 return default;
             }
         }
-        async Task<Dictionary<string, string>> GetElement(string url, string selectors, Func<string, decimal?[]> func = null)
+        async Task<decimal?> GetElement(string url, string selectors, Func<string, string, decimal?> func, string rex)
         {
             try
             {
-                var data = (await Task.Run(() => GetDataAngleSharp(url, selectors))).FirstOrDefault()?.TextContent;
-                var result = new Dictionary<string, string>();
-                var tmp = func(data);
+                var result = (await Task.Run(() => GetDataAngleSharp(url, selectors))).FirstOrDefault()?.TextContent;
 
-                string _getDec(int i)
-                {
-                    return tmp?[i]?.ToString("C2") ?? String.Empty;
-                }
-
-                switch (tmp.Length)
-                {
-                    case 0:
-                        result.Add("Цена:", "");
-                        result.Add("Цена без скидки:", "");
-                        break;
-                    case 1:
-                        result.Add("Цена:", _getDec(0));
-                        result.Add("Цена без скидки:", "");
-
-                        break;
-                    case 2:
-                        result.Add("Цена:", _getDec(0));
-                        result.Add("Цена без скидки:", _getDec(1));
-                        break;
-                }
-
-                return result;
+                return func(result, rex);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return new Dictionary<string, string>
-                {
-                    [ex.Source] = ex.Message
-                };
+                return default;
             }
         }
-        async Task<Dictionary<string, string>> GetElement(string url, string selectors, string name = "Неизвестно")
+        async Task<string> GetElement(string url, string selectors)
         {
             try
             {
-                var data = (await Task.Run(() => GetDataAngleSharp(url, selectors))).FirstOrDefault()?.TextContent;
-                var result = new Dictionary<string, string>
-                {
-                    [name] = data
-                };
+                var result = (await Task.Run(() => GetDataAngleSharp(url, selectors))).FirstOrDefault()?.TextContent;
+
                 return result;
             }
             catch (Exception ex)
             {
-                return new Dictionary<string, string>
-                {
-                    [ex.Source] = ex.Message
-                };
+                return ex.Message;
             }
         }
 
         public async Task<Product> GetFullDescriptionResult(string url)
         {
-            Dictionary<string, string> keyValuePairs = null;
+            Dictionary<string, string> keyValuePairs = await Task.Run(() => GetDescription(url, "ul.description"));
 
             try
             {
                 using (ContextGipermall db = new ContextGipermall())
                 {
+                    ///"Название"
+                    _product.Name = await Task.Run(() => GetElement(url, "div.breadcrumbs span"));
+                    ///"Адрес"
+                    _product.Url = url;
+                    ///"Время"
+                    _product.Date = DateTime.Now;
+                    ///"Цена"
+                    _product.Price = await Task.Run(() => GetElement(url, "div.products_card form.forms div.price_byn div.price", ParseCost, @"^\d*р.\d*к."));
+                    ///"Цена без скидки"
+                    _product.PriceWithoutDiscount = await Task.Run(() => GetElement(url, "div.products_card form.forms div.price_byn div.price", ParseCost, @"\d*р.\d*к.\s*$"));
+                    ///"Размерность"
+                    _product.Dimension = await Task.Run(() => GetElement(url, "div.products_card form.forms div.price_byn small.kg"));
+                    ///
+                    _product.MarkingGoods = keyValuePairs.FirstOrDefault(x => x.Key.Contains("Артикул")).Value;
+                    _product.BarCode = keyValuePairs["Штрих-код:"];
+                    _product.ManufacturingCountry = keyValuePairs["Страна производства:"];
+                    _product.Trademark = keyValuePairs["Торговая марка:"];
+                    _product.Mass = double.Parse(
+                        s: keyValuePairs["Масса / Объем:"].Replace(" кг", string.Empty),
+                        provider: CultureInfo.InvariantCulture);
+                    _product.PriceForMass = decimal.Parse(
+                        s: keyValuePairs["Цена за 1 кг:"],
+                        provider: CultureInfo.InvariantCulture);
 
-                        keyValuePairs = (await Task.Run(() => GetElement(url, "div.breadcrumbs span", "Название")))
-                            .Concat(await Task.Run(() => GetElement(url, "div.products_card form.forms div.price_byn div.price", ParseCost)))
-                            .Concat(new Dictionary<string, string> { ["Адрес"] = url })
-                            .Concat(new Dictionary<string, string> { ["Время"] = DateTime.Now.ToString() })
-                            .Concat(await Task.Run(() => GetElement(url, "div.products_card form.forms div.price_byn small.kg", "Размерность:")))
-                            .Concat(await Task.Run(() => GetDescription(url, "ul.description")))
-                            .ToDictionary(x => x.Key, x => x.Value);
-
-                        //product.Name = keyValuePairs.FirstOrDefault(x => x.Key == "Название").Value;
-
-                        foreach (var Key in keyValuePairs.Keys)
-                        {
-                            switch (Key)
-                            {
-                                case "Адрес":
-                                    _product.Url = keyValuePairs[Key];
-                                    break;
-                                case "Время":
-                                    _product.Date = Convert.ToDateTime(keyValuePairs[Key]);
-                                    break;
-                                case "Название":
-                                    _product.Name = keyValuePairs[Key];
-                                    break;
-                                case "Цена":
-                                    //_product.Сost = decimal.Parse(s: keyValuePairs[Key],provider:null);
-                                    break;
-                                case "Цена без скидки":
-                                    //_product.PriceWithoutDiscount = keyValuePairs[Key];
-                                break;  
-                                case "Размерность":
-                                    _product.Dimension = keyValuePairs[Key];
-                                break;
-                                case "Артикул":
-                                    break;
-                                case "Штрих-код":
-                                    break;
-                                case "Страна производства":
-                                    break;
-                                case "Торговая марка":
-                                    break;
-                                case "Масса / Объем":
-                                    break;
-                                case "Цена за 1 кг":
-                                    break;
-                            }
-                        }
-
-                        db.Products.Add(_product);
-                        db.SaveChanges();
+                    db.Products.Add(_product);
+                    db.SaveChanges();
 
                     return _product;
                 }
             }
             catch (Exception)
             {
-                return null;
+                return _product;
             }
         }
 

@@ -22,40 +22,15 @@ namespace TTR43WEB.Controllers
     public class HomeController : Controller
     {
         private readonly ITable itableRepository;
-        private Product _product;
-        public HomeController(ITable tabl, Product product)
+
+        public HomeController(ITable tabl)
         {
             itableRepository = tabl;
-            _product = product;
         }
 
         public IActionResult Index()
         {
             return View();
-        }
-
-        public IActionResult Gipermall()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ContentTypeJson]
-        [AccessControlAllow]
-        public async Task<IActionResult> GetCoastAsync([FromBody]JObject idGoods)
-        {
-            DataSend dataSendObj = idGoods.ToObject<DataSend>();
-
-            GetDataFromGipermall getDataFromGipermall = new GetDataFromGipermall(_product);
-
-            var description = await getDataFromGipermall.GetFullDescriptionResult(dataSendObj.IdGoods);
-
-            var result = Json(new
-            {
-                description
-            });
-
-            return result;
         }
 
         [HttpGet]

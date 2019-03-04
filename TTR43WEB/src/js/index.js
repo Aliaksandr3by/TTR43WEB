@@ -7,10 +7,10 @@ import "materialize-css";
 import "@babel/polyfill";
 
 import { AjaxPOSTAsync, createElementWithAttr, genTable } from "./utils.js";
+import "../scss/index.scss";
 
 import CreateTableAll from "./Components/TableAll";
 import AppCoast from "./Coast/AppCoast";
-import "../scss/index.scss";
 
 const rootElement = document.getElementById("react-container") || document.querySelector("body");
 const mainElement = document.getElementById("main") || document.querySelector("body");
@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         AjaxPOSTAsync(urlControlActionGetAllTable, dataSend, "POST").then((datum) => {
             ReactDOM.render(
-                <CreateTableAll dataContex={datum} />,
+                <CreateTableAll name="Main table" dataContex={datum} />,
                 reactContainer
             );
         }).catch((error) => {
