@@ -126,9 +126,8 @@ module.exports = (env, argv) => {
                 noSources: devMode ? false : true
             }),
             new WebpackMd5Hash(),
-            new CleanWebpackPlugin(["public"], {
-                root: paths.ROOT,
-                exclude: ["js", "css"],
+            new CleanWebpackPlugin({
+                cleanOnceBeforeBuildPatterns: ["**/*", "!**/*.js", "!**/*.css"],
                 verbose: true,
                 dry: false
             }),
