@@ -128,8 +128,9 @@ module.exports = (env, argv) => {
             new WebpackMd5Hash(),
             new CleanWebpackPlugin({
                 cleanOnceBeforeBuildPatterns: ["**/*", "!**/*.js", "!**/*.css"],
+                dry: false,
                 verbose: true,
-                dry: false
+                cleanStaleWebpackAssets: false,
             }),
             new MiniCssExtractPlugin({
                 filename: devMode ? `[name].${mode}.bundle.css` : `css/[name].${mode}.bundle.[contenthash].css`,

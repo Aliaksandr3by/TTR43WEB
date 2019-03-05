@@ -62,7 +62,8 @@ namespace TTR43WEB.Controllers
                 {
                     countProducts,
                     totalPages,
-                    valueDefault = new int[] { 10, 15, 20, 25, 30, 50, 100, 150 }
+                    pageSize = _pageSize,
+                    valueDefault = new int[] { 3, 5, 7, 10, 15, 20, 25, 30, 50, 100, 150 }
                 });
 
                 return result;

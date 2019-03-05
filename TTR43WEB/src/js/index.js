@@ -37,15 +37,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const coastContainer = document.getElementById("coast-container");
     if (coastContainer) {
         ReactDOM.render(
-            <AppCoast name="Main table"/>,
+            <AppCoast name="Main table" />,
             coastContainer
         );
     }
 
     const paginationContainer = document.getElementById("pagination-container");
     if (paginationContainer) {
+
         ReactDOM.render(
-            <Pagination/>,
+            <Pagination />,
             paginationContainer
         );
     }

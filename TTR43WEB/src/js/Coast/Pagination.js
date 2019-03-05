@@ -1,52 +1,69 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
-import { AjaxPOSTAsync } from "../utils.js";
-import Select from "./Select";
+import CreateSelect from "./Select";
 
 class Pagination extends Component {
+    static propTypes = {
+    };
     constructor(props) {
         super(props);
         this.state = {
-            dataResult: {},
-            valueDefault: [10, 15, 20, 25, 30, 50, 100],
-            pageSize: this.getPageSize(window.localStorage.getItem("pageSize")),
+            items: [],
+            error: null,
+            isLoaded: false,
+            pageSize: window.localStorage.getItem("pageSize") || 10,
+            valueDefault: [],
+            totalPages: 0,
         };
-        this.getData(this.state.pageSize);
     }
-    getPageSize(tmp) {
-        return tmp ? Number(tmp) : 10;
-    }
-    getData(pageSize) {
-        AjaxPOSTAsync(urlControlActionPagination, { "pageSize": pageSize }, "POST")
-            .then((datum) => {
-                this.handleStateResultObject(datum);
-                console.dir(this.state);
-            }).catch((error) => {
-                console.error(error);
-            });
-    }
-    handleStateResultArray = (array) => {
-        this.setState((state, props) => {
-            return {
-                dataResult: [...state.dataResult, array]
-            };
-        });
+    componentDidMount() {
+        const data = {
+            "pageSize": this.state.pageSize || 10
+        };
+        const init = {
+            method: "POST", // *GET, POST, PUT, DELETE, etc.
+            mode: "cors", // no-cors, cors, *same-origin
+            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: "same-origin", // include, *same-origin, omit
+            headers: {
+                "Content-Type": "application/json",
+                // "Content-Type": "application/x-www-form-urlencoded",
+            },
+            redirect: "follow", // manual, *follow, error
+            referrer: "no-referrer", // no-referrer, *client
+            body: JSON.stringify(data), // body data type must match "Content-Type" header
+        };
+        fetch(urlControlActionPagination, init)
+            .then(
+                res => res.json()
+            )
+            .then(
+                (result) => {
+                    const tmp = this.createPaging(result.totalPages, result.pageSize);
+                    this.setState({
+                        isLoaded: true,
+                        valueDefault: result.valueDefault,
+                        items: tmp,
+                        totalPages: result.totalPages
+                    });
+                },
+                (error) => {
+                    this.setState({
+                        isLoaded: true,
+                        error
+                    });
+                    console.error(error);
+                }
+            );
     }
     handleStateResultObject = (object) => {
-        this.setState((state, props) => {
-            return {
-                dataResult: Object.assign(state.dataResult, object),
-            };
-        });
-    }
-    handleStatePageSize = (object) => {
         this.setState((state, props) => {
             return Object.assign(state, object);
         });
     }
-    creactePaging(el) {
-        let totalPages = el.dataResult.totalPages;
-        let pageSize = el.pageSize;
+    createPaging(_totalPages, _pageSize) {
+        let totalPages = _totalPages;
+        let pageSize = _pageSize;
         let li = [];
         for (let i = 0; i < totalPages; i++) {
             li[i] = {
@@ -68,19 +85,37 @@ class Pagination extends Component {
         return li;
     }
     render() {
-        return (
-            <React.Fragment>
-                <Select handleStatePageSize={this.handleStatePageSize} valueArray={this.state.valueDefault} />
-                <ul className="pagination">
-                    {
-                        this.creactePaging(this.state).map((item, i) => {
-                            return (<li key={i} className={item.className}><a href={item.href}>{item.data}</a></li>);
-                        })
-                    }
-                </ul>
-            </React.Fragment>
-        );
+        const { error, isLoaded, items, valueDefault } = this.state;
+        if (this.state.isLoaded) {
+            return (
+                <React.Fragment>
+                    <CreateSelect
+                        handleStateResultObject={this.handleStateResultObject}
+                        createPaging={this.createPaging}
+                        pageSize={this.state.pageSize}
+                        valueDefault={this.state.valueDefault} />
+                    <ul className="pagination">
+                        {
+                            items.map((item, i) => {
+                                return (<li key={i} className={item.className}><a href={item.href}>{item.data}</a></li>);
+                            })
+                        }
+                    </ul>
+                </React.Fragment>
+            );
+        } else if (error) {
+            return (
+                <React.Fragment>
+                    <div>Error: {error.message}</div>
+                </React.Fragment>
+            );
+        } else if (!isLoaded) {
+            return (
+                <React.Fragment>
+                    <div>Loading...</div>
+                </React.Fragment>
+            );
+        }
     }
 }
-
 export default Pagination;
