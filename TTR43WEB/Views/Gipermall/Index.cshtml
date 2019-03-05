@@ -10,16 +10,18 @@
     <table class="striped highlight">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Price</th>
-                <th>Price Without Discount</th>
-                <th>Date</th>
+                <th>№</th>
+                <th>Название</th>
+                <th>Цена</th>
+                <th>Цена без скидки</th>
+                <th>Время</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var items in Model)
             {
                 <tr>
+                    <td>@items.Id</td>
                     <td><a target="_blank" href="@items.Url">@items.Name</a></td>
                     <td>@items.Price</td>
                     <td>@items.PriceWithoutDiscount</td>
@@ -30,12 +32,14 @@
     </table>
 </div>
 
+<div id="pagination-container"></div>
+
 
 @section Scripts {
-    @{
-        //await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
     <script>
-        console.log("coast-container");
+        document.addEventListener('DOMContentLoaded', function () {
+            let elems = document.querySelectorAll('select');
+            let instances = M.FormSelect.init(elems, options);
+        });
     </script>
 }

@@ -19,6 +19,10 @@ using TTR43WEB.Models.Attachment;
 namespace TTR43WEB.Controllers
 {
 
+    class PageSize
+    {
+        public int pageSize { get; set; }
+    }
     public class GipermallController : Controller
     {
         private readonly IGipermollTableData gipermollTableData;
@@ -29,9 +33,43 @@ namespace TTR43WEB.Controllers
             _product = product;
         }
 
-        public IActionResult Index()
+        [HttpGet]
+        public IActionResult Index(int productPage = 1, int pageSize = 5)
         {
-            return View(gipermollTableData.Products);
+            var data = gipermollTableData.Products;
+            int fn(Product e) => e.Id;
+            int countProducts = data.Count<Product>();
+            int totalPages = countProducts / pageSize;
+            IQueryable<Product> result = data
+                .OrderBy(fn)
+                .Skip((pageSize - 1) * productPage)
+                .Take((new int[] { pageSize, countProducts }).Min())
+                .AsQueryable<Product>();
+            return View("Index", result);
+        }
+
+        [HttpPost]
+        public IActionResult Pagination([FromBody]JObject pageSize)
+        {
+            try
+            {
+                var _pageSize = pageSize.ToObject<PageSize>().pageSize;
+                var data = gipermollTableData.Products;
+                int countProducts = data.Count<Product>();
+                int totalPages = countProducts / _pageSize;
+
+                var result = Json(new
+                {
+                    countProducts,
+                    totalPages
+                });
+
+                return result;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         [HttpPost]

@@ -53,6 +53,7 @@
 
 
   <ItemGroup>
+    <Folder Include="Managers\" />
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="src\fonts\" />
     <Folder Include="Universal\" />

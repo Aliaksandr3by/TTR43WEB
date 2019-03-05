@@ -11,6 +11,7 @@ import "../scss/index.scss";
 
 import CreateTableAll from "./Components/TableAll";
 import AppCoast from "./Coast/AppCoast";
+import Pagination from "./Coast/Pagination";
 
 const rootElement = document.getElementById("react-container") || document.querySelector("body");
 const mainElement = document.getElementById("main") || document.querySelector("body");
@@ -46,11 +47,17 @@ document.addEventListener("DOMContentLoaded", () => {
     if (coastContainer) {
         ReactDOM.render(
             <AppCoast name="Main table"/>,
-            document.getElementById("coast-container")
+            coastContainer
         );
     }
 
-
+    const paginationContainer = document.getElementById("pagination-container");
+    if (paginationContainer) {
+        ReactDOM.render(
+            <Pagination/>,
+            paginationContainer
+        );
+    }
 });
 
 const getJade = () => {

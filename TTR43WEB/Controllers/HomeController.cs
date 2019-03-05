@@ -28,40 +28,10 @@ namespace TTR43WEB.Controllers
             itableRepository = tabl;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
             return View();
-        }
-
-        [HttpGet]
-        [ContentTypeHTML]
-        [AccessControlAllow]
-        public IActionResult GetTabl(string id, string Henry, string Ford)
-        {
-            switch (id)
-            {
-                case "Table_4_1":
-                    return PartialView("_GetTable", itableRepository.Table41);
-                default:
-                    return PartialView("_GetTable", itableRepository.Table41);
-            }
-        }
-
-        [HttpPost]
-        [AccessControlAllow]
-        [ContentTypeJson]
-        public IActionResult GetTable([FromBody]JObject dataSend)
-        {
-            var AttachmentA = itableRepository.AttachmentA;
-            foreach (var item in AttachmentA)
-            {
-                var a = Json(item);
-            }
-            var result = Json(new
-            {
-                AttachmentA
-            });
-            return result;
         }
 
         [HttpPost]
