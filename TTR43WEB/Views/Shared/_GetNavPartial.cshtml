@@ -1,12 +1,10 @@
 ﻿@{
-    string Index = @Url.Action("Index", "Home");
-    string Gipermall = @Url.Action("Index", "Gipermall");
-    string gipermall = "Гипермол";
+
 }
 
 <nav>
     <div class="nav-wrapper">
-        <a href="@Index" class="brand-logo">Index</a>
+        <a asp-controller="Home" asp-action="Index" class="brand-logo">Index</a>
         <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
         <ul class="right hide-on-med-and-down">
             <li><a asp-controller="Gipermall" asp-action="Index" >gipermall</a></li>
@@ -17,14 +15,3 @@
 <ul class="sidenav" id="mobile-demo">
     <li><a asp-controller="Gipermall" asp-action="Index" >gipermall</a></li>
 </ul>
-
-<script>
-    try {
-        document.addEventListener('DOMContentLoaded', function () {
-            var elems = document.querySelectorAll('.sidenav');
-            var instances = M.Sidenav.init(elems, {});
-        });
-    } catch (e) {
-
-    }
-</script>

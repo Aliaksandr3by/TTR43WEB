@@ -3,7 +3,7 @@
 
 import React from "react";
 import ReactDOM from "react-dom";
-import "materialize-css";
+import M from "materialize-css";
 import "@babel/polyfill";
 
 import { AjaxPOSTAsync, createElementWithAttr, genTable } from "./utils.js";
@@ -19,21 +19,12 @@ const footerElement = document.getElementById("footer") || document.querySelecto
 
 document.addEventListener("DOMContentLoaded", () => {
 
+    M.FormSelect.init(document.querySelectorAll("select"), {});
+    M.Sidenav.init(document.querySelectorAll(".sidenav"), {});
 
     const reactContainer = document.getElementById("react-container");
-
     if (reactContainer) {
-        const dataSend = {
-            language: "RU",
-            table_4_1: {
-                BUILD: "1",
-                DESIGN_TEMPERATURE: 1,
-                RELATIVE_AIR_HUMIDITY: 2,
-                ID: "qweqweq3"
-            }
-        };
-
-        AjaxPOSTAsync(urlControlActionGetAllTable, dataSend, "POST").then((datum) => {
+        AjaxPOSTAsync(urlControlActionGetAllTable, {}, "POST").then((datum) => {
             ReactDOM.render(
                 <CreateTableAll dataContex={datum} />,
                 reactContainer

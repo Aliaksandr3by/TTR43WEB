@@ -8,22 +8,22 @@ class Pagination extends Component {
         super(props);
         this.state = {
             dataResult: {},
-            pageSize: 10
+            valueDefault: [10, 15, 20, 25, 30, 50, 100],
+            pageSize: this.getPageSize(window.localStorage.getItem("pageSize")),
         };
         this.getData(this.state.pageSize);
     }
+    getPageSize(tmp) {
+        return tmp ? Number(tmp) : 10;
+    }
     getData(pageSize) {
-        try {
-            AjaxPOSTAsync(urlControlActionPagination, { "pageSize": pageSize }, "POST")
-                .then((datum) => {
-                    this.handleStateResultObject(datum);
-                    console.dir(this.state);
-                }).catch((error) => {
-                    console.error(error);
-                });
-        } catch (error) {
-            console.error(error);
-        }
+        AjaxPOSTAsync(urlControlActionPagination, { "pageSize": pageSize }, "POST")
+            .then((datum) => {
+                this.handleStateResultObject(datum);
+                console.dir(this.state);
+            }).catch((error) => {
+                console.error(error);
+            });
     }
     handleStateResultArray = (array) => {
         this.setState((state, props) => {
@@ -41,23 +41,42 @@ class Pagination extends Component {
     }
     handleStatePageSize = (object) => {
         this.setState((state, props) => {
-            return {
-                PageSize: Object.assign(state, object),
-            };
+            return Object.assign(state, object);
         });
+    }
+    creactePaging(el) {
+        let totalPages = el.dataResult.totalPages;
+        let pageSize = el.pageSize;
+        let li = [];
+        for (let i = 0; i < totalPages; i++) {
+            li[i] = {
+                className: "waves-effect",
+                href: `/Gipermall/Index/Page${i}/Size${pageSize}`,
+                data: i
+            };
+        }
+        li.unshift({
+            className: "disabled",
+            href: ``,
+            data: <i className="material-icons">chevron_left</i>
+        });
+        li.push({
+            className: "waves-effect",
+            href: ``,
+            data: <i className="material-icons">chevron_right</i>
+        });
+        return li;
     }
     render() {
         return (
             <React.Fragment>
-                <Select handleStatePageSize={this.handleStatePageSize}/>
+                <Select handleStatePageSize={this.handleStatePageSize} valueArray={this.state.valueDefault} />
                 <ul className="pagination">
-                    <li className="disabled"><a href="#!"><i className="material-icons">chevron_left</i></a></li>
-
-                    <li className="active"><a href="/Gipermall/Index/Page0/Size10">1</a></li>
-                    <li className="waves-effect"><a href="/Gipermall/Index/Page1/Size10">2</a></li>
-                    <li className="waves-effect"><a href="/Gipermall/Index/Page2/Size10">3</a></li>
-
-                    <li className="waves-effect"><a href="#!"><i className="material-icons">chevron_right</i></a></li>
+                    {
+                        this.creactePaging(this.state).map((item, i) => {
+                            return (<li key={i} className={item.className}><a href={item.href}>{item.data}</a></li>);
+                        })
+                    }
                 </ul>
             </React.Fragment>
         );

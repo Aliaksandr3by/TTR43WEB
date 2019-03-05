@@ -1,39 +1,36 @@
 ﻿import React from "react";
 import PropTypes from "prop-types";
+import { AjaxPOSTAsync } from "../utils.js";
 
 class CreateSelect extends React.Component {
+    static propTypes = {
+        handleStatePageSize: PropTypes.func.isRequired
+    };
     constructor(props) {
         super(props);
         this.state = {
-            dataResult: [10, 15, 20, 25, 30],
+            value: this.getPageSize(window.localStorage.getItem("pageSize")),
+            valueDefault: this.props.valueArray,
         };
+        this.handleChange = this.handleChange.bind(this);
     }
-    getData(pageSize) {
-        try {
-            AjaxPOSTAsync(urlControlActionPagination, { "pageSize": pageSize }, "POST")
-                .then((datum) => {
-                    this.handleStateResultObject(datum);
-                    console.dir(this.state);
-                }).catch((error) => {
-                    console.error(error);
-                });
-        } catch (error) {
-            console.error(error);
-        }
+    getPageSize(tmp) {
+        return tmp ? Number(tmp) : 10;
     }
-    onChange(e) {
-        this.props.handleStatePageSize({ pageSize: Number(e.target.value) });
+    handleChange(event) {
+        this.setState({ value: event.target.value });
+        this.props.handleStatePageSize({ pageSize: Number(event.target.value) });
+        window.localStorage.setItem("pageSize", event.target.value);
     }
     render() {
-        const data = this.state.dataResult;
         return (
             <React.Fragment>
                 <label>Browser Select</label>
-                <select className="browser-default" onChange={(e) => this.onChange(e)}>
+                <select className="browser-default" value={this.state.value} onChange={this.handleChange}>
                     {
-                        data.map((item, key) => {
+                        this.state.valueDefault.map((item, key) => {
                             return (
-                                <option key={key} defaultValue={item}>{item}</option>
+                                <option key={key} value={item}>{item}</option>
                             );
                         })
                     }

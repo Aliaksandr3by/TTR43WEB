@@ -61,7 +61,8 @@ namespace TTR43WEB.Controllers
                 var result = Json(new
                 {
                     countProducts,
-                    totalPages
+                    totalPages,
+                    valueDefault = new int[] { 10, 15, 20, 25, 30, 50, 100, 150 }
                 });
 
                 return result;
