@@ -19,9 +19,14 @@ using TTR43WEB.Models.Attachment;
 namespace TTR43WEB.Controllers
 {
 
-    class PageSize
+    public class PageSize
     {
         public int pageSize { get; set; }
+    }
+    public class GetDataTable
+    {
+        public int pageSize { get; set; }
+        public int productPage { get; set; }
     }
     public class GipermallController : Controller
     {
@@ -33,37 +38,54 @@ namespace TTR43WEB.Controllers
             _product = product;
         }
 
-        [HttpGet]
-        public IActionResult Index(int productPage = 1, int pageSize = 5)
+        public IActionResult Index()
         {
-            var data = gipermollTableData.Products;
-            int fn(Product e) => e.Id;
-            int countProducts = data.Count<Product>();
-            int totalPages = countProducts / pageSize;
-            IQueryable<Product> result = data
-                .OrderBy(fn)
-                .Skip((pageSize - 1) * productPage)
-                .Take((new int[] { pageSize, countProducts }).Min())
-                .AsQueryable<Product>();
-            return View("Index", result);
+            return View();
         }
 
         [HttpPost]
+        [ContentTypeJson]
+        [AccessControlAllow]
+        public IActionResult Table([FromBody]GetDataTable getDataTable)
+        {
+            GetDataTable _getDataTable = getDataTable;
+            var data = gipermollTableData.Products;
+            DateTime fn(Product e) => e.Date;
+            Func<Product, int> fn2 = e => (e.Id);
+            int countProducts = data.Count<Product>();
+            var result = data
+                .OrderBy(fn2)
+                .Skip((_getDataTable.productPage - 1) * _getDataTable.pageSize)
+                .Take((new int[] { _getDataTable.pageSize, countProducts }).Min())
+                .AsQueryable<Product>();
+
+            var ProductInfo = Json(new
+            {
+                items = result,
+                isLoaded = true,
+            });
+
+            return ProductInfo;
+        }
+
+        [HttpPost]
+        [ContentTypeJson]
+        [AccessControlAllow]
         public IActionResult Pagination([FromBody]JObject pageSize)
         {
             try
             {
                 var _pageSize = pageSize.ToObject<PageSize>().pageSize;
                 var data = gipermollTableData.Products;
-                int countProducts = data.Count<Product>();
-                int totalPages = countProducts / _pageSize;
+                int totalItems = data.Count<Product>();
+                int totalPages = (int)Math.Ceiling((decimal)totalItems / _pageSize);
 
                 var result = Json(new
                 {
-                    countProducts,
+                    totalItems,
                     totalPages,
                     pageSize = _pageSize,
-                    valueDefault = new int[] { 3, 5, 7, 10, 15, 20, 25, 30, 50, 100, 150 }
+                    valueDefault = new int[] { 3, 5, 7, 10, 15, 20, 25, 30, 50, 100, 150, totalItems }
                 });
 
                 return result;
@@ -83,8 +105,15 @@ namespace TTR43WEB.Controllers
 
             GetDataFromGipermall getDataFromGipermall = new GetDataFromGipermall(_product);
 
-            var description = await getDataFromGipermall.GetFullDescriptionResult(dataSendObj.IdGoods);
-
+            var _description = await getDataFromGipermall.GetFullDescriptionResult(dataSendObj.IdGoods, gipermollTableData.Products);
+            var description = new
+            {
+                _description.Id,
+                _description.Name,
+                _description.Price,
+                _description.PriceWithoutDiscount,
+                _description.Date
+            };
             var result = Json(new
             {
                 description

@@ -16,7 +16,7 @@ class CreateSelect extends React.Component {
         this.handleChange = this.handleChange.bind(this);
     }
     componentDidMount() {
- 
+
     }
     handleChange(event) {
         this.setState({
@@ -50,7 +50,7 @@ class CreateSelect extends React.Component {
                         totalPages: result.totalPages,
                         items: this.props.createPaging(result.totalPages, result.pageSize),
                     });
-                    this.props.handleStateResultObject({items: this.state.items});
+                    this.props.handleStateResultObject({ items: this.state.items });
                 },
                 (error) => {
                     this.setState({

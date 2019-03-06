@@ -5,35 +5,8 @@
 }
 
 <div id="coast-container"></div>
-
-<div class="wrapper">
-    <table class="striped highlight">
-        <thead>
-            <tr>
-                <th>№</th>
-                <th>Название</th>
-                <th>Цена</th>
-                <th>Цена без скидки</th>
-                <th>Время</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var items in Model)
-            {
-                <tr>
-                    <td>@items.Id</td>
-                    <td><a target="_blank" href="@items.Url">@items.Name</a></td>
-                    <td>@items.Price</td>
-                    <td>@items.PriceWithoutDiscount</td>
-                    <td>@items.Date</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
-
+<div id="table-container"></div>
 <div id="pagination-container"></div>
-
 
 @section Scripts {
     <script>

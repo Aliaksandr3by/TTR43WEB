@@ -108,7 +108,7 @@ namespace TTR43WEB.Models.Gipermall
             }
         }
 
-        public async Task<Product> GetFullDescriptionResult(string url)
+        public async Task<Product> GetFullDescriptionResult(string url, IQueryable<Product> products)
         {
             Dictionary<string, string> keyValuePairs = await Task.Run(() => GetDescription(url, "ul.description"));
 
@@ -140,10 +140,15 @@ namespace TTR43WEB.Models.Gipermall
                         s: keyValuePairs["Цена за 1 кг:"],
                         provider: CultureInfo.InvariantCulture);
 
+                    var a1 = products.FirstOrDefault(e => e.Url == _product.Url);
+                    var a2 = products.FirstOrDefault(e => e.Price == _product.Price);
+                    var a3 = products.FirstOrDefault(e => e.PriceWithoutDiscount == _product.PriceWithoutDiscount);
 
-
-                    db.Products.Add(_product);
-                    db.SaveChanges();
+                    if (a1 == null && a2 == null && a3 == null)
+                    {
+                        db.Products.Add(_product);
+                        db.SaveChanges();
+                    }
 
                     return _product;
                 }

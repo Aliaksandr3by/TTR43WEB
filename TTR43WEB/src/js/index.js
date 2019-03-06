@@ -12,6 +12,7 @@ import "../scss/index.scss";
 import CreateTableAll from "./Components/TableAll";
 import AppCoast from "./Coast/AppCoast";
 import Pagination from "./Coast/Pagination";
+import ProductInfo from "./Coast/ProductInfo";
 
 const rootElement = document.getElementById("react-container") || document.querySelector("body");
 const mainElement = document.getElementById("main") || document.querySelector("body");
@@ -39,6 +40,15 @@ document.addEventListener("DOMContentLoaded", () => {
         ReactDOM.render(
             <AppCoast name="Main table" />,
             coastContainer
+        );
+    }
+
+    
+    const tableContainer = document.getElementById("table-container");
+    if (tableContainer) {
+        ReactDOM.render(
+            <ProductInfo name="table" />,
+            tableContainer
         );
     }
 
