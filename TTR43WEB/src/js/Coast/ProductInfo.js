@@ -91,9 +91,19 @@ class ProductInfo extends Component {
                                         <tr key={index}>
                                             {
                                                 Object.keys(item).map((el, i) => {
-                                                    return (<td key={i}>
-                                                        {item[el]}
-                                                    </td>);
+                                                    if (el.toLowerCase() === "id") {
+                                                        return (<th key={i}>
+                                                            {item[el]}
+                                                        </th>);
+                                                    } else if (el.toLowerCase() === "name") {
+                                                        return (<td key={i}>
+                                                            <a href={item["url"]}>{item[el]}</a>
+                                                        </td>);
+                                                    } else {
+                                                        return (<td key={i}>
+                                                            {item[el]}
+                                                        </td>);
+                                                    }
                                                 })
                                             }
                                         </tr>
@@ -104,7 +114,7 @@ class ProductInfo extends Component {
                     </table>
                 </React.Fragment>
             );
-        } else if(items.length === 0){
+        } else if (items.length === 0) {
             return (
                 <React.Fragment>
                     <div>Error: {items.length}</div>

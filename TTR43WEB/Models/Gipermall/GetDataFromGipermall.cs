@@ -94,6 +94,21 @@ namespace TTR43WEB.Models.Gipermall
                 return default;
             }
         }
+
+        async Task<int?> GetElementAttr(string url, string selectors)
+        {
+            try
+            {
+                var result = Convert.ToInt32((await Task.Run(() => GetDataAngleSharp(url, selectors))).FirstOrDefault()?.GetAttribute("data-product-id"));
+
+                return result;
+            }
+            catch (Exception)
+            {
+                return default;
+            }
+        }
+
         async Task<string> GetElement(string url, string selectors)
         {
             try
@@ -104,7 +119,7 @@ namespace TTR43WEB.Models.Gipermall
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                return default;
             }
         }
 
@@ -118,6 +133,8 @@ namespace TTR43WEB.Models.Gipermall
                 {
                     ///"Название"
                     _product.Name = await Task.Run(() => GetElement(url, "div.breadcrumbs span"));
+                    ///"Название"
+                    _product.ProductId = await Task.Run(() => GetElementAttr(url, "div.product_card a[data-product-id]"));
                     ///"Адрес"
                     _product.Url = url;
                     ///"Время"
@@ -129,15 +146,22 @@ namespace TTR43WEB.Models.Gipermall
                     ///"Размерность"
                     _product.Dimension = await Task.Run(() => GetElement(url, "div.products_card form.forms div.price_byn small.kg"));
                     ///
-                    _product.MarkingGoods = keyValuePairs.FirstOrDefault(x => x.Key.Contains("Артикул")).Value;
-                    _product.BarCode = keyValuePairs["Штрих-код:"];
-                    _product.ManufacturingCountry = keyValuePairs["Страна производства:"];
-                    _product.Trademark = keyValuePairs["Торговая марка:"];
-                    _product.Mass = double.Parse(
-                        s: keyValuePairs["Масса / Объем:"].Replace(" кг", string.Empty),
+                    _product.MarkingGoods = keyValuePairs.FirstOrDefault(x => x.Key.Contains("Артикул:")).Value ?? string.Empty; //ошибка есть ключ не найден
+
+                    _product.BarCode = ReplaceHelper(keyValuePairs, "Штрих-код:");
+
+                    _product.ManufacturingCountry = ReplaceHelper(keyValuePairs, "Страна производства:");
+
+                    _product.Trademark = ReplaceHelper(keyValuePairs, "Торговая марка:");
+
+                    _product.Mass = ReplaceHelper(keyValuePairs, "Масса / Объем:", @"[^0-9,.]");
+
+                    _product.PriceOneKilogram = decimal.Parse(
+                        s: keyValuePairs.ContainsKey("Цена за 1 кг:") ? keyValuePairs["Цена за 1 кг:"] : "0",
                         provider: CultureInfo.InvariantCulture);
-                    _product.PriceForMass = decimal.Parse(
-                        s: keyValuePairs["Цена за 1 кг:"],
+
+                    _product.PriceOneLiter = decimal.Parse(
+                        s: keyValuePairs.ContainsKey("Цена за 1 л:") ? keyValuePairs["Цена за 1 л:"] : "0",
                         provider: CultureInfo.InvariantCulture);
 
                     var a1 = products.FirstOrDefault(e => e.Url == _product.Url);
@@ -155,7 +179,51 @@ namespace TTR43WEB.Models.Gipermall
             }
             catch (Exception)
             {
-                return _product;
+                return default;
+            }
+        }
+
+
+        public double? ReplaceHelper(Dictionary<string,string> keyValuePairs, string key, string pattern)
+        {
+            try
+            {
+                if (keyValuePairs.ContainsKey(key))
+                {
+                    Regex regexMass = new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+                    var tp = regexMass.Replace(keyValuePairs["Масса / Объем:"], string.Empty);
+                    return double.Parse(
+                        s: tp,
+                        provider: CultureInfo.InvariantCulture);
+                }
+                else
+                {
+                    return default;
+                }
+            }
+            catch (Exception)
+            {
+                return default;
+            }
+        }
+
+
+        public string ReplaceHelper(Dictionary<string, string> keyValuePairs, string key)
+        {
+            try
+            {
+                if (keyValuePairs.ContainsKey(key))
+                {
+                    return keyValuePairs.ContainsKey(key) ? keyValuePairs[key] : String.Empty;
+                }
+                else
+                {
+                    return default;
+                }
+            }
+            catch (Exception)
+            {
+                return default;
             }
         }
 

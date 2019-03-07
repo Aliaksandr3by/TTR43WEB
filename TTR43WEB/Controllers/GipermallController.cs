@@ -109,6 +109,7 @@ namespace TTR43WEB.Controllers
             var description = new
             {
                 _description.Id,
+                _description.ProductId,
                 _description.Name,
                 _description.Price,
                 _description.PriceWithoutDiscount,

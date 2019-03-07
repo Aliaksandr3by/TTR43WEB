@@ -18,7 +18,6 @@ class Pagination extends Component {
             totalItems: 0
         };
         this.onSelect = this.onSelect.bind(this);
-        console.dir(this.state);
     }
     componentDidMount() {
         const data = {

@@ -17,6 +17,9 @@ namespace TTR43WEB.Models.Gipermall
         [Display(Name = "Id")]
         public int Id { get; set; }
 
+        [Display(Name = "Product Id")]
+        public int? ProductId { get; set; }
+
         /// <summary>
         /// "Время"
         /// </summary>
@@ -46,13 +49,29 @@ namespace TTR43WEB.Models.Gipermall
         /// "Цена"
         /// </summary>
         [Display(Name = "Цена")]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal? Price { get; set; }
 
         /// <summary>
         /// "Цена без скидки"
         /// </summary>
         [Display(Name = "Цена без скидки")]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal? PriceWithoutDiscount { get; set; }
+
+        /// <summary>
+        /// Цена за 1 кг
+        /// </summary>
+        [Display(Name = "Цена за 1 кг")]
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal? PriceOneKilogram { get; set; }
+
+        /// <summary>
+        /// Цена за 1 л
+        /// </summary>
+        [Display(Name = "Цена за 1 л")]
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal? PriceOneLiter { get; set; }
 
         /// <summary>
         /// "Размерность"
@@ -89,12 +108,5 @@ namespace TTR43WEB.Models.Gipermall
         /// </summary>
         [Display(Name = "Масса / Объем")]
         public double? Mass { get; set; }
-
-        /// <summary>
-        /// Цена за 1 кг
-        /// </summary>
-        [Display(Name = "Цена за 1 кг")]
-        public decimal? PriceForMass { get; set; }
-
     }
 }

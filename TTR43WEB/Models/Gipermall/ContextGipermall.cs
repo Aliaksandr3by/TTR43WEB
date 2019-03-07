@@ -9,7 +9,7 @@ namespace TTR43WEB.Models.Gipermall
 {
     public class ContextGipermall : DbContext
     {
-        public DbSet<Product> Products { get; set; }
+        public virtual DbSet<Product> Products { get; set; }
 
         public ContextGipermall() 
         {
