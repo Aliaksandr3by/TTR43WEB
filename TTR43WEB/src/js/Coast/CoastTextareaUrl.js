@@ -10,7 +10,9 @@ class CoastTextareaUrl extends Component {
         super(props);
         this.state = {
             idGoods: this.dataTmp(),
-            textarea: this.dataTmp()
+            textarea: this.dataTmp(),
+            error: null,
+            isLoaded: false,
         };
         this.handleChange = this.handleChange.bind(this);
     }
@@ -48,7 +50,6 @@ class CoastTextareaUrl extends Component {
                 AjaxPOSTAsync(urlControlActionGetCoastAsync, { "idGoods": element }, "POST")
                     .then((datum) => {
                         this.props.stateChangeResult(datum.description);
-
                     }).catch((error) => {
                         console.error(error);
                     });

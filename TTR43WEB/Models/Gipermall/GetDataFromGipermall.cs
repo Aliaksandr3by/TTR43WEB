@@ -11,10 +11,10 @@ namespace TTR43WEB.Models.Gipermall
 {
     public class GetDataFromGipermall
     {
-        readonly private Product _product;
+        readonly private Product _productNew;
         public GetDataFromGipermall(Product product)
         {
-            this._product = product;
+            this._productNew = product;
         }
 
         private async Task<IHtmlCollection<IElement>> GetDataAngleSharp(string url, string selectors)
@@ -117,7 +117,7 @@ namespace TTR43WEB.Models.Gipermall
 
                 return result;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return default;
             }
@@ -132,49 +132,41 @@ namespace TTR43WEB.Models.Gipermall
                 using (ContextGipermall db = new ContextGipermall())
                 {
                     ///"Название"
-                    _product.Name = await Task.Run(() => GetElement(url, "div.breadcrumbs span"));
+                    _productNew.Name = await Task.Run(() => GetElement(url, "div.breadcrumbs span"));
                     ///"Название"
-                    _product.ProductId = await Task.Run(() => GetElementAttr(url, "div.product_card a[data-product-id]"));
+                    _productNew.ProductId = await Task.Run(() => GetElementAttr(url, "div.product_card a[data-product-id]"));
                     ///"Адрес"
-                    _product.Url = url;
+                    _productNew.Url = url;
                     ///"Время"
-                    _product.Date = DateTime.Now;
+                    _productNew.Date = DateTime.Now;
                     ///"Цена"
-                    _product.Price = await Task.Run(() => GetElement(url, "div.products_card form.forms div.price_byn div.price", ParseCost, @"^\d*р.\d*к."));
+                    _productNew.Price = await Task.Run(() => GetElement(url, "div.products_card form.forms div.price_byn div.price", ParseCost, @"^\d*р.\d*к."));
                     ///"Цена без скидки"
-                    _product.PriceWithoutDiscount = await Task.Run(() => GetElement(url, "div.products_card form.forms div.price_byn div.price", ParseCost, @"\d*р.\d*к.\s*$"));
+                    _productNew.PriceWithoutDiscount = await Task.Run(() => GetElement(url, "div.products_card form.forms div.price_byn div.price", ParseCost, @"\d*р.\d*к.\s*$"));
                     ///"Размерность"
-                    _product.Dimension = await Task.Run(() => GetElement(url, "div.products_card form.forms div.price_byn small.kg"));
+                    _productNew.Dimension = await Task.Run(() => GetElement(url, "div.products_card form.forms div.price_byn small.kg"));
                     ///
-                    _product.MarkingGoods = keyValuePairs.FirstOrDefault(x => x.Key.Contains("Артикул:")).Value ?? string.Empty; //ошибка есть ключ не найден
+                    _productNew.MarkingGoods = ReplaceHelper(keyValuePairs, "Артикул:");
 
-                    _product.BarCode = ReplaceHelper(keyValuePairs, "Штрих-код:");
+                    _productNew.BarCode = ReplaceHelper(keyValuePairs, "Штрих-код:");
 
-                    _product.ManufacturingCountry = ReplaceHelper(keyValuePairs, "Страна производства:");
+                    _productNew.ManufacturingCountry = ReplaceHelper(keyValuePairs, "Страна производства:");
 
-                    _product.Trademark = ReplaceHelper(keyValuePairs, "Торговая марка:");
+                    _productNew.Trademark = ReplaceHelper(keyValuePairs, "Торговая марка:");
 
-                    _product.Mass = ReplaceHelper(keyValuePairs, "Масса / Объем:", @"[^0-9,.]");
+                    _productNew.Mass = ReplaceHelper(keyValuePairs, "Масса / Объем:", @"[^0-9,.]");
 
-                    _product.PriceOneKilogram = decimal.Parse(
-                        s: keyValuePairs.ContainsKey("Цена за 1 кг:") ? keyValuePairs["Цена за 1 кг:"] : "0",
-                        provider: CultureInfo.InvariantCulture);
+                    _productNew.PriceOneKilogram = ReplaceHelper(keyValuePairs, "Цена за 1 кг:", (e) => decimal.Parse(e, CultureInfo.InvariantCulture));
 
-                    _product.PriceOneLiter = decimal.Parse(
-                        s: keyValuePairs.ContainsKey("Цена за 1 л:") ? keyValuePairs["Цена за 1 л:"] : "0",
-                        provider: CultureInfo.InvariantCulture);
+                    _productNew.PriceOneLiter = ReplaceHelper(keyValuePairs, "Цена за 1 л:", (e) => decimal.Parse(e, CultureInfo.InvariantCulture));
 
-                    var a1 = products.FirstOrDefault(e => e.Url == _product.Url);
-                    var a2 = products.FirstOrDefault(e => e.Price == _product.Price);
-                    var a3 = products.FirstOrDefault(e => e.PriceWithoutDiscount == _product.PriceWithoutDiscount);
-
-                    if (a1 == null && a2 == null && a3 == null)
+                    if (!products.Any<Product>(e => e.ProductId == _productNew.ProductId && e.Price == _productNew.Price && e.PriceWithoutDiscount == _productNew.PriceWithoutDiscount))
                     {
-                        db.Products.Add(_product);
+                        db.Products.Add(_productNew);
                         db.SaveChanges();
                     }
 
-                    return _product;
+                    return _productNew;
                 }
             }
             catch (Exception)
@@ -183,8 +175,28 @@ namespace TTR43WEB.Models.Gipermall
             }
         }
 
+        public decimal? ReplaceHelper(Dictionary<string, string> keyValuePairs, string key, Func<string, decimal?> fn)
+        {
+            try
+            {
+                if (keyValuePairs.ContainsKey(key))
+                {
+                    return keyValuePairs.ContainsKey(key)
+                        ? fn(keyValuePairs[key])
+                        : default;
+                }
+                else
+                {
+                    return default;
+                }
+            }
+            catch (Exception)
+            {
+                return default;
+            }
+        }
 
-        public double? ReplaceHelper(Dictionary<string,string> keyValuePairs, string key, string pattern)
+        public double? ReplaceHelper(Dictionary<string, string> keyValuePairs, string key, string pattern)
         {
             try
             {

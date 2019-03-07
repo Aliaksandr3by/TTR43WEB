@@ -178,7 +178,7 @@ namespace TTR43WEB.Models.Attachment
                 this.MaterialThermalConductivityServiceB.RemoveAt(i);
                 this._materialAddResultAttachmentA.RemoveAt(i);
             }
-            catch (ArgumentOutOfRangeException ex)
+            catch (ArgumentOutOfRangeException )
             {
                 //MessageBox.Show(ex.Message.ToString(), ex.TargetSite.ToString(), MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -456,9 +456,9 @@ namespace TTR43WEB.Models.Attachment
                 {
                     _thermalResistanceNormative = value;
                 }
-                catch (Exception ex)
+                catch (Exception )
                 {
-                    //MessageBox.Show(ex.Message.ToString(), ex.TargetSite.ToString(), MessageBoxButton.OK, MessageBoxImage.Error);
+
                 }
             }
         }

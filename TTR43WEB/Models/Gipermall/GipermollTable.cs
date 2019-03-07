@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,7 +16,6 @@ namespace TTR43WEB.Models.Gipermall
         public GipermollTable(ContextGipermall ctx) => context = ctx;
 
         public IQueryable<Product> Products => context.Products;
-
 
     }
 }

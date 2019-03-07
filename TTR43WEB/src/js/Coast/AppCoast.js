@@ -1,7 +1,6 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import CoastTextareaUrl from "./CoastTextareaUrl";
-import CoastGoods from "./CoastGoods";
 
 class AppCoast extends Component {
     static propTypes = {
@@ -10,7 +9,9 @@ class AppCoast extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            dataResult: []
+            dataResult: [],
+            error: null,
+            isLoaded: false,
         };
     }
     onDetails(event) {
@@ -30,7 +31,6 @@ class AppCoast extends Component {
                 <CoastTextareaUrl stateChangeResult={this.handleStateResult} />
                 <div className="card"><p onClick={(e) => this.onDetails(e)}>+</p>
                     <table className="striped highlight responsive-table hide" data-src={this.props.name}>
-                        <caption><p>{this.props.name}</p></caption>
                         <thead>
                             <tr>
                                 {
@@ -49,12 +49,17 @@ class AppCoast extends Component {
                         </thead>
                         <tbody>
                             {
-                                Array.from(data).map((item, i) => {
+                                Array.from(data).map((currentValues, indexes) => {
                                     return (
-                                        <CoastGoods
-                                            key={i}
-                                            handleStateResult={this.handleStateResult}
-                                            dataResult={item} />
+                                        <tr key={indexes}>
+                                            {
+                                                Object.keys(currentValues).map((currentValue, index) =>
+                                                    (<td key={index}>
+                                                        {currentValues[currentValue]}
+                                                    </td>)
+                                                )
+                                            }
+                                        </tr>
                                     );
                                 })
                             }

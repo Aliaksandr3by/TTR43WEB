@@ -50,7 +50,6 @@ namespace TTR43WEB.Controllers
         {
             GetDataTable _getDataTable = getDataTable;
             var data = gipermollTableData.Products;
-            DateTime fn(Product e) => e.Date;
             Func<Product, int> fn2 = e => (e.Id);
             int countProducts = data.Count<Product>();
             var result = data
@@ -85,7 +84,7 @@ namespace TTR43WEB.Controllers
                     totalItems,
                     totalPages,
                     pageSize = _pageSize,
-                    valueDefault = new int[] { 3, 5, 7, 10, 15, 20, 25, 30, 50, 100, 150, totalItems }
+                    valueDefault = new int[] { totalItems, 3, 5, 7, 10, 15, 20, 25, 30, 50, 100, 150  }
                 });
 
                 return result;
@@ -110,6 +109,7 @@ namespace TTR43WEB.Controllers
             {
                 _description.Id,
                 _description.ProductId,
+                _description.Url,
                 _description.Name,
                 _description.Price,
                 _description.PriceWithoutDiscount,
@@ -117,7 +117,8 @@ namespace TTR43WEB.Controllers
             };
             var result = Json(new
             {
-                description
+                description,
+                isLoaded = true
             });
 
             return result;
