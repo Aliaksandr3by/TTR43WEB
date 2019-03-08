@@ -28,7 +28,7 @@ class AppCoast extends Component {
         const dataHeader = this.state.dataResult[0] || {};
         return (
             <React.Fragment>
-                <CoastTextareaUrl stateChangeResult={this.handleStateResult} />
+                <CoastTextareaUrl stateChangeResult={this.handleStateResult} urlData={urlControlActionGetCoastAsync}/>
                 <div className="card"><p onClick={(e) => this.onDetails(e)}>+</p>
                     <table className="striped highlight responsive-table hide" data-src={this.props.name}>
                         <thead>

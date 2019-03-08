@@ -19,47 +19,36 @@ class Pagination extends Component {
         };
         this.onSelect = this.onSelect.bind(this);
     }
-    componentDidMount() {
+    async componentDidMount() {
         const data = {
             "pageSize": this.state.pageSize || 10
         };
-        const init = {
-            method: "POST", // *GET, POST, PUT, DELETE, etc.
-            mode: "cors", // no-cors, cors, *same-origin
-            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: "same-origin", // include, *same-origin, omit
-            headers: {
-                "Content-Type": "application/json",
-                // "Content-Type": "application/x-www-form-urlencoded",
-            },
-            redirect: "follow", // manual, *follow, error
-            referrer: "no-referrer", // no-referrer, *client
-            body: JSON.stringify(data), // body data type must match "Content-Type" header
-        };
-        fetch(urlControlActionPagination, init)
-            .then(
-                res => res.json()
-            )
-            .then(
-                (result) => {
-                    const tmp = this.createPaging(result.totalPages, result.pageSize);
-                    this.setState({
-                        isLoaded: true,
-                        valueDefault: result.valueDefault,
-                        items: tmp,
-                        totalPages: result.totalPages,
-                        totalItems: result.totalItems,
-                        pageSize: result.pageSize,
-                    });
+        try {
+            const response = await fetch(urlControlActionPagination, {
+                method: "POST", // *GET, POST, PUT, DELETE, etc.
+                headers: {
+                    "Content-Type": "application/json",
                 },
-                (error) => {
-                    this.setState({
-                        isLoaded: true,
-                        error
-                    });
-                    console.error(error);
-                }
-            );
+                body: JSON.stringify(data),
+            });
+            const result = await response.json();
+
+            const tmp = this.createPaging(result.totalPages, result.pageSize);
+            this.setState({
+                isLoaded: true,
+                valueDefault: result.valueDefault,
+                items: tmp,
+                totalPages: result.totalPages,
+                totalItems: result.totalItems,
+                pageSize: result.pageSize,
+            });
+        } catch (error) {
+            this.setState({
+                isLoaded: true,
+                error
+            });
+            console.error(error);
+        }
     }
     handleStateResultObject = (object) => {
         this.setState((state, props) => {
@@ -90,8 +79,8 @@ class Pagination extends Component {
         });
         return li;
     }
-    onSelect(event){
-        this.handleStateResultObject({currentPage: event.target.value});
+    onSelect(event) {
+        this.handleStateResultObject({ currentPage: event.target.value });
 
     }
     render() {
