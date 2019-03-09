@@ -26,11 +26,11 @@ class AppCoast extends Component {
     render() {
         const data = this.state.dataResult;
         const dataHeader = this.state.dataResult[0] || {};
-        const {dataResult, error, isLoaded} = this.state;
-        
+        const { dataResult, error, isLoaded } = this.state;
+
         return (
             <React.Fragment>
-                <CoastTextareaUrl stateChangeResult={this.handleStateResult} urlData={urlControlActionGetCoastAsync}/>
+                <CoastTextareaUrl stateChangeResult={this.handleStateResult} urlData={urlControlActionGetCoastAsync} />
                 <div className="card"><p onClick={(e) => this.onDetails(e)}>+</p>
                     <table className="striped highlight responsive-table hide" data-src={this.props.name}>
                         <thead>
@@ -51,15 +51,25 @@ class AppCoast extends Component {
                         </thead>
                         <tbody>
                             {
-                                Array.from(data).map((currentValues, indexes) => {
+                                Array.from(data).map((item, indexes) => {
                                     return (
                                         <tr key={indexes}>
                                             {
-                                                Object.keys(currentValues).map((currentValue, index) =>
-                                                    (<td key={index}>
-                                                        {currentValues[currentValue]}
-                                                    </td>)
-                                                )
+                                                Object.keys(item).map((el, i) => {
+                                                    if (el.toLowerCase() === "id") {
+                                                        return (<th key={i} name={`ID${item.id}`}>
+                                                            {item[el]}
+                                                        </th>);
+                                                    } else if (el.toLowerCase() === "name") {
+                                                        return (<td key={i}>
+                                                            <a href={item["url"]}>{item[el]}</a>
+                                                        </td>);
+                                                    } else {
+                                                        return (<td key={i}>
+                                                            {item[el]}
+                                                        </td>);
+                                                    }
+                                                })
                                             }
                                         </tr>
                                     );

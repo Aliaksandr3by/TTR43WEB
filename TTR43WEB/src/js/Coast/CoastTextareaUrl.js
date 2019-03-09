@@ -25,6 +25,30 @@ class CoastTextareaUrl extends Component {
     handleChange(event) {
         this.setState({ "textarea": event.target.value });
     }
+    
+    async getDataTable() {
+        try {
+            const response = await fetch(urlControlActionGetAllItemsUrls, {
+                method: "POST", // *GET, POST, PUT, DELETE, etc.
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+
+                }),
+            });
+            const json = await response.json();
+            this.setState({textarea: json.description});
+        } catch (error) {
+            this.setState({
+                isLoaded: true,
+                error
+            });
+            console.error(error);
+        }
+    }
+
+
     async getData(e) {
         //изменяет исходное состояние
         let dataTmp = (el = this.state.textarea) => {
@@ -64,32 +88,39 @@ class CoastTextareaUrl extends Component {
                             html: `${json.description.name} добавлен в базу данных`,
                             classes: "rounded"
                         }
-            );
+                    );
+                }
             }
+        } catch (error) {
+            console.error(error);
         }
-} catch(error) {
-        console.error(error);
     }
-}
-render() {
-    return (
-        <div>
-            <textarea
-                onChange={this.handleChange}
-                //onBlur={(e) => this.getData(e)}
-                cols="40"
-                rows="7"
-                value={this.state.textarea}
-            />
-            <button
-                onClick={(e) => this.getData(e)}
-                className="btn waves-effect waves-light"
-                type="button"
-                name="action">Get<i className="material-icons right">send</i>
-            </button>
-        </div>
-    );
-}
+    render() {
+        return (
+            <div>
+                <button
+                    onClick={(e) => this.getDataTable(e)}
+                    className="btn waves-effect waves-light"
+                    type="button"
+                    name="action">Получить данные<i className="material-icons left">cloud</i>
+                </button>
+                <div>
+                    <textarea
+                        onChange={this.handleChange}
+                        cols="40"
+                        rows="7"
+                        value={this.state.textarea}
+                    />
+                </div>
+                <button
+                    onClick={(e) => this.getData(e)}
+                    className="btn waves-effect waves-light"
+                    type="button"
+                    name="action">Отправить<i className="material-icons right">send</i>
+                </button>
+            </div>
+        );
+    }
 }
 
 export default CoastTextareaUrl;

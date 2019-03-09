@@ -133,8 +133,6 @@ namespace TTR43WEB.Models.Gipermall
                 {
                     ///"Название"
                     _productNew.Name = await Task.Run(() => GetElement(url, "div.breadcrumbs span"));
-                    ///"Название"
-                    _productNew.ProductId = await Task.Run(() => GetElementAttr(url, "div.product_card a[data-product-id]"));
                     ///"Адрес"
                     _productNew.Url = url;
                     ///"Время"
@@ -160,7 +158,7 @@ namespace TTR43WEB.Models.Gipermall
 
                     _productNew.PriceOneLiter = ReplaceHelper(keyValuePairs, "Цена за 1 л:", (e) => decimal.Parse(e, CultureInfo.InvariantCulture));
 
-                    if (!products.Any<Product>(e => e.ProductId == _productNew.ProductId && e.Price == _productNew.Price && e.PriceWithoutDiscount == _productNew.PriceWithoutDiscount))
+                    if (!products.Any<Product>(e => e.MarkingGoods == _productNew.MarkingGoods && e.Price == _productNew.Price && e.PriceWithoutDiscount == _productNew.PriceWithoutDiscount))
                     {
                         db.Products.Add(_productNew);
                         db.SaveChanges();

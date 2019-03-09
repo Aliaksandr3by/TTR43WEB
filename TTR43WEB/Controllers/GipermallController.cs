@@ -60,7 +60,7 @@ namespace TTR43WEB.Controllers
 
             int productPage = _getDataTable.productPage >= totalPages ? totalPages : _getDataTable.productPage;
 
-            Func<Product, int> fn2 = e => (e.Id);
+            Func<Product, DateTime?> fn2 = e => e.Date;
 
             int countProducts = data.Count<Product>();
 
@@ -68,7 +68,7 @@ namespace TTR43WEB.Controllers
             Array.Sort(valueDefault);
 
             var result = data
-                .OrderBy(fn2)
+                .OrderByDescending(fn2)
                 .Skip((productPage - 1) * pageSize)
                 .Take((new int[] { pageSize, countProducts }).Min())
                 .AsQueryable<Product>();
@@ -90,6 +90,26 @@ namespace TTR43WEB.Controllers
         [HttpPost]
         [ContentTypeJson]
         [AccessControlAllow]
+        public async Task<IActionResult> AllItemsUrls()
+        {
+            var data = gipermollTableData.Products;
+
+            var description = from b in data
+                      orderby b.Url descending
+                      select b.Url;
+
+            var result = Json(new
+            {
+                description,
+                isLoaded = true
+            });
+
+            return result;
+        }
+
+        [HttpPost]
+        [ContentTypeJson]
+        [AccessControlAllow]
         public async Task<IActionResult> GetCoastAsync([FromBody]JObject idGoods)
         {
             DataSend dataSendObj = idGoods.ToObject<DataSend>();
@@ -100,7 +120,7 @@ namespace TTR43WEB.Controllers
             var description = new
             {
                 _description.Id,
-                _description.ProductId,
+                _description.MarkingGoods,
                 _description.Url,
                 _description.Name,
                 _description.Price,

@@ -17,9 +17,6 @@ namespace TTR43WEB.Models.Gipermall
         [Display(Name = "Id")]
         public int Id { get; set; }
 
-        [Display(Name = "Product Id")]
-        public int? ProductId { get; set; }
-
         /// <summary>
         /// "Время"
         /// </summary>
