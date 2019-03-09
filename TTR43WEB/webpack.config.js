@@ -120,6 +120,12 @@ module.exports = (env, argv) => {
             ],
         },
         plugins: [
+            // new webpack.ProvidePlugin({
+            //     React: "react",
+            //     ReactDOM: "react-dom",
+            //     PropTypes: "prop-types",
+            //     M: "materialize-css"
+            // }),
             new webpack.SourceMapDevToolPlugin({
                 filename: "[file].map",
                 lineToLine: devMode ? false : true,
@@ -128,7 +134,7 @@ module.exports = (env, argv) => {
             new WebpackMd5Hash(),
             new CleanWebpackPlugin({
                 cleanOnceBeforeBuildPatterns: ["**/*", "!**/*.js", "!**/*.css"],
-                dry: false,
+                dry: true,
                 verbose: true,
                 cleanStaleWebpackAssets: false,
             }),

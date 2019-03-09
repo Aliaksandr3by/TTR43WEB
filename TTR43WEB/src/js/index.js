@@ -5,13 +5,10 @@ import React from "react";
 import ReactDOM from "react-dom";
 import M from "materialize-css";
 import "@babel/polyfill";
-
-import { AjaxPOSTAsync, createElementWithAttr, genTable } from "./utils.js";
 import "../scss/index.scss";
 
 import CreateTableAll from "./Components/TableAll";
 import AppCoast from "./Coast/AppCoast";
-import Pagination from "./Coast/Pagination";
 import ProductInfo from "./Coast/ProductInfo";
 
 const rootElement = document.getElementById("react-container") || document.querySelector("body");
@@ -25,14 +22,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const reactContainer = document.getElementById("react-container");
     if (reactContainer) {
-        AjaxPOSTAsync(urlControlActionGetAllTable, {}, "POST").then((datum) => {
-            ReactDOM.render(
-                <CreateTableAll dataContex={datum} />,
-                reactContainer
-            );
-        }).catch((error) => {
+        try {
+            const response = async () => {
+                const response = await fetch(urlControlActionGetAllTable, {
+                    method: "POST", // *GET, POST, PUT, DELETE, etc.
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ "dataSend": "" }),
+                });
+                const result = await response.json();
+                ReactDOM.render(
+                    <CreateTableAll dataContex={result} />,
+                    reactContainer
+                );
+            };
+            response();
+        } catch (error) {
             console.error(error);
-        });
+        }
     }
 
     const coastContainer = document.getElementById("coast-container");
@@ -43,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
         );
     }
 
-    
+
     const tableContainer = document.getElementById("table-container");
     if (tableContainer) {
         ReactDOM.render(
@@ -52,14 +60,6 @@ document.addEventListener("DOMContentLoaded", () => {
         );
     }
 
-    const paginationContainer = document.getElementById("pagination-container");
-    if (paginationContainer) {
-
-        ReactDOM.render(
-            <Pagination />,
-            paginationContainer
-        );
-    }
 });
 
 const getJade = () => {
@@ -69,6 +69,15 @@ const getJade = () => {
         return item.getAttribute("src");
     });
     document.write(`${a2.join("<br>")}`);
+
+};
+
+const tttt = () => {
+    let a = Array.from(document.querySelectorAll("a.to_favorite.fa.fa-heart.in_favorites")).map(e => e.getAttribute("data-product-id"));
+    Array.from(a).map(e => {
+        document.getElementsByTagName("body")[0].innerHTML += `${e.replace(/,/g, "")}<br>`;
+    });
+    
 };
 
 // document.addEventListener("DOMContentLoaded", () => {

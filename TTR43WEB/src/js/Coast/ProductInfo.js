@@ -1,69 +1,58 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
-import CreateSelect from "./Select";
+import Pagination from "./Pagination";
 
 class ProductInfo extends Component {
     static propTypes = {
     };
+    _replacer(item) {
+        return item.replace(/([A-Z])/g, " $1").replace(/^./,
+            (str) => {
+                return str.toUpperCase();
+            });
+    }
     constructor(props) {
         super(props);
         this.state = {
             error: null,
             isLoaded: false,
             items: [],
-            pageSize: 10,
-            productPage: 1,
+            pageSize: window.localStorage.getItem("pageSize") || 10,
+            productPage: window.localStorage.getItem("productPage") || 1,
         };
-        this.onSelect = this.onSelect.bind(this);
     }
-    componentDidMount() {
-        const data = {
-            "pageSize": this.state.pageSize,
-            "productPage": this.state.productPage
-        };
-        const init = {
-            method: "POST", // *GET, POST, PUT, DELETE, etc.
-            mode: "cors", // no-cors, cors, *same-origin
-            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: "same-origin", // include, *same-origin, omit
-            headers: {
-                "Content-Type": "application/json",
-                // "Content-Type": "application/x-www-form-urlencoded",
-            },
-            redirect: "follow", // manual, *follow, error
-            referrer: "no-referrer", // no-referrer, *client
-            body: JSON.stringify(data), // body data type must match "Content-Type" header
-        };
-        fetch(urlControlActionGetTable, init)
-            .then(
-                res => res.json()
-            )
-            .then(
-                (result) => {
-                    this.setState(result);
+    async getDataTable({ pageSize, productPage }) {
+        try {
+            const response = await fetch(urlControlActionGetTable, {
+                method: "POST", // *GET, POST, PUT, DELETE, etc.
+                headers: {
+                    "Content-Type": "application/json",
                 },
-                (error) => {
-                    this.setState({
-                        isLoaded: true,
-                        error
-                    });
-                    console.error(error);
-                }
-            );
+                body: JSON.stringify({
+                    "pageSize": pageSize,
+                    "productPage": productPage,
+                }),
+            });
+            const json = await response.json();
+            return json;
+        } catch (error) {
+            this.setState({
+                isLoaded: true,
+                error
+            });
+            console.error(error);
+        }
     }
-    handleStateResultObject = (object) => {
+    async componentDidMount() {
+        const tmp = await this.getDataTable(this.state);
+        this.setState(tmp);
+    }
+    handleStateResultObject = async (object) => {
         this.setState((state, props) => {
             return Object.assign(state, object);
         });
-    }
-    onSelect(event) {
-        this.handleStateResultObject({ currentPage: event.target.value });
-    }
-    _replacer(item) {
-        return item.replace(/([A-Z])/g, " $1").replace(/^./,
-            (str) => {
-                return str.toUpperCase();
-            });
+        const tmp = await this.getDataTable(object);
+        this.setState(tmp);
     }
     render() {
         const { error, isLoaded, items } = this.state;
@@ -112,6 +101,10 @@ class ProductInfo extends Component {
                             }
                         </tbody>
                     </table>
+                    <Pagination
+                        state={this.state}
+                        handleStateResultObject={this.handleStateResultObject}
+                    />,
                 </React.Fragment>
             );
         } else if (items.length === 0) {

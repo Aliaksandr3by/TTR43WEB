@@ -48,20 +48,35 @@ namespace TTR43WEB.Controllers
         [AccessControlAllow]
         public IActionResult Table([FromBody]GetDataTable getDataTable)
         {
-            GetDataTable _getDataTable = getDataTable;
             var data = gipermollTableData.Products;
+
+            GetDataTable _getDataTable = getDataTable;
+
+            int pageSize = _getDataTable.pageSize;
+
+            int totalItems = data.Count<Product>();
+
+            int totalPages = (int)Math.Ceiling((decimal)totalItems / pageSize);
+
+            int productPage = _getDataTable.productPage >= totalPages ? totalPages : _getDataTable.productPage;
+
             Func<Product, int> fn2 = e => (e.Id);
+
             int countProducts = data.Count<Product>();
+
             var result = data
                 .OrderBy(fn2)
-                .Skip((_getDataTable.productPage - 1) * _getDataTable.pageSize)
-                .Take((new int[] { _getDataTable.pageSize, countProducts }).Min())
+                .Skip((productPage - 1) * pageSize)
+                .Take((new int[] { pageSize, countProducts }).Min())
                 .AsQueryable<Product>();
 
             var ProductInfo = Json(new
             {
                 items = result,
                 isLoaded = true,
+                productPage,
+                totalPages,
+                pageSize
             });
 
             return ProductInfo;
@@ -78,13 +93,14 @@ namespace TTR43WEB.Controllers
                 var data = gipermollTableData.Products;
                 int totalItems = data.Count<Product>();
                 int totalPages = (int)Math.Ceiling((decimal)totalItems / _pageSize);
-
+                var valueDefault = new int[] { (new int[] { 200, totalItems }).Min(), 3, 5, 7, 10, 15, 20, 25, 30, 50, 100, 150 };
+                Array.Sort(valueDefault);
                 var result = Json(new
                 {
                     totalItems,
                     totalPages,
                     pageSize = _pageSize,
-                    valueDefault = new int[] { totalItems, 3, 5, 7, 10, 15, 20, 25, 30, 50, 100, 150  }
+                    valueDefault
                 });
 
                 return result;

@@ -26,6 +26,8 @@ class AppCoast extends Component {
     render() {
         const data = this.state.dataResult;
         const dataHeader = this.state.dataResult[0] || {};
+        const {dataResult, error, isLoaded} = this.state;
+        
         return (
             <React.Fragment>
                 <CoastTextareaUrl stateChangeResult={this.handleStateResult} urlData={urlControlActionGetCoastAsync}/>

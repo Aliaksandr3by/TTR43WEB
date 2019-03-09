@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
+import M from "materialize-css";
 
 class CoastTextareaUrl extends Component {
     static propTypes = {
@@ -57,30 +58,38 @@ class CoastTextareaUrl extends Component {
                 });
                 const json = await response.json();
                 this.props.stateChangeResult(json.description);
+                if (json.description.id !== 0) {
+                    M.toast(
+                        {
+                            html: `${json.description.name} добавлен в базу данных`,
+                            classes: "rounded"
+                        }
+            );
             }
-        } catch (error) {
-            console.error(error);
         }
+} catch(error) {
+        console.error(error);
     }
-    render() {
-        return (
-            <div>
-                <textarea
-                    onChange={this.handleChange}
-                    //onBlur={(e) => this.getData(e)}
-                    cols="40"
-                    rows="7"
-                    value={this.state.textarea}
-                />
-                <button
-                    onClick={(e) => this.getData(e)}
-                    className="btn waves-effect waves-light"
-                    type="button"
-                    name="action">Get<i className="material-icons right">send</i>
-                </button>
-            </div>
-        );
-    }
+}
+render() {
+    return (
+        <div>
+            <textarea
+                onChange={this.handleChange}
+                //onBlur={(e) => this.getData(e)}
+                cols="40"
+                rows="7"
+                value={this.state.textarea}
+            />
+            <button
+                onClick={(e) => this.getData(e)}
+                className="btn waves-effect waves-light"
+                type="button"
+                name="action">Get<i className="material-icons right">send</i>
+            </button>
+        </div>
+    );
+}
 }
 
 export default CoastTextareaUrl;
