@@ -64,6 +64,9 @@ namespace TTR43WEB.Controllers
 
             int countProducts = data.Count<Product>();
 
+            var valueDefault = new int[] { (new int[] { 200, totalItems }).Min(), 3, 5, 7, 10, 15, 20, 25, 30, 50, 100, 150 };
+            Array.Sort(valueDefault);
+
             var result = data
                 .OrderBy(fn2)
                 .Skip((productPage - 1) * pageSize)
@@ -76,39 +79,12 @@ namespace TTR43WEB.Controllers
                 isLoaded = true,
                 productPage,
                 totalPages,
-                pageSize
+                pageSize,
+                valueDefault,
+                totalItems
             });
 
             return ProductInfo;
-        }
-
-        [HttpPost]
-        [ContentTypeJson]
-        [AccessControlAllow]
-        public IActionResult Pagination([FromBody]JObject pageSize)
-        {
-            try
-            {
-                var _pageSize = pageSize.ToObject<PageSize>().pageSize;
-                var data = gipermollTableData.Products;
-                int totalItems = data.Count<Product>();
-                int totalPages = (int)Math.Ceiling((decimal)totalItems / _pageSize);
-                var valueDefault = new int[] { (new int[] { 200, totalItems }).Min(), 3, 5, 7, 10, 15, 20, 25, 30, 50, 100, 150 };
-                Array.Sort(valueDefault);
-                var result = Json(new
-                {
-                    totalItems,
-                    totalPages,
-                    pageSize = _pageSize,
-                    valueDefault
-                });
-
-                return result;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
         }
 
         [HttpPost]

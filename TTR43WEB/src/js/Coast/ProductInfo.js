@@ -19,6 +19,9 @@ class ProductInfo extends Component {
             items: [],
             pageSize: window.localStorage.getItem("pageSize") || 10,
             productPage: window.localStorage.getItem("productPage") || 1,
+            totalItems: 0,
+            totalPages: 0,
+            valueDefault: []
         };
     }
     async getDataTable({ pageSize, productPage }) {
@@ -81,7 +84,7 @@ class ProductInfo extends Component {
                                             {
                                                 Object.keys(item).map((el, i) => {
                                                     if (el.toLowerCase() === "id") {
-                                                        return (<th key={i}>
+                                                        return (<th key={i} name={`ID${item.id}`}>
                                                             {item[el]}
                                                         </th>);
                                                     } else if (el.toLowerCase() === "name") {

@@ -76,9 +76,7 @@ namespace TTR43WEB
 
                 routes.MapRoute(name: "index",template: "{controller=Gipermall}/{action=Index}");
 
-                routes.MapRoute(name: "table",template: "{controller=Gipermall}/{action=Table}/Page{productPage:int}/Size{pageSize:int}");
-
-                routes.MapRoute(name: "pagination",template: "{controller=Gipermall}/{action=Pagination}");
+                routes.MapRoute(name: "table",template: "{controller=Gipermall}/{action=Table}/{id?}");
 
                 routes.MapRoute(name: "getCoastAsync", template: "{controller=Gipermall}/{action=GetCoastAsync}/{id?}");
 

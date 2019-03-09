@@ -4,7 +4,7 @@ import React from "react";
 
 export const PageSizeSelector = props => {
     return (
-        <select className="browser-default" ref={props.selectRef} value={props.pageSize} onChange={props.onChange}>
+        <select className="browser-default" ref={props.selectRef} value={props.pageSize} onChange={props.onChangePageSize}>
             {
                 props.valueDefault.map((item, key) => {
                     return (
@@ -17,7 +17,7 @@ export const PageSizeSelector = props => {
 };
 
 PageSizeSelector.propTypes = {
+    onChangePageSize: PropTypes.func.isRequired,
     valueDefault: PropTypes.array.isRequired,
-    onChange: PropTypes.func.isRequired,
     pageSize: PropTypes.number.isRequired,
 };
