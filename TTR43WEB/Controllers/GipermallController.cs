@@ -69,7 +69,16 @@ namespace TTR43WEB.Controllers
                 .OrderByDescending(fn2)
                 .Skip((productPage - 1) * pageSize)
                 .Take((new int[] { pageSize, countProducts }).Min())
-                .AsQueryable<Product>();
+                .Select(e => new {
+                    e.Id,
+                    e.Url,
+                    e.Name,
+                    e.MarkingGoods,
+                    e.Date,
+                    e.Price,
+                    e.PriceWithoutDiscount
+                });
+            //.AsQueryable<Product>();
 
             var ProductInfo = Json(new
             {
@@ -92,9 +101,7 @@ namespace TTR43WEB.Controllers
         {
             var data = gipermollTableData.Products;
 
-            var description = from b in data
-                      orderby b.Url descending
-                      select b.Url;
+            var description = from b in data orderby b.Url descending select b.Url;
 
             var result = Json(new
             {

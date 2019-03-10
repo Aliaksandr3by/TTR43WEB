@@ -7,7 +7,6 @@ import M from "materialize-css";
 import "@babel/polyfill";
 import "../scss/index.scss";
 
-import CreateTableAll from "./Components/TableAll";
 import AppCoast from "./Coast/AppCoast";
 import ProductInfo from "./Coast/ProductInfo";
 
@@ -20,29 +19,6 @@ document.addEventListener("DOMContentLoaded", () => {
     M.FormSelect.init(document.querySelectorAll("select"), {});
     M.Sidenav.init(document.querySelectorAll(".sidenav"), {});
 
-    const reactContainer = document.getElementById("react-container");
-    if (reactContainer) {
-        try {
-            const response = async () => {
-                const response = await fetch(urlControlActionGetAllTable, {
-                    method: "POST", // *GET, POST, PUT, DELETE, etc.
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ "dataSend": "" }),
-                });
-                const result = await response.json();
-                ReactDOM.render(
-                    <CreateTableAll dataContex={result} />,
-                    reactContainer
-                );
-            };
-            response();
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
     const coastContainer = document.getElementById("coast-container");
     if (coastContainer) {
         ReactDOM.render(
@@ -52,13 +28,19 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    const tableContainer = document.getElementById("table-container");
+    const tableContainer = document.getElementById("ProductInfo-container");
     if (tableContainer) {
         ReactDOM.render(
             <ProductInfo name="table" />,
             tableContainer
         );
+        M.textareaAutoResize(document.querySelector("#textareaURLstorige"));
     }
+
+    window.addEventListener("keydown", e => {
+        //console.log(e.which);
+        //console.log(String.fromCharCode(e.which));
+    });
 
 });
 
@@ -77,7 +59,7 @@ const s = () => {
     Array.from(a).map(e => {
         document.getElementsByTagName("body")[0].innerHTML += `https://e-dostavka.by/catalog/item_${e.replace(/,/g, "")}.html<br>`;
     });
-    
+
 };
 
 // document.addEventListener("DOMContentLoaded", () => {

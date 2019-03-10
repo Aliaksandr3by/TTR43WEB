@@ -30,8 +30,13 @@ class AppCoast extends Component {
 
         return (
             <React.Fragment>
-                <CoastTextareaUrl stateChangeResult={this.handleStateResult} urlData={urlControlActionGetCoastAsync} />
-                <div className="card"><p onClick={(e) => this.onDetails(e)}>+</p>
+                <div className="input-field col s12">
+                    <CoastTextareaUrl
+                        stateChangeResult={this.handleStateResult}
+                        urlData={urlControlActionGetCoastAsync}
+                    />
+                </div>
+                <div className="col s12"><p onClick={(e) => this.onDetails(e)}>+</p>
                     <table className="striped highlight responsive-table hide" data-src={this.props.name}>
                         <thead>
                             <tr>

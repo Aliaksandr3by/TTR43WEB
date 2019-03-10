@@ -27,7 +27,7 @@ class CoastTextareaUrl extends Component {
         this.setState({ "textarea": data });
         window.localStorage.setItem("dataTmp", JSON.stringify(data));
     }
-    
+
     async getDataTable() {
         try {
             const response = await fetch(urlControlActionGetAllItemsUrls, {
@@ -40,7 +40,7 @@ class CoastTextareaUrl extends Component {
                 }),
             });
             const json = await response.json();
-            this.setState({textarea: json.description});
+            this.setState({ textarea: json.description });
         } catch (error) {
             this.setState({
                 isLoaded: true,
@@ -100,20 +100,22 @@ class CoastTextareaUrl extends Component {
     }
     render() {
         return (
-            <div>
+            <div className="row">
                 <button
                     onClick={(e) => this.getDataTable(e)}
                     className="btn waves-effect waves-light"
                     type="button"
                     name="action">Получить данные<i className="material-icons left">cloud</i>
                 </button>
-                <div>
+                <div className="input-field col s12">
                     <textarea
+                        id="textareaURLstorige"
+                        className="materialize-textarea"
+                        placeholder="URL"
                         onChange={this.handleChange}
-                        cols="40"
-                        rows="7"
                         value={this.state.textarea}
                     />
+                    <label htmlFor="textareaURLstorige">Textarea</label>
                 </div>
                 <button
                     onClick={(e) => this.getData(e)}

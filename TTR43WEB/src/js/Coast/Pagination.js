@@ -5,6 +5,8 @@ import { PageList } from "./PageList";
 
 class Pagination extends Component {
     static propTypes = {
+        state: PropTypes.object.isRequired,
+        handleStateResultObject: PropTypes.func.isRequired,
     };
     constructor(props) {
         super(props);
@@ -32,14 +34,17 @@ class Pagination extends Component {
             productPage: productPage,
         });
     }
-    onSelectPage(event) { //номер страницы
-        const productPage = Number(event.target.textContent);
-        const pageSize = Number(this.props.state.pageSize);
-        window.localStorage.setItem("productPage", productPage);
-        this.props.handleStateResultObject({
-            pageSize: pageSize,
-            productPage: productPage,
-        });
+    onSelectPage(event, page) { //номер страницы
+        let productPage = Number(page);
+        let keyDown = event.keyIdentifier;
+        if (page > 0 && page < this.props.state.totalPages + 1) {
+            const pageSize = Number(this.props.state.pageSize);
+            window.localStorage.setItem("productPage", productPage);
+            this.props.handleStateResultObject({
+                pageSize: pageSize,
+                productPage: productPage,
+            });
+        }
     }
     render() {
         const { valueDefault, pageSize, totalPages, productPage } = this.props.state;

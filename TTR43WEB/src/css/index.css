@@ -21,12 +21,10 @@ details {
     background-color: inherit;
 }
 
-.hide {
-    display: none;
-}
-
-.show {
-    display: block;
+ul.pagination li:hover {
+    background-color: teal;
+    color: white;
+    font-size: 1.6rem;
 }
 
 

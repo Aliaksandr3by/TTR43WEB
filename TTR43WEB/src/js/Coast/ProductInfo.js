@@ -11,14 +11,33 @@ class ProductInfo extends Component {
                 return str.toUpperCase();
             });
     }
+    _dateConverter(item) {
+        try {
+            const dateC = Date.parse(item);
+            const dateJS = new Date(dateC);
+            const result = dateJS.toLocaleString("RU-be");
+            return result;
+        } catch (error) {
+            return item;
+        }
+    }
+    _moneyConverter(item) {
+        try {
+            const money = item;
+            const result = money.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,");
+            return `${result} р.`;
+        } catch (error) {
+            return item;
+        }
+    }
     constructor(props) {
         super(props);
         this.state = {
             error: null,
             isLoaded: false,
             items: [],
-            pageSize: window.localStorage.getItem("pageSize") || 10,
-            productPage: window.localStorage.getItem("productPage") || 1,
+            pageSize: Number(window.localStorage.getItem("pageSize")) || 5,
+            productPage: Number(window.localStorage.getItem("productPage")) || 1,
             totalItems: 0,
             totalPages: 0,
             valueDefault: []
@@ -67,10 +86,14 @@ class ProductInfo extends Component {
                         <thead>
                             <tr>
                                 {
-                                    Object.keys(items[0]).map((item, i) => {
-                                        return (<th key={i}>
-                                            {this._replacer(item)}
-                                        </th>);
+                                    Object.keys(items[0]).map((el, i) => {
+                                        if (el.toLowerCase() === "url") {
+                                            return (null);
+                                        } else {
+                                            return (<th key={i}>
+                                                {this._replacer(el)}
+                                            </th>);
+                                        }
                                     }
                                     )
                                 }
@@ -91,6 +114,20 @@ class ProductInfo extends Component {
                                                         return (<td key={i}>
                                                             <a href={item["url"]}>{item[el]}</a>
                                                         </td>);
+                                                    } else if (el.toLowerCase() === "date") {
+                                                        return (<td key={i}>
+                                                            {this._dateConverter(item[el])}
+                                                        </td>);
+                                                    } else if (el.toLowerCase() === "price") {
+                                                        return (<td key={i} title={item[el]}>
+                                                            {this._moneyConverter(item[el])}
+                                                        </td>);
+                                                    } else if (el.toLowerCase() === "pricewithoutdiscount") {
+                                                        return (<td key={i} title={item[el]}>
+                                                            {this._moneyConverter(item[el])}
+                                                        </td>);
+                                                    } else if (el.toLowerCase() === "url") {
+                                                        return (null);
                                                     } else {
                                                         return (<td key={i}>
                                                             {item[el]}

@@ -6,9 +6,9 @@ export const PageSizeSelector = props => {
     return (
         <select className="browser-default" ref={props.selectRef} value={props.pageSize} onChange={props.onChangePageSize}>
             {
-                props.valueDefault.map((item, key) => {
+                props.valueDefault.map((item, i) => {
                     return (
-                        <option key={key} value={item}>{item}</option>
+                        <option key={i} value={item}>{item}</option>
                     );
                 })
             }
