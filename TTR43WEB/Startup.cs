@@ -10,8 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using TTR43WEB.Data;
-using TTR43WEB.Models.Attachment;
 using TTR43WEB.Models.Gipermall;
 
 namespace TTR43WEB
@@ -36,12 +34,10 @@ namespace TTR43WEB
             });
 
 
-            services.AddDbContext<ATTACHMENTMDFContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
             services.AddDbContext<ContextGipermall>(options => options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnectionProduct"]));
 
             services.AddTransient<Product, Product>();
             services.AddScoped<IGipermollTableData, GipermollTable>();
-            services.AddScoped<ITable, EFTable>();
             //services.AddSingleton<ITable, EFTable>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
@@ -70,10 +66,6 @@ namespace TTR43WEB
 
             app.UseMvc(routes =>
             {
-                routes.MapRoute(name: "default", template: "{controller=Home}/{action=Index}/{id?}");
-
-                routes.MapRoute(name: "getAllTable", template: "{controller=Home}/{action=GetAllTable}/{id?}");
-
                 routes.MapRoute(name: "index",template: "{controller=Gipermall}/{action=Index}");
 
                 routes.MapRoute(name: "table",template: "{controller=Gipermall}/{action=Table}/{id?}");

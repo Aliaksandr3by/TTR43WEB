@@ -23,7 +23,9 @@ class CoastTextareaUrl extends Component {
         ];
     }
     handleChange(event) {
-        this.setState({ "textarea": event.target.value });
+        const data = event.target.value;
+        this.setState({ "textarea": data });
+        window.localStorage.setItem("dataTmp", JSON.stringify(data));
     }
     
     async getDataTable() {
@@ -89,6 +91,7 @@ class CoastTextareaUrl extends Component {
                             classes: "rounded"
                         }
                     );
+                    console.log(json.description.name);
                 }
             }
         } catch (error) {

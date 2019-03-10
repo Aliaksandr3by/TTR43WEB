@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Primitives;
-using TTR43WEB.Data;
 using TTR43WEB.Filters;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
@@ -14,7 +13,6 @@ using Newtonsoft.Json.Linq;
 using AngleSharp;
 using Newtonsoft;
 using TTR43WEB.Models.Gipermall;
-using TTR43WEB.Models.Attachment;
 
 namespace TTR43WEB.Controllers
 {

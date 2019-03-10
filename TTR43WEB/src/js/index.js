@@ -72,10 +72,10 @@ const getJade = () => {
 
 };
 
-const tttt = () => {
-    let a = Array.from(document.querySelectorAll("a.to_favorite.fa.fa-heart.in_favorites")).map(e => e.getAttribute("data-product-id"));
+const s = () => {
+    let a = Array.from(document.querySelectorAll("a.to_favorite.fa.fa-heart")).map(e => e.getAttribute("data-product-id"));
     Array.from(a).map(e => {
-        document.getElementsByTagName("body")[0].innerHTML += `${e.replace(/,/g, "")}<br>`;
+        document.getElementsByTagName("body")[0].innerHTML += `https://e-dostavka.by/catalog/item_${e.replace(/,/g, "")}.html<br>`;
     });
     
 };
