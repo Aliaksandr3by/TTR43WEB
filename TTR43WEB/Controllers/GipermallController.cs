@@ -13,10 +13,16 @@ using Newtonsoft.Json.Linq;
 using AngleSharp;
 using Newtonsoft;
 using TTR43WEB.Models.Gipermall;
+using System.Net;
 
 namespace TTR43WEB.Controllers
 {
 
+    public class ElementURIData
+    {
+        private string elementURI;
+        public string ElementURI { get => elementURI; set => elementURI = value; }
+    }
     public class PageSize
     {
         public int pageSize { get; set; }
@@ -39,6 +45,37 @@ namespace TTR43WEB.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+
+        [HttpOptions]
+        [ContentTypeJson]
+        [AccessControlAllow]
+        [Allow]
+        public IActionResult OptionsURIinBase([FromBody]ElementURIData ElementURI)
+        {
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(ElementURI.ElementURI);
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                var statusCode = (int)response.StatusCode;
+
+                var result = Json(new
+                {
+                    statusCode = statusCode,
+                    isLoaded = true,
+                });
+
+                return result;
+            }
+            catch (WebException ex)
+            {
+                var result = Json(new
+                {
+                    isLoaded = false,
+                });
+
+                return result;
+            }
         }
 
         [HttpPost]

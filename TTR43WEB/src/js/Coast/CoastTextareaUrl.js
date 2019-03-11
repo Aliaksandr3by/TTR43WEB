@@ -13,6 +13,7 @@ class CoastTextareaUrl extends Component {
             textarea: this.dataTmp(),
             error: null,
             isLoaded: false,
+            progress: 0,
         };
         this.handleChange = this.handleChange.bind(this);
     }
@@ -50,15 +51,40 @@ class CoastTextareaUrl extends Component {
         }
     }
 
+    getProgress = async (progress, length) => progress += 100 / length;
+
+    OptionsURIinBase = async (url, elURI) => {
+        try {
+            const response = await fetch(url, {
+                method: "OPTIONS", // *GET, POST, PUT, DELETE, etc.
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    "ElementURI": elURI
+                }),
+            });
+            const json = await response.json();
+            console.warn(json);
+            //this.setState({ textarea: json.description });
+        } catch (error) {
+            this.setState({
+                isLoaded: true,
+                error
+            });
+            console.error(error);
+        }
+    };
 
     async getData(e) {
         //изменяет исходное состояние
         let dataTmp = (el = this.state.textarea) => {
             try {
                 if (typeof el === "string") {
-                    return (el.replace(/'|«|»|\\|"/g, "").split(/\s|,|\s,/)).filter((item, i) => {
-                        return item !== "";
-                    });
+                    return (el.replace(/'|«|»|\\|"/g, "")
+                        .split(/\s|,|\s,/))
+                        .map((e, i) => Number(e) ? `https://gipermall.by/catalog/item_${Number(e)}.html` : e)
+                        .filter((item, i) => item !== "");
                 } else if (Array.isArray(el)) {
                     return el;
                 } else {
@@ -75,6 +101,7 @@ class CoastTextareaUrl extends Component {
 
         try {
             for (const iterator of data) {
+                this.OptionsURIinBase(urlControlActionOptionsURIinBase, iterator);
                 const response = await fetch(this.props.urlData, {
                     method: "POST", // *GET, POST, PUT, DELETE, etc.
                     headers: {
@@ -84,6 +111,7 @@ class CoastTextareaUrl extends Component {
                 });
                 const json = await response.json();
                 this.props.stateChangeResult(json.description);
+                this.setState({ progress: await this.getProgress(this.state.progress, data.length) });
                 if (json.description.id !== 0) {
                     M.toast(
                         {
@@ -124,6 +152,9 @@ class CoastTextareaUrl extends Component {
                         onClick={this.handleChange}
                         value={this.state.textarea}
                     />
+                </div>
+                <div className="progress">
+                    <div className="determinate" style={{ width: this.state.progress + "%" }}></div>
                 </div>
             </div>
         );

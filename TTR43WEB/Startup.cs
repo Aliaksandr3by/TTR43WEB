@@ -67,6 +67,7 @@ namespace TTR43WEB
             app.UseMvc(routes =>
             {
                 routes.MapRoute(name: "index",template: "{controller=Gipermall}/{action=Index}");
+                routes.MapRoute(name: null, template: "{controller=Gipermall}/{action=OptionsURIinBase}");
 
                 routes.MapRoute(name: "table",template: "{controller=Gipermall}/{action=Table}/{id?}");
                 routes.MapRoute(name: "tableUrl",template: "{controller=Gipermall}/{action=AllItemsUrls}/{id?}");
