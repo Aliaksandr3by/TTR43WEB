@@ -35,6 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
             tableContainer
         );
         M.textareaAutoResize(document.querySelector("#textareaURLstorige"));
+        M.FormSelect.init(document.querySelectorAll("select"), {});
     }
 
     window.addEventListener("keydown", e => {

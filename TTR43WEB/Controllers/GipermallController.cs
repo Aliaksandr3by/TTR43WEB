@@ -56,20 +56,23 @@ namespace TTR43WEB.Controllers
 
             int totalPages = (int)Math.Ceiling((decimal)totalItems / pageSize);
 
-            int productPage = _getDataTable.productPage >= totalPages ? totalPages : _getDataTable.productPage;
+            int productPage = _getDataTable.productPage > totalPages || _getDataTable.productPage < 0 ? 0 : _getDataTable.productPage;
 
             Func<Product, DateTime?> fn2 = e => e.Date;
 
             int countProducts = data.Count<Product>();
 
-            var valueDefault = new int[] { (new int[] { 200, totalItems }).Min(), 3, 5, 7, 10, 15, 20, 25, 30, 50, 100, 150 };
-            Array.Sort(valueDefault);
+            var valueDefault = from n in new int[] { totalItems, (new int[] { 200, totalItems }).Min(), 10, 15, 25, 30, 50, 75, 100, 150 }
+                               where n <= totalItems && n < 250
+                               orderby n
+                               select n;
 
             var result = data
                 .OrderByDescending(fn2)
-                .Skip((productPage - 1) * pageSize)
+                .Skip(productPage * pageSize)
                 .Take((new int[] { pageSize, countProducts }).Min())
-                .Select(e => new {
+                .Select(e => new
+                {
                     e.Id,
                     e.Url,
                     e.Name,
@@ -101,7 +104,8 @@ namespace TTR43WEB.Controllers
         {
             var data = gipermollTableData.Products;
 
-            var description = from b in data orderby b.Url descending select b.Url;
+            //var description = (from b in data orderby b.Url descending select b.Url).Distinct();
+            var description = data.OrderBy(e => e.Url).Select(e => e.Url).Distinct();
 
             var result = Json(new
             {

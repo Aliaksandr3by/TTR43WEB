@@ -101,28 +101,30 @@ class CoastTextareaUrl extends Component {
     render() {
         return (
             <div className="row">
-                <button
-                    onClick={(e) => this.getDataTable(e)}
-                    className="btn waves-effect waves-light"
-                    type="button"
-                    name="action">Получить данные<i className="material-icons left">cloud</i>
-                </button>
-                <div className="input-field col s12">
+                <div className="col s4">
+                    <button
+                        onClick={(e) => this.getDataTable(e)}
+                        className="btn waves-effect waves-light"
+                        type="button"
+                        name="action">Получить данные<i className="material-icons left">cloud</i>
+                    </button>
+                    <button
+                        onClick={(e) => this.getData(e)}
+                        className="btn waves-effect waves-light"
+                        type="button"
+                        name="action">Отправить<i className="material-icons right">send</i>
+                    </button>
+                </div>
+                <div className="col s8 input-field ">
                     <textarea
                         id="textareaURLstorige"
-                        className="materialize-textarea"
+                        className="browser-default"
                         placeholder="URL"
                         onChange={this.handleChange}
+                        onClick={this.handleChange}
                         value={this.state.textarea}
                     />
-                    <label htmlFor="textareaURLstorige">Textarea</label>
                 </div>
-                <button
-                    onClick={(e) => this.getData(e)}
-                    className="btn waves-effect waves-light"
-                    type="button"
-                    name="action">Отправить<i className="material-icons right">send</i>
-                </button>
             </div>
         );
     }

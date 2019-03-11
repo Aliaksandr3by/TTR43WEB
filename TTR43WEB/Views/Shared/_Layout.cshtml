@@ -20,8 +20,8 @@
     </environment>
 
     <script>
-        const urlControlActionGetCoastAsync = "@Url.Action("GetCoastAsync", "Gipermall")";
         const urlControlActionGetIndex = "@Url.Action("Index", "Gipermall")";
+        const urlControlActionGetCoastAsync = "@Url.Action("GetCoastAsync", "Gipermall")";
         const urlControlActionGetAllItemsUrls = "@Url.Action("AllItemsUrls", "Gipermall")";
         const urlControlActionGetTable = "@Url.Action("Table", "Gipermall")";
     </script>
@@ -29,13 +29,13 @@
 </head>
 <body>
     <div class="container">
-        <header class="row" role="navigation">
+        <header role="navigation">
             <partial name="_GetNavPartial" />
         </header>
-        <main id="main" class="row" role="main">
+        <main id="main" role="main">
             @RenderBody()
         </main>
-        <footer id="footer" class="row" role="status">
+        <footer id="footer" role="status">
             <partial name="_CookieConsentPartial" />
         </footer>
     </div>

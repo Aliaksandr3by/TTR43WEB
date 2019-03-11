@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
+import M from "materialize-css";
 import Pagination from "./Pagination";
 
 class ProductInfo extends Component {
@@ -69,6 +70,36 @@ class ProductInfo extends Component {
         const tmp = await this.getDataTable(this.state);
         this.setState(tmp);
     }
+    async dataUpdate(e) {
+        try {
+            const response = await fetch(urlControlActionGetCoastAsync, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    "idGoods": e.target.getAttribute("data-update-url"),
+                }),
+            });
+            const json = await response.json();
+            if (json.description.id !== 0) {
+                M.toast(
+                    {
+                        html: `${json.description.id} - ${json.description.name} добавлен в базу данных`,
+                        classes: "rounded"
+                    }
+                );
+                console.log(json.description.name);
+            }
+            console.log(json.description);
+        } catch (error) {
+            this.setState({
+                isLoaded: true,
+                error
+            });
+            console.error(error);
+        }
+    }
     handleStateResultObject = async (object) => {
         this.setState((state, props) => {
             return Object.assign(state, object);
@@ -81,16 +112,18 @@ class ProductInfo extends Component {
         if (this.state.isLoaded && items.length !== 0) {
             return (
                 <React.Fragment>
-                    <table className="striped highlight" data-src={this.props.name}>
+                    <table className="col s12 striped highlight" data-src={this.props.name}>
                         <caption><p>{this.props.name}</p></caption>
                         <thead>
                             <tr>
                                 {
                                     Object.keys(items[0]).map((el, i) => {
                                         if (el.toLowerCase() === "url") {
-                                            return (null);
+                                            return (<th key={i} >
+                                                UPDATE
+                                            </th>);
                                         } else {
-                                            return (<th key={i}>
+                                            return (<th key={i} >
                                                 {this._replacer(el)}
                                             </th>);
                                         }
@@ -127,7 +160,14 @@ class ProductInfo extends Component {
                                                             {this._moneyConverter(item[el])}
                                                         </td>);
                                                     } else if (el.toLowerCase() === "url") {
-                                                        return (null);
+                                                        return (<td key={i} >
+                                                            <a
+                                                                className="btn-floating btn-small waves-effect waves-light red"                                                            >
+                                                                <i className="material-icons"
+                                                                    onClick={e => this.dataUpdate(e)}
+                                                                    data-update-url={item[el]}>update</i>
+                                                            </a>
+                                                        </td>);
                                                     } else {
                                                         return (<td key={i}>
                                                             {item[el]}

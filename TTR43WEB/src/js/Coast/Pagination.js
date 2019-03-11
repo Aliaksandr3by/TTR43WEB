@@ -19,10 +19,10 @@ class Pagination extends Component {
     }
 
     async componentDidMount() {
-        console.log(this.selectElement);
+
     }
     async componentDidUpdate() {
-        console.log(this.selectElement);
+ 
     }
 
     onChangePageSize(event) { //селектор размера страниц
@@ -30,26 +30,29 @@ class Pagination extends Component {
         const productPage = Number(this.props.state.productPage);
         window.localStorage.setItem("pageSize", pageSize);
         this.props.handleStateResultObject({
-            pageSize: pageSize,
-            productPage: productPage,
+            "pageSize": pageSize,
+            "productPage": productPage,
         });
     }
     onSelectPage(event, page) { //номер страницы
+        const totalPages = this.props.state.totalPages;
+        const pageSize = Number(this.props.state.pageSize);
         let productPage = Number(page);
-        let keyDown = event.keyIdentifier;
-        if (page > 0 && page < this.props.state.totalPages + 1) {
-            const pageSize = Number(this.props.state.pageSize);
-            window.localStorage.setItem("productPage", productPage);
-            this.props.handleStateResultObject({
-                pageSize: pageSize,
-                productPage: productPage,
-            });
+        if (productPage < 0) {
+            productPage = totalPages - 1;
+        } else if (productPage >= totalPages) {
+            productPage = 0;
         }
+        window.localStorage.setItem("productPage", productPage);
+        this.props.handleStateResultObject({
+            "pageSize": pageSize,
+            "productPage": productPage,
+        });
     }
     render() {
         const { valueDefault, pageSize, totalPages, productPage } = this.props.state;
         return (
-            <React.Fragment>
+            <div>
                 <PageSizeSelector
                     valueDefault={valueDefault}
                     pageSize={Number(pageSize)}
@@ -62,7 +65,7 @@ class Pagination extends Component {
                     totalPages={Number(totalPages)}
                     onSelectPage={this.onSelectPage}
                 />
-            </React.Fragment>
+            </div>
         );
     }
 }
