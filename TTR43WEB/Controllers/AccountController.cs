@@ -5,8 +5,11 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using TTR43WEB.Models.User;
 
 namespace TTR43WEB.Controllers
@@ -14,25 +17,24 @@ namespace TTR43WEB.Controllers
     public class AccountController : Controller
     {
         private readonly UsersContextQueryable db;
+
         public AccountController(UsersContextQueryable context)
         {
             db = context;
         }
-        [HttpGet]
-        public IActionResult Login()
-        {
-            return View();
-        }
+
         [HttpPost]
-        //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login([FromBody]LoginModel model)
+        [AllowAnonymous]
+        //[Consumes("application/x-www-form-urlencoded")]
+        //[Consumes("multipart/form-data; boundary")]
+        //[ValidateAntiForgeryToken] 
+        public async Task<IActionResult> Login([FromBody]LoginModel _model) //[FromBody]LoginModel _model
         {
+            LoginModel model = _model;
+            //LoginModel model = JsonConvert.DeserializeObject<LoginModel>(_model); //[FromForm]string _model
+            //var model = _model.ToObject<LoginModel>(); //[FromForm]JObject _model
             var a = db.GetUserContext();
 
-            foreach (var item in db.Users)
-            {
-
-            }
             if (ModelState.IsValid)
             {
                 User user = await db.Users.FirstOrDefaultAsync(u => u.Login == model.Login && u.Password == model.Password);
@@ -49,6 +51,7 @@ namespace TTR43WEB.Controllers
             }
             return View(model);
         }
+
         [HttpGet]
         public IActionResult Register()
         {

@@ -4,11 +4,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import M from "materialize-css";
-import "@babel/polyfill";
 import "../scss/index.scss";
 
 import App from "./App";
-
 
 const rootElement = document.getElementById("react-container") || document.querySelector("body");
 const mainElement = document.getElementById("main") || document.querySelector("body");
@@ -17,13 +15,14 @@ const footerElement = document.getElementById("footer") || document.querySelecto
 document.addEventListener("DOMContentLoaded", () => {
 
     const rootContainer = document.getElementById("root-container");
+
+    const __RequestVerificationToken = document.querySelector("input[name=__RequestVerificationToken]").value;
+
     if (rootContainer) {
         ReactDOM.render(
-            <App />,
+            <App __RequestVerificationToken={__RequestVerificationToken} />,
             rootContainer
         );
-        
-        M.Sidenav.init(document.querySelectorAll(".sidenav"), {});
     }
 
     window.addEventListener("keydown", e => {

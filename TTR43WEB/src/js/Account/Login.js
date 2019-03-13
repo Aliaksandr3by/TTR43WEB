@@ -5,7 +5,7 @@ import M from "materialize-css";
 
 class Login extends Component {
     static propTypes = {
-
+        // __RequestVerificationToken: PropTypes.string.isRequired(),
     };
     constructor(props) {
         super(props);
@@ -31,12 +31,32 @@ class Login extends Component {
     getDataTable = async (e) => {
         try {
             const { Login, Password } = this.state;
+
+            const data1 = new FormData();
+            data1.append("__RequestVerificationToken", this.props.__RequestVerificationToken);
+            data1.append("Login", Login);
+            data1.append("Password", Password);
+
+            const data = {
+                "__RequestVerificationToken": this.props.__RequestVerificationToken,
+                "Login": Login,
+                "Password": Password,
+            };
+
             const response = await fetch(urlControlActionAccountLogin, {
                 method: "POST", // *GET, POST, PUT, DELETE, etc.
+                mode: "cors", // no-cors, cors, *same-origin
+                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: "same-origin", // include, *same-origin, omit
                 headers: {
+                    "Accept": "application/json, application/xml, text/plain, text/html, *.*",
                     "Content-Type": "application/json",
+                    // "Content-Type": "multipart/form-data; boundary",
+                    // "Content-Type": "application/x-www-form-urlencoded;",
                 },
-                body: JSON.stringify({ "Login": Login, "Password": Password }),
+                redirect: "follow", // manual, *follow, error
+                referrer: "no-referrer", // no-referrer, *client
+                body: JSON.stringify(data), // body data type must match "Content-Type" header
             });
             const json = await response.json();
             //this.setState({ textarea: json.description });
@@ -61,19 +81,20 @@ class Login extends Component {
         if (isLoaded) {
             return (
                 <div className="row">
-                    <form className="col s12">
-                        <div className="input-field col s6">
+                    <div className="col s12" >
+                        <div className="input-field col s5">
                             <input className="validate" type="text" data-role="Login" id="Login" placeholder="Placeholder" value={this.state.Login} onChange={this.handleChange} />
                             <label htmlFor="Login">Введите Email</label>
                         </div>
-                        <div className="input-field col s6">
+                        <div className="input-field col s5">
                             <input className="validate" type="Password" data-role="Password" id="Password" value={this.state.Password} onChange={this.handleChange} />
                             <label htmlFor="Password">Введите пароль</label>
                         </div>
-                        <div className="input-field col s6">
+                        <div className="input-field col s2">
                             <button type="button" className="btn" onClick={(e) => this.getDataTable(e)}>Войти</button>
                         </div>
-                    </form>
+                        <input name="__RequestVerificationToken" type="hidden"></input>
+                    </div>
                 </div>
             );
         } else if (error) {

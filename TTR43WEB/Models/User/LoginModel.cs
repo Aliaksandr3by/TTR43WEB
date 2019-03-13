@@ -14,7 +14,7 @@ namespace TTR43WEB.Models.User
         public string Login { get; set; }
 
         [Required(ErrorMessage = "Не указан пароль")]
-        //[DataType(DataType.Password)]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
     }
 }

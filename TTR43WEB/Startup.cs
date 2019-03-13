@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -35,6 +36,8 @@ namespace TTR43WEB
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+
+            services.AddDataProtection().SetDefaultKeyLifetime(TimeSpan.FromDays(14)); ;
 
             services.AddDbContext<ProductsContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:ConnectionProduct"]));
             services.AddTransient<Product, Product>();

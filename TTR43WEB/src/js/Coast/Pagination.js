@@ -15,7 +15,6 @@ class Pagination extends Component {
         };
         this.onChangePageSize = this.onChangePageSize.bind(this);
         this.onSelectPage = this.onSelectPage.bind(this);
-        this.selectElement;
     }
 
     onChangePageSize(event) { //селектор размера страниц
@@ -49,7 +48,6 @@ class Pagination extends Component {
                 <PageSizeSelector
                     valueDefault={valueDefault}
                     pageSize={Number(pageSize)}
-                    selectRef={el => this.selectElement = el}
                     onChangePageSize={this.onChangePageSize}
                 />
                 <PageList

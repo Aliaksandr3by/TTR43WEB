@@ -1,7 +1,7 @@
 
 import PropTypes from "prop-types";
 import React from "react";
-
+import M from "materialize-css";
 
 export const Navigate = props => {
     return (
