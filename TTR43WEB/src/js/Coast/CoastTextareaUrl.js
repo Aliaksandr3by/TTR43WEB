@@ -10,23 +10,67 @@ class CoastTextareaUrl extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            textarea: this.dataTmp(),
+            textarea: [],
             error: null,
             isLoaded: false,
             progress: 0,
         };
         this.handleChange = this.handleChange.bind(this);
     }
-    dataTmp() {
-        const data = window.localStorage.getItem("dataTmp");
-        return data ? JSON.parse(data) : [
-            "https://gipermall.by/catalog/item_95308.html"
-        ];
+
+    getProgress = async (progress, length) => progress += 100 / length;
+
+    /**
+     * метод заносит и получает данные из LocalStorage.
+     * @param {string} key rлюч переменной;
+     * @param {string} value значение переменной;
+     * @returns {Array} возвращает массив данных или пустой массив;
+     * @returns {boolean} возвращает результат записи;
+     */
+    dataOperatorLocalS = (key, value = null) => {
+        if (key && !value) {
+            return window.localStorage.getItem(key) ? JSON.parse(window.localStorage.getItem(key)) : [];
+        } else if (key && value) {
+            window.localStorage.setItem(key, JSON.stringify(value));
+            return true;
+        } else {
+            return false;
+        }
     }
+
+    OptionsURIinBase = async (url, elURI) => {
+        try {
+            const response = await fetch(url, {
+                method: "OPTIONS", // *GET, POST, PUT, DELETE, etc.
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    "ElementURI": elURI
+                }),
+            });
+            const json = await response.json();
+            console.warn(json);
+        } catch (error) {
+            this.setState({
+                isLoaded: true,
+                error
+            });
+            console.error(error);
+        }
+    };
+
+    componentDidMount() {
+        this.setState({ "textarea": this.dataOperatorLocalS("dataTmp") });
+    }
+
+    async componentDidUpdate() {
+        this.dataOperatorLocalS("dataTmp", this.state.textarea);
+    }
+
     handleChange(event) {
         const data = event.target.value;
         this.setState({ "textarea": data });
-        window.localStorage.setItem("dataTmp", JSON.stringify(data));
     }
 
     async getDataTable() {
@@ -51,57 +95,23 @@ class CoastTextareaUrl extends Component {
         }
     }
 
-    getProgress = async (progress, length) => progress += 100 / length;
-
-    OptionsURIinBase = async (url, elURI) => {
-        try {
-            const response = await fetch(url, {
-                method: "OPTIONS", // *GET, POST, PUT, DELETE, etc.
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    "ElementURI": elURI
-                }),
-            });
-            const json = await response.json();
-            console.warn(json);
-            //this.setState({ textarea: json.description });
-        } catch (error) {
-            this.setState({
-                isLoaded: true,
-                error
-            });
-            console.error(error);
-        }
-    };
+    formatDataURL = ({ textarea }) => {
+        return Array.isArray(textarea)
+            ? textarea
+            : (textarea.replace(/'|«|»|\\|"/g, "")
+                .split(/\s|,|\s,/))
+                .map((e, i) => Number(e) ? `https://gipermall.by/catalog/item_${Number(e)}.html` : e)
+                .filter((item, i) => item !== "");
+    }
 
     async getData(e) {
-        //изменяет исходное состояние
-        let dataTmp = (el = this.state.textarea) => {
-            try {
-                if (typeof el === "string") {
-                    return (el.replace(/'|«|»|\\|"/g, "")
-                        .split(/\s|,|\s,/))
-                        .map((e, i) => Number(e) ? `https://gipermall.by/catalog/item_${Number(e)}.html` : e)
-                        .filter((item, i) => item !== "");
-                } else if (Array.isArray(el)) {
-                    return el;
-                } else {
-                    return;
-                }
-            } catch (error) {
-                return `${typeof el} error`;
-            }
-        };
-
-        const data = dataTmp(this.state.textarea);
-
-        window.localStorage.setItem("dataTmp", JSON.stringify(data));
-
         try {
+            const data = this.formatDataURL(this.state);
+            this.setState({ progress: 0 });
             for (const iterator of data) {
-                this.OptionsURIinBase(urlControlActionOptionsURIinBase, iterator);
+
+                //this.OptionsURIinBase(urlControlActionOptionsURIinBase, iterator);
+
                 const response = await fetch(this.props.urlData, {
                     method: "POST", // *GET, POST, PUT, DELETE, etc.
                     headers: {
@@ -109,26 +119,32 @@ class CoastTextareaUrl extends Component {
                     },
                     body: JSON.stringify({ "idGoods": iterator }),
                 });
+
                 const json = await response.json();
-                this.props.stateChangeResult(json.description);
+
                 this.setState({ progress: await this.getProgress(this.state.progress, data.length) });
+
                 if (json.description.id !== 0) {
-                    M.toast(
-                        {
-                            html: `${json.description.name} добавлен в базу данных`,
-                            classes: "rounded"
-                        }
-                    );
+                    this.props.stateChangeResult(json.description, "products");
+
+                    M.toast({ html: `Товар ${json.description.name} добавлен, цена ${json.description.price} `, displayLength: 4000, classes: "rounded" });
+
                     console.log(json.description.name);
+                } else {
+                    M.toast({ html: `Товар ${json.description.name} не изменился`, displayLength: 4000, classes: "rounded" });
                 }
             }
+            //
         } catch (error) {
             console.error(error);
         }
     }
     render() {
         return (
-            <div className="row">
+            <div >
+                <div className={`progress`} id="progressBar">
+                    <div className="determinate" style={{ width: this.state.progress + "%" }}></div>
+                </div>
                 <div className="col s4">
                     <button
                         onClick={(e) => this.getDataTable(e)}
@@ -152,9 +168,6 @@ class CoastTextareaUrl extends Component {
                         onClick={this.handleChange}
                         value={this.state.textarea}
                     />
-                </div>
-                <div className="progress">
-                    <div className="determinate" style={{ width: this.state.progress + "%" }}></div>
                 </div>
             </div>
         );

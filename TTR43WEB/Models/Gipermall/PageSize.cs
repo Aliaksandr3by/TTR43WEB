@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace TTR43WEB.Models.Gipermall
 {
-    public interface IGipermollTableData
+    public class PageSize
     {
-        IQueryable<Product> Products { get; }
+        public int pageSize { get; set; }
     }
 }

@@ -156,10 +156,10 @@ module.exports = (env, argv) => {
             }),
             new CopyWebpackPlugin([
                 {
-                    from: `${paths.SRC}/img`, to: `${paths.DIST}/image`
+                    from: `${paths.SRC}/images`, to: `${paths.DIST}/image`
                 },
                 {
-                    from: `${paths.SRC}/static`, to: `${paths.ROOT}`
+                    from: `${paths.SRC}/statics`, to: `${paths.ROOT}`
                 }
             ])
         ]

@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import React from "react";
 
 export const PageList = props => {
-
     const active = (productPage, i) => productPage === i ? "active pulse" : "waves-effect";
     const disabled = (productPage, i) => productPage === i ? "disabled" : "waves-effect";
     const href = (pageSize, i) => `#/Page${i}/Size${pageSize}`;

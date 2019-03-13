@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="src\static\favicon.ico" />
+    <Content Remove="wwwroot\public\htmlpage.html" />
   </ItemGroup>
 
 
@@ -53,12 +53,11 @@
 
 
   <ItemGroup>
-    <Folder Include="Managers\" />
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="src\fonts\" />
+    <Folder Include="src\js\Components\" />
     <Folder Include="Universal\" />
     <Folder Include="ViewModel\" />
-    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 

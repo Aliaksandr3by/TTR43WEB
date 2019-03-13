@@ -15,39 +15,38 @@ class AppCoast extends Component {
         };
     }
     onDetails(event) {
-        const that = event.target;
-        that.parentElement.querySelector("table").classList.toggle("hide");
+        event.target.parentElement.querySelector("table").classList.toggle("hide");
     }
-    handleStateResult = (object) => {
+    stateChangeResult = (object) => {
         this.setState((state, props) => {
             return { dataResult: [...state.dataResult, object] };
         });
     }
     render() {
-        const data = this.state.dataResult;
-        const dataHeader = this.state.dataResult[0] || {};
-        const { dataResult, error, isLoaded } = this.state;
-
+        const { dataResult = [], error, isLoaded } = this.state;
+        //const a = dataResult.filter((e, i) => !e.url);
         return (
             <React.Fragment>
                 <div className="input-field col s12">
                     <CoastTextareaUrl
-                        stateChangeResult={this.handleStateResult}
+                        stateChangeResult={this.stateChangeResult}
                         urlData={urlControlActionGetCoastAsync}
                     />
                 </div>
                 <div className="col s12"><p onClick={(e) => this.onDetails(e)}>+</p>
-                    <table className="striped highlight responsive-table hide" data-src={this.props.name}>
+                    <table className="striped highlight hide" data-src={this.props.name}>
                         <thead>
                             <tr>
                                 {
-                                    Object.keys(dataHeader).map((item, i) =>
+                                    Object.keys(dataResult[0] || {}).map((item, i) =>
                                         (<th key={i}>
                                             {
-                                                item.replace(/([A-Z])/g, " $1").replace(/^./,
-                                                    (str) => {
-                                                        return str.toUpperCase();
-                                                    })
+                                                item
+                                                    .replace(/([A-Z])/g, " $1")
+                                                    .replace(/^./,
+                                                        (str) => {
+                                                            return str.toUpperCase();
+                                                        })
                                             }
                                         </th>)
                                     )
@@ -56,7 +55,7 @@ class AppCoast extends Component {
                         </thead>
                         <tbody>
                             {
-                                Array.from(data).map((item, indexes) => {
+                                [...dataResult].map((item, indexes) => {
                                     return (
                                         <tr key={indexes}>
                                             {

@@ -5,7 +5,22 @@ import Pagination from "./Pagination";
 
 class ProductInfo extends Component {
     static propTypes = {
+        products: PropTypes.array.isRequired,
     };
+    constructor(props) {
+        super(props);
+        this.state = {
+            error: null,
+            isLoaded: false,
+            items: [],
+            pageSize: Number(window.localStorage.getItem("pageSize")) || 10,
+            productPage: Number(window.localStorage.getItem("productPage")) || 0,
+            totalItems: 0,
+            totalPages: 0,
+            valueDefault: [],
+            products: this.props.products,
+        };
+    }
     _replacer(item) {
         return item.replace(/([A-Z])/g, " $1").replace(/^./,
             (str) => {
@@ -30,19 +45,6 @@ class ProductInfo extends Component {
         } catch (error) {
             return item;
         }
-    }
-    constructor(props) {
-        super(props);
-        this.state = {
-            error: null,
-            isLoaded: false,
-            items: [],
-            pageSize: Number(window.localStorage.getItem("pageSize")) || 5,
-            productPage: Number(window.localStorage.getItem("productPage")) || 1,
-            totalItems: 0,
-            totalPages: 0,
-            valueDefault: []
-        };
     }
     async getDataTable({ pageSize, productPage }) {
         try {
@@ -141,7 +143,7 @@ class ProductInfo extends Component {
                                                 Object.keys(item).map((el, i) => {
                                                     if (el.toLowerCase() === "id") {
                                                         return (<th key={i} name={`ID${item.id}`}>
-                                                            {item[el]}
+                                                            <a href="#!">{item[el]}</a>
                                                         </th>);
                                                     } else if (el.toLowerCase() === "name") {
                                                         return (<td key={i}>

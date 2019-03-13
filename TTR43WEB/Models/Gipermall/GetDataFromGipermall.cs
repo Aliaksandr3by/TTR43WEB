@@ -129,43 +129,34 @@ namespace TTR43WEB.Models.Gipermall
 
             try
             {
-                using (ContextGipermall db = new ContextGipermall())
-                {
-                    ///"Название"
-                    _productNew.Name = await Task.Run(() => GetElement(url, "div.breadcrumbs span"));
-                    ///"Адрес"
-                    _productNew.Url = url;
-                    ///"Время"
-                    _productNew.Date = DateTime.Now;
-                    ///"Цена"
-                    _productNew.Price = await Task.Run(() => GetElement(url, "div.products_card form.forms div.price_byn div.price", ParseCost, @"^\d*р.\d*к."));
-                    ///"Цена без скидки"
-                    _productNew.PriceWithoutDiscount = await Task.Run(() => GetElement(url, "div.products_card form.forms div.price_byn div.price", ParseCost, @"\d*р.\d*к.\s*$"));
-                    ///"Размерность"
-                    _productNew.Dimension = await Task.Run(() => GetElement(url, "div.products_card form.forms div.price_byn small.kg"));
-                    ///
-                    _productNew.MarkingGoods = ReplaceHelper(keyValuePairs, "Артикул:");
+                ///"Название"
+                _productNew.Name = await Task.Run(() => GetElement(url, "div.breadcrumbs span"));
+                ///"Адрес"
+                _productNew.Url = url;
+                ///"Время"
+                _productNew.Date = DateTime.Now;
+                ///"Цена"
+                _productNew.Price = await Task.Run(() => GetElement(url, "div.products_card form.forms div.price_byn div.price", ParseCost, @"^\d*р.\d*к."));
+                ///"Цена без скидки"
+                _productNew.PriceWithoutDiscount = await Task.Run(() => GetElement(url, "div.products_card form.forms div.price_byn div.price", ParseCost, @"\d*р.\d*к.\s*$"));
+                ///"Размерность"
+                _productNew.Dimension = await Task.Run(() => GetElement(url, "div.products_card form.forms div.price_byn small.kg"));
+                ///
+                _productNew.MarkingGoods = ReplaceHelper(keyValuePairs, "Артикул:");
 
-                    _productNew.BarCode = ReplaceHelper(keyValuePairs, "Штрих-код:");
+                _productNew.BarCode = ReplaceHelper(keyValuePairs, "Штрих-код:");
 
-                    _productNew.ManufacturingCountry = ReplaceHelper(keyValuePairs, "Страна производства:");
+                _productNew.ManufacturingCountry = ReplaceHelper(keyValuePairs, "Страна производства:");
 
-                    _productNew.Trademark = ReplaceHelper(keyValuePairs, "Торговая марка:");
+                _productNew.Trademark = ReplaceHelper(keyValuePairs, "Торговая марка:");
 
-                    _productNew.Mass = ReplaceHelper(keyValuePairs, "Масса / Объем:", @"[^0-9,.]");
+                _productNew.Mass = ReplaceHelper(keyValuePairs, "Масса / Объем:", @"[^0-9,.]");
 
-                    _productNew.PriceOneKilogram = ReplaceHelper(keyValuePairs, "Цена за 1 кг:", (e) => decimal.Parse(e, CultureInfo.InvariantCulture));
+                _productNew.PriceOneKilogram = ReplaceHelper(keyValuePairs, "Цена за 1 кг:", (e) => decimal.Parse(e, CultureInfo.InvariantCulture));
 
-                    _productNew.PriceOneLiter = ReplaceHelper(keyValuePairs, "Цена за 1 л:", (e) => decimal.Parse(e, CultureInfo.InvariantCulture));
+                _productNew.PriceOneLiter = ReplaceHelper(keyValuePairs, "Цена за 1 л:", (e) => decimal.Parse(e, CultureInfo.InvariantCulture));
 
-                    if (!products.Any<Product>(e => e.MarkingGoods == _productNew.MarkingGoods && e.Price == _productNew.Price && e.PriceWithoutDiscount == _productNew.PriceWithoutDiscount))
-                    {
-                        db.Products.Add(_productNew);
-                        db.SaveChanges();
-                    }
-
-                    return _productNew;
-                }
+                return _productNew;
             }
             catch (Exception)
             {

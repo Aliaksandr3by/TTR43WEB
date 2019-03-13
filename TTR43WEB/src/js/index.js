@@ -7,8 +7,8 @@ import M from "materialize-css";
 import "@babel/polyfill";
 import "../scss/index.scss";
 
-import AppCoast from "./Coast/AppCoast";
-import ProductInfo from "./Coast/ProductInfo";
+import App from "./App";
+
 
 const rootElement = document.getElementById("react-container") || document.querySelector("body");
 const mainElement = document.getElementById("main") || document.querySelector("body");
@@ -16,26 +16,14 @@ const footerElement = document.getElementById("footer") || document.querySelecto
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    M.FormSelect.init(document.querySelectorAll("select"), {});
-    M.Sidenav.init(document.querySelectorAll(".sidenav"), {});
-
-    const coastContainer = document.getElementById("coast-container");
-    if (coastContainer) {
+    const rootContainer = document.getElementById("root-container");
+    if (rootContainer) {
         ReactDOM.render(
-            <AppCoast name="Main table" />,
-            coastContainer
+            <App />,
+            rootContainer
         );
-    }
-
-
-    const tableContainer = document.getElementById("ProductInfo-container");
-    if (tableContainer) {
-        ReactDOM.render(
-            <ProductInfo name="table" />,
-            tableContainer
-        );
-        M.textareaAutoResize(document.querySelector("#textareaURLstorige"));
-        M.FormSelect.init(document.querySelectorAll("select"), {});
+        
+        M.Sidenav.init(document.querySelectorAll(".sidenav"), {});
     }
 
     window.addEventListener("keydown", e => {
@@ -58,35 +46,7 @@ const getJade = () => {
 const s = () => {
     let a = Array.from(document.querySelectorAll("a.to_favorite.fa.fa-heart")).map(e => e.getAttribute("data-product-id"));
     Array.from(a).map(e => {
-        document.getElementsByTagName("body")[0].innerHTML += `https://e-dostavka.by/catalog/item_${e.replace(/,/g, "")}.html<br>`;
+        document.getElementsByTagName("body")[0].innerHTML += `https://gipermall.by/catalog/item_${e.replace(/,/g, "")}.html<br>`;
     });
 
 };
-
-// document.addEventListener("DOMContentLoaded", () => {
-//     try {
-//         const tableDive = mainElement.appendChild(createElementWithAttr("div", {
-//             "id": "tableDive",
-//             "title": "up",
-//             "data-action": "get"
-//         }));
-//         const dataSend = {
-//             language: "RU",
-//             table_4_1: {
-//                 BUILD: "1",
-//                 DESIGN_TEMPERATURE: 1,
-//                 RELATIVE_AIR_HUMIDITY: 2,
-//                 ID: "qweqweq3"
-//             }
-//         };
-//         AjaxPOSTAsync(urlControlActionGetAllTable, dataSend, "POST").then((data) => {
-//             for (const iterator in data) {
-//                 tableDive.innerHTML += genTable(data[iterator], iterator, "striped highlight");
-//             }
-//         }).catch((error) => {
-//             console.error(error);
-//         });
-//     } catch (error) {
-//         console.dir(error);
-//     }
-// });

@@ -33,6 +33,10 @@ ul.pagination li:hover {
     right: 50px;
 }
 
+#progressBar {
+    max-width: 350px;
+}
+
 @media screen and (min-width: 992px) {
 
     .wrapper {

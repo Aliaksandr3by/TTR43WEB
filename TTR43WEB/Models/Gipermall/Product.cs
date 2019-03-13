@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace TTR43WEB.Models.Gipermall
 {
-    [Table("Product")]
+    //[Table("Product")]
     public class Product
     {
         [Key]

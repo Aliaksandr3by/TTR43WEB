@@ -14,29 +14,16 @@ using AngleSharp;
 using Newtonsoft;
 using TTR43WEB.Models.Gipermall;
 using System.Net;
+using Microsoft.AspNetCore.Authorization;
+using System.IO;
 
 namespace TTR43WEB.Controllers
 {
-
-    public class ElementURIData
-    {
-        private string elementURI;
-        public string ElementURI { get => elementURI; set => elementURI = value; }
-    }
-    public class PageSize
-    {
-        public int pageSize { get; set; }
-    }
-    public class GetDataTable
-    {
-        public int pageSize { get; set; }
-        public int productPage { get; set; }
-    }
     public class GipermallController : Controller
     {
-        private readonly IGipermollTableData gipermollTableData;
+        private readonly IProductsContextQueryable gipermollTableData;
         private readonly Product _product;
-        public GipermallController(IGipermollTableData gipermollTable, Product product)
+        public GipermallController(IProductsContextQueryable gipermollTable, Product product)
         {
             gipermollTableData = gipermollTable;
             _product = product;
@@ -47,6 +34,16 @@ namespace TTR43WEB.Controllers
             return View();
         }
 
+        public IActionResult htmlpage()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// это не работает:(((
+        /// </summary>
+        /// <param name="ElementURI"></param>
+        /// <returns></returns>
         [HttpOptions]
         [ContentTypeJson]
         [AccessControlAllow]
@@ -62,6 +59,7 @@ namespace TTR43WEB.Controllers
                 var result = Json(new
                 {
                     statusCode = statusCode,
+                    ElementURI.ElementURI,
                     isLoaded = true,
                 });
 
@@ -71,6 +69,7 @@ namespace TTR43WEB.Controllers
             {
                 var result = Json(new
                 {
+                    ElementURI.ElementURI,
                     isLoaded = false,
                 });
 
@@ -158,28 +157,30 @@ namespace TTR43WEB.Controllers
         [AccessControlAllow]
         public async Task<IActionResult> GetCoastAsync([FromBody]JObject idGoods)
         {
+
             DataSend dataSendObj = idGoods.ToObject<DataSend>();
 
             GetDataFromGipermall getDataFromGipermall = new GetDataFromGipermall(_product);
 
-            var _description = await getDataFromGipermall.GetFullDescriptionResult(dataSendObj.IdGoods, gipermollTableData.Products);
-            var description = new
-            {
-                _description.Id,
-                _description.MarkingGoods,
-                _description.Url,
-                _description.Name,
-                _description.Price,
-                _description.PriceWithoutDiscount,
-                _description.Date
-            };
+            var description = await getDataFromGipermall.GetFullDescriptionResult(dataSendObj.IdGoods, gipermollTableData.Products);
+
+            gipermollTableData.SaveProduct(description);
+
             var result = Json(new
             {
-                description,
-                isLoaded = true
+                description
             });
 
             return result;
+        }
+
+        [Authorize]
+        public IActionResult BannerImage()
+        {
+            var file = Path.Combine(Directory.GetCurrentDirectory(),
+                                    "public", "image", "Untitled.jpg");
+
+            return PhysicalFile(file, "image/svg+xml");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

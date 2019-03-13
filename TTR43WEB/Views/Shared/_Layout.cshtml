@@ -3,59 +3,33 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <title>@ViewData["Title"] - TTR43WEB</title>
-
     <meta http-equiv="Cache-Control" content="no-cache">
-    <!--Import Google Icon Font-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <environment include="Development">
-        @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.2.1/css/bootstrap.css" integrity="sha256-5U3z9K3P17cKgGYxXQA5rBZO5EDju+lgtXG6oDXNbNY=" crossorigin="anonymous" />*@
         <partial name="_BundledCSS" />
     </environment>
-
     <environment exclude="Development">
-        @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha256-azvvU9xKluwHFJ0Cpgtf0CYzK7zgtOznnzxV4924X1w=" crossorigin="anonymous" />*@
         <partial name="_BundledCSS" />
     </environment>
-
     <script>
         const urlControlActionGetIndex = "@Url.Action("Index", "Gipermall")";
         const urlControlActionGetCoastAsync = "@Url.Action("GetCoastAsync", "Gipermall")";
         const urlControlActionGetAllItemsUrls = "@Url.Action("AllItemsUrls", "Gipermall")";
         const urlControlActionGetTable = "@Url.Action("Table", "Gipermall")";
         const urlControlActionOptionsURIinBase = "@Url.Action("OptionsURIinBase", "Gipermall")";
+        const urlControlActionAccountLogin = "@Url.Action("Login", "Account")";
     </script>
-
 </head>
 <body>
-    <div class="container">
-        <header role="navigation">
-            <partial name="_GetNavPartial" />
-        </header>
-        <main id="main" role="main">
-            @RenderBody()
-        </main>
-        <footer id="footer" role="status">
-            <partial name="_CookieConsentPartial" />
-        </footer>
-    </div>
-
+    <a href="~/htmlpage.html">htmlpage</a>
+    @RenderBody()
     <environment include="Development">
-        @*<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/popper.min.js" integrity="sha256-/ANLkdxSQduAVQeiNIfmaO0V4eR8kell64GgSRn+ggY=" crossorigin="anonymous"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.2.1/js/bootstrap.js" integrity="sha256-K0KkaRh1fs/UYfKcnzBK9G/X7HgzuaeVI1hJPS8Sxs4=" crossorigin="anonymous"></script>*@
         <partial name="_BundledScripts" />
-
     </environment>
     <environment exclude="Development">
-        @*<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/popper.min.js" integrity="sha256-/ANLkdxSQduAVQeiNIfmaO0V4eR8kell64GgSRn+ggY=" crossorigin="anonymous"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha256-63ld7aiYP6UxBifJWEzz87ldJyVnETUABZAYs5Qcsmc=" crossorigin="anonymous"></script>*@
         <partial name="_BundledScripts" />
     </environment>
-
-
     @RenderSection("Scripts", required: false)
 </body>
 </html>

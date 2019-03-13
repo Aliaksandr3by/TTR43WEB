@@ -18,13 +18,6 @@ class Pagination extends Component {
         this.selectElement;
     }
 
-    async componentDidMount() {
-
-    }
-    async componentDidUpdate() {
- 
-    }
-
     onChangePageSize(event) { //селектор размера страниц
         const pageSize = Number(event.target.value);
         const productPage = Number(this.props.state.productPage);

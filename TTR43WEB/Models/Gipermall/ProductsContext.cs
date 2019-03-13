@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace TTR43WEB.Models.Gipermall
 {
-    public class ContextGipermall : DbContext
+    public class ProductsContext : DbContext
     {
-        public virtual DbSet<Product> Products { get; set; }
+        public virtual DbSet<Product> Products { get; set; } //Products должен совпадать с таблицей из БД или нужен [Table("Product")]
 
-        public ContextGipermall() 
+        public ProductsContext() 
         {
             Database.EnsureCreated();
         }
 
-        public ContextGipermall(DbContextOptions<ContextGipermall> options) : base(options)
+        public ProductsContext(DbContextOptions<ProductsContext> options) : base(options)
         {
         }
 
