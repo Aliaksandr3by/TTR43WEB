@@ -48,17 +48,22 @@ class ProductInfo extends Component {
     }
     async getDataTable({ pageSize, productPage }) {
         try {
-            const response = await fetch(urlControlActionGetTable, {
-                method: "POST", // *GET, POST, PUT, DELETE, etc.
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    "pageSize": pageSize,
-                    "productPage": productPage,
-                }),
+            // const response = await fetch(urlControlActionGetTable, {
+            //     method: "POST", // *GET, POST, PUT, DELETE, etc.
+            //     headers: {
+            //         "Content-Type": "application/json",
+            //     },
+            //     body: JSON.stringify({
+            //         "pageSize": pageSize,
+            //         "productPage": productPage,
+            //     }),
+            // });
+            const response = await fetch(`Gipermall/GetItemProduct/Page${productPage}/Size${pageSize}`, {
+                method: "GET", // *GET, POST, PUT, DELETE, etc.
             });
             const json = await response.json();
+            window.localStorage.setItem("productPage", json.productPage);
+            window.localStorage.setItem("pageSize", json.productPage);
             return json;
         } catch (error) {
             this.setState({

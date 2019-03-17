@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,12 +25,16 @@ namespace TTR43WEB.Controllers
             db = context;
         }
 
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
         [HttpPost]
         [AllowAnonymous]
-        //[Consumes("application/x-www-form-urlencoded")]
-        //[Consumes("multipart/form-data; boundary")]
-        //[ValidateAntiForgeryToken] 
-        public async Task<IActionResult> Login([FromBody]LoginModel _model) //[FromBody]LoginModel _model
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login([FromForm]LoginModel _model)
         {
             LoginModel model = _model;
             //LoginModel model = JsonConvert.DeserializeObject<LoginModel>(_model); //[FromForm]string _model
@@ -38,6 +44,7 @@ namespace TTR43WEB.Controllers
             if (ModelState.IsValid)
             {
                 User user = await db.Users.FirstOrDefaultAsync(u => u.Login == model.Login && u.Password == model.Password);
+
                 if (user != null)
                 {
                     await Authenticate(model.Login); // аутентификация
@@ -47,9 +54,20 @@ namespace TTR43WEB.Controllers
                         user
                     });
                 }
+
                 ModelState.AddModelError("", "Некорректные логин и(или) пароль");
             }
-            return View(model);
+            
+            var errors = new List<string>();
+
+            foreach (var modelStateVal in this.ViewData.ModelState.Values)
+            {
+                errors.AddRange(modelStateVal.Errors.Select(error => error.ErrorMessage));
+            }
+
+            var result = this.Json(new { model, status = "validation-error", errors });
+
+            return result;
         }
 
         [HttpGet]
@@ -57,6 +75,16 @@ namespace TTR43WEB.Controllers
         {
             return View();
         }
+
+
+        [Authorize]
+        public IActionResult BannerImage()
+        {
+            var file = Path.Combine(Directory.GetCurrentDirectory(), "public", "image", "Untitled.jpg");
+
+            return PhysicalFile(file, "image/svg+xml");
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterModel model)
@@ -75,7 +103,9 @@ namespace TTR43WEB.Controllers
                     return RedirectToAction("Index", "Home");
                 }
                 else
+                {
                     ModelState.AddModelError("", "Некорректные логин и(или) пароль");
+                }
             }
             return View(model);
         }

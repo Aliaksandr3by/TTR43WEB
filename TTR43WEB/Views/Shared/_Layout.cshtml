@@ -13,17 +13,16 @@
         <partial name="_BundledCSS" />
     </environment>
     <script>
-        const urlControlActionGetIndex = "@Url.Action("Index", "Gipermall")";
-        const urlControlActionGetCoastAsync = "@Url.Action("GetCoastAsync", "Gipermall")";
-        const urlControlActionGetAllItemsUrls = "@Url.Action("AllItemsUrls", "Gipermall")";
-        const urlControlActionGetTable = "@Url.Action("Table", "Gipermall")";
-        const urlControlActionOptionsURIinBase = "@Url.Action("OptionsURIinBase", "Gipermall")";
-        const urlControlActionAccountLogin = "@Url.Action("Login", "Account")";
+        var urlControlActionGetIndex = "@Url.Action("Index", "Gipermall")";
+        var urlControlActionGetCoastAsync = "@Url.Action("GetCoastAsync", "Gipermall")";
+        var urlControlActionGetAllItemsUrls = "@Url.Action("AllItemsUrls", "Gipermall")";
+        var urlControlActionGetTable = "@Url.Action("Table", "Gipermall")";
+        var urlControlActionOptionsURIinBase = "@Url.Action("OptionsURIinBase", "Gipermall")";
+        //var urlControlActionAccountLogin = "@Url.Action("Login", "Account")";
     </script>
     @Html.AntiForgeryToken()
 </head>
 <body>
-    <a href="~/htmlpage.html">htmlpage</a>
     @RenderBody()
     <environment include="Development">
         <partial name="_BundledScripts" />

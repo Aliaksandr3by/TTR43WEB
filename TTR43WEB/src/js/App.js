@@ -11,6 +11,7 @@ import Login from "./Account/Login";
 class App extends Component {
     static propTypes = {
         __RequestVerificationToken: PropTypes.string,
+        urlControlAction: PropTypes.object.isRequired,
     };
 
     //является первой функцией, вызываемой при установке компонента
@@ -19,10 +20,10 @@ class App extends Component {
         this.state = {
             products: [],
         };
+        this.urlControlAction = this.props.urlControlAction;
     }
 
-    //взывается сразу же после отображения компонента на экране
-    //приведут к запуску жизненного цикла обновления и к повторному отображению компонента на экране
+    //взывается сразу же после отображения компонента на экране приведут к запуску жизненного цикла обновления и к повторному отображению компонента на экране
     async componentDidMount() {
         M.FormSelect.init(document.querySelectorAll("select"), {});
         M.Sidenav.init(document.querySelectorAll(".sidenav"), {});
@@ -33,7 +34,11 @@ class App extends Component {
         console.log("componentDidMount");
     }
 
+    //предикат, способный отменить обновление;
+    async shouldComponentUpdate(nextProps, nextState) {
 
+    }
+    //вызывается сразу же после выполнения обновления, после вызова метода отображения render ;
     async componentDidUpdate() {
         console.log("componentDidMount");
     }
@@ -53,7 +58,7 @@ class App extends Component {
             <React.Fragment>
                 <header className="row" role="navigation">
                     <Navigate />
-                    <Login __RequestVerificationToken={__RequestVerificationToken} />
+                    <Login urlControlAction={this.urlControlAction} __RequestVerificationToken={__RequestVerificationToken} />
                 </header>
                 <main className="row" id="main" role="main">
                     <CoastTextareaUrl

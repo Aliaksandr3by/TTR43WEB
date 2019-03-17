@@ -43,6 +43,12 @@ namespace TTR43WEB.Models.Gipermall
         public string Name { get; set; }
 
         /// <summary>
+        /// "Артикул"
+        /// </summary>
+        [Display(Name = "Артикул")]
+        public int? MarkingGoods { get; set; }
+
+        /// <summary>
         /// "Цена"
         /// </summary>
         [Display(Name = "Цена")]
@@ -75,12 +81,6 @@ namespace TTR43WEB.Models.Gipermall
         /// </summary>
         [Display(Name = "Размерность")]
         public string Dimension { get; set; }
-
-        /// <summary>
-        /// "Артикул"
-        /// </summary>
-        [Display(Name = "Артикул")]
-        public string MarkingGoods { get; set; }
 
         /// <summary>
         /// "Штрих-код"

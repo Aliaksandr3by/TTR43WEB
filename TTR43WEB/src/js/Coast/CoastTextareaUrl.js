@@ -14,6 +14,7 @@ class CoastTextareaUrl extends Component {
             error: null,
             isLoaded: false,
             progress: 0,
+            resultBaseDataAdd: 0,
         };
         this.handleChange = this.handleChange.bind(this);
     }
@@ -61,10 +62,12 @@ class CoastTextareaUrl extends Component {
     };
 
     componentDidMount() {
+        M.textareaAutoResize(document.getElementById("textareaURLstorige"));
         this.setState({ "textarea": this.dataOperatorLocalS("dataTmp") });
     }
 
     async componentDidUpdate() {
+        M.textareaAutoResize(document.getElementById("textareaURLstorige"));
         this.dataOperatorLocalS("dataTmp", this.state.textarea);
     }
 
@@ -100,8 +103,23 @@ class CoastTextareaUrl extends Component {
             ? textarea
             : (textarea.replace(/'|«|»|\\|"/g, "")
                 .split(/\s|,|\s,/))
-                .map((e, i) => Number(e) ? `https://gipermall.by/catalog/item_${Number(e)}.html` : e)
-                .filter((item, i) => item !== "");
+                .filter((item, i) => item !== "")
+                .map((e, i) => this.getItem_html(e));
+    }
+
+    getItem_html = (e) => {
+        console.log(typeof e);
+        let tmp = "";
+        if (typeof e === "number" || Number(e)) {
+            tmp = `https://gipermall.by/catalog/item_${Number(e)}.html`;
+            return tmp;
+        } else if (typeof e === "string") {
+            let sowp = String(e).match(/item_\d*.html$/i);
+            tmp = sowp[0] ? `https://gipermall.by/catalog/${sowp[0]}` : "";
+            return tmp;
+        } else {
+            return tmp;
+        }
     }
 
     async getData(e) {
@@ -124,7 +142,7 @@ class CoastTextareaUrl extends Component {
 
                 this.setState({ progress: await this.getProgress(this.state.progress, data.length) });
 
-                if (json.description.id !== 0) {
+                if (json.resultBaseDataAdd) {
                     this.props.stateChangeResult(json.description, "products");
 
                     M.toast({ html: `Товар ${json.description.name} добавлен, цена ${json.description.price} `, displayLength: 4000, classes: "rounded" });
@@ -139,13 +157,54 @@ class CoastTextareaUrl extends Component {
             console.error(error);
         }
     }
+
+    handleStateResultArray = (array, name) => {
+        this.setState((state, props) => {
+            return {
+                [name]: [...state[name], array]
+            };
+        });
+    }
+
+    createDataTable = async () => {
+        try {
+
+            // const description = [...Array(1000)].map((item, i) => {
+            //     let tmp = [`https://gipermall.by/catalog/item_${Number(i)}.html`];
+            //     this.handleStateResultArray(tmp, "textarea");
+            //     return tmp;
+            // });
+
+            this.setState({ textarea: [] });
+            for (let i = 1500; i < 2000; i++) {
+                let tmp = [`https://gipermall.by/catalog/item_${Number(i)}.html`];
+                this.handleStateResultArray(tmp, "textarea");
+            }
+
+        } catch (error) {
+            this.setState({
+                isLoaded: true,
+                error
+            });
+            console.error(error);
+        }
+    }
+
     render() {
         return (
-            <div >
-                <div className={`progress`} id="progressBar">
-                    <div className="determinate" style={{ width: this.state.progress + "%" }}></div>
+            <div className="row">
+                <div className="col s12">
+                    <div className="input-field ">
+                        <textarea
+                            id="textareaURLstorige"
+                            className="materialize-textarea"
+                            onChange={this.handleChange}
+                            onClick={this.handleChange}
+                            value={this.state.textarea}
+                        />
+                    </div>
                 </div>
-                <div className="col s4">
+                <div className="col s12">
                     <button
                         onClick={(e) => this.getDataTable(e)}
                         className="btn waves-effect waves-light"
@@ -153,21 +212,20 @@ class CoastTextareaUrl extends Component {
                         name="action">Получить данные<i className="material-icons left">cloud</i>
                     </button>
                     <button
+                        onClick={(e) => this.createDataTable(e)}
+                        className="btn waves-effect waves-light"
+                        type="button"
+                        name="action">Создать ссылки<i className="material-icons left">create</i>
+                    </button>
+                    <button
                         onClick={(e) => this.getData(e)}
                         className="btn waves-effect waves-light"
                         type="button"
                         name="action">Отправить<i className="material-icons right">send</i>
                     </button>
-                </div>
-                <div className="col s8 input-field ">
-                    <textarea
-                        id="textareaURLstorige"
-                        className="browser-default"
-                        placeholder="URL"
-                        onChange={this.handleChange}
-                        onClick={this.handleChange}
-                        value={this.state.textarea}
-                    />
+                    <div className={`progress`} id="progressBar">
+                        <div className="determinate" style={{ width: this.state.progress + "%" }}></div>
+                    </div>
                 </div>
             </div>
         );

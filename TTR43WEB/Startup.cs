@@ -40,19 +40,24 @@ namespace TTR43WEB
             services.AddDataProtection().SetDefaultKeyLifetime(TimeSpan.FromDays(14)); ;
 
             services.AddDbContext<ProductsContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:ConnectionProduct"]));
-            services.AddTransient<Product, Product>();
+            services.AddScoped<Product, Product>();
             services.AddScoped<IProductsContextQueryable, ProductsContextQueryable>();
 
             services.AddDbContext<UserContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:ConnectionProduct"]));
-            services.AddTransient<UsersContextQueryable, UsersContextQueryable>();
+            services.AddScoped<UsersContextQueryable, UsersContextQueryable>();
 
             //services.AddSingleton<ITable, EFTable>();
 
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options =>
-                {
-                    options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
-                });
+            // Inside your ConfigureServices method
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            })
+            .AddCookie(options =>
+            {
+                options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
+            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
@@ -91,9 +96,10 @@ namespace TTR43WEB
 
             app.UseFileServer(new FileServerOptions
             {
-                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "src/StaticFilesHide")),
-                RequestPath = "/StaticFilesHide",
-                EnableDirectoryBrowsing = true
+                //FileProvider = new PhysicalFileProvider(
+                //    Path.Combine(Directory.GetCurrentDirectory(), "StaticFilesHide")),
+                //    RequestPath = "~/StaticFilesHide",
+                //    EnableDirectoryBrowsing = true
             });
 
             app.UseAuthentication();
@@ -111,6 +117,8 @@ namespace TTR43WEB
                 routes.MapRoute(name: "tableUrl", template: "{controller=Gipermall}/{action=AllItemsUrls}/{id?}");
 
                 routes.MapRoute(name: "getCoastAsync", template: "{controller=Gipermall}/{action=GetCoastAsync}/{id?}");
+
+                routes.MapRoute(name: "GetItemProduct", template: "{controller=Gipermall}/{action=GetItemProduct}/Page{productPage:int}/Size{pageSize:int}");
 
                 routes.MapRoute(name: "htmlpage", template: "{controller=Gipermall}/{action=htmlpage}/{id?}");
 

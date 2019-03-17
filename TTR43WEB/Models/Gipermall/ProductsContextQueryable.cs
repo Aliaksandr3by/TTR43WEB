@@ -20,14 +20,13 @@ namespace TTR43WEB.Models.Gipermall
 
         public IQueryable<Product> Products => context.Products;
 
-        public void SaveProduct(Product product)
+        public Task<int> SaveProduct(Product product)
         {
             if (!context.Products.Any<Product>(p => p.MarkingGoods == product.MarkingGoods && p.Price == product.Price && p.PriceWithoutDiscount == product.PriceWithoutDiscount))
             {
                 context.Products.Add(product);
-                context.SaveChanges();
             }
+            return context.SaveChangesAsync();
         }
-
     }
 }

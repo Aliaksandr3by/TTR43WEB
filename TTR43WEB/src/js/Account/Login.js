@@ -5,7 +5,8 @@ import M from "materialize-css";
 
 class Login extends Component {
     static propTypes = {
-        // __RequestVerificationToken: PropTypes.string.isRequired(),
+        __RequestVerificationToken: PropTypes.string.isRequired,
+        urlControlAction: PropTypes.object.isRequired,
     };
     constructor(props) {
         super(props);
@@ -16,6 +17,7 @@ class Login extends Component {
             error: null
         };
         this.handleChange = this.handleChange.bind(this);
+        this.urlControlAction = this.props.urlControlAction;
     }
 
     async componentDidMount() {
@@ -37,26 +39,26 @@ class Login extends Component {
             data1.append("Login", Login);
             data1.append("Password", Password);
 
-            const data = {
+            const data = JSON.stringify({
                 "__RequestVerificationToken": this.props.__RequestVerificationToken,
                 "Login": Login,
                 "Password": Password,
-            };
+            });
 
-            const response = await fetch(urlControlActionAccountLogin, {
+            const response = await fetch(this.urlControlAction.urlControlActionAccountLogin, {
                 method: "POST", // *GET, POST, PUT, DELETE, etc.
                 mode: "cors", // no-cors, cors, *same-origin
                 cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
                 credentials: "same-origin", // include, *same-origin, omit
                 headers: {
                     "Accept": "application/json, application/xml, text/plain, text/html, *.*",
-                    "Content-Type": "application/json",
+                    //"Content-Type": "application/json",
                     // "Content-Type": "multipart/form-data; boundary",
                     // "Content-Type": "application/x-www-form-urlencoded;",
                 },
                 redirect: "follow", // manual, *follow, error
                 referrer: "no-referrer", // no-referrer, *client
-                body: JSON.stringify(data), // body data type must match "Content-Type" header
+                body: data1, // body data type must match "Content-Type" header
             });
             const json = await response.json();
             //this.setState({ textarea: json.description });

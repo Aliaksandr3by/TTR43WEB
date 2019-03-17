@@ -8,6 +8,6 @@ namespace TTR43WEB.Models.Gipermall
     public interface IProductsContextQueryable
     {
         IQueryable<Product> Products { get; }
-        void SaveProduct(Product product);
+        Task<int> SaveProduct(Product product);
     }
 }

@@ -3,16 +3,20 @@
 
 import React from "react";
 import ReactDOM from "react-dom";
-import M from "materialize-css";
 import "../scss/index.scss";
 
 import App from "./App";
 
-const rootElement = document.getElementById("react-container") || document.querySelector("body");
-const mainElement = document.getElementById("main") || document.querySelector("body");
-const footerElement = document.getElementById("footer") || document.querySelector("body");
-
 document.addEventListener("DOMContentLoaded", () => {
+
+    const urlControlAction = {
+        urlControlActionGetIndex: "/Gipermall/Index",
+        urlControlActionGetCoastAsync: "/Gipermall/GetCoastAsync",
+        urlControlActionGetAllItemsUrls: "/Gipermall/AllItemsUrls",
+        urlControlActionGetTable: "/Gipermall/Table",
+        urlControlActionOptionsURIinBase: "/Gipermall/OptionsURIinBase",
+        urlControlActionAccountLogin: "/Account/Login",
+    };
 
     const rootContainer = document.getElementById("root-container");
 
@@ -20,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (rootContainer) {
         ReactDOM.render(
-            <App __RequestVerificationToken={__RequestVerificationToken} />,
+            <App __RequestVerificationToken={__RequestVerificationToken} urlControlAction={urlControlAction} />,
             rootContainer
         );
     }
@@ -31,6 +35,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 });
+
+/** мусор */
 
 const getJade = () => {
     let a1, a2;
@@ -43,9 +49,25 @@ const getJade = () => {
 };
 
 const s = () => {
-    let a = Array.from(document.querySelectorAll("a.to_favorite.fa.fa-heart")).map(e => e.getAttribute("data-product-id"));
-    Array.from(a).map(e => {
-        document.getElementsByTagName("body")[0].innerHTML += `https://gipermall.by/catalog/item_${e.replace(/,/g, "")}.html<br>`;
+    const tmp = Array.from(document.querySelectorAll("a.to_favorite.fa.fa-heart")).map(e => e.getAttribute("data-product-id"));
+    const div = document.getElementsByTagName("body")[0].appendChild(document.createElement("div"));
+    tmp.map(e => {
+        div.appendChild((document.createElement("p")).textContent = `https://gipermall.by/catalog/item_${e.replace(/,/g, "")}.html`);
+    });
+
+};
+
+
+
+
+
+const d = () => {
+    const tmp = Array.from(document.querySelectorAll("a.cboxElement")).map((e) => e.getAttribute("href"));
+    const div = document.getElementsByTagName("body")[0].appendChild(document.createElement("div"));
+    tmp.map(e => {
+        let aa = document.createElement("p");
+        aa.textContent = e;
+        div.appendChild(aa);
     });
 
 };

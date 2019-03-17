@@ -12,9 +12,14 @@ namespace TTR43WEB.Models.Gipermall
     public class GetDataFromGipermall
     {
         readonly private Product _productNew;
-        public GetDataFromGipermall(Product product)
+        private readonly string _url;
+        private int count = 0;
+
+        public GetDataFromGipermall(string url, Product product)
         {
             this._productNew = product;
+            _url = url;
+            count++;
         }
 
         private async Task<IHtmlCollection<IElement>> GetDataAngleSharp(string url, string selectors)
@@ -123,26 +128,26 @@ namespace TTR43WEB.Models.Gipermall
             }
         }
 
-        public async Task<Product> GetFullDescriptionResult(string url, IQueryable<Product> products)
+        public async Task<int> GetFullDescriptionResult()
         {
-            Dictionary<string, string> keyValuePairs = await Task.Run(() => GetDescription(url, "ul.description"));
+            Dictionary<string, string> keyValuePairs = await Task.Run(() => GetDescription(_url, "ul.description"));
 
             try
             {
                 ///"Название"
-                _productNew.Name = await Task.Run(() => GetElement(url, "div.breadcrumbs span"));
+                _productNew.Name = await Task.Run(() => GetElement(_url, "div.breadcrumbs span"));
                 ///"Адрес"
-                _productNew.Url = url;
+                _productNew.Url = _url;
                 ///"Время"
                 _productNew.Date = DateTime.Now;
                 ///"Цена"
-                _productNew.Price = await Task.Run(() => GetElement(url, "div.products_card form.forms div.price_byn div.price", ParseCost, @"^\d*р.\d*к."));
+                _productNew.Price = await Task.Run(() => GetElement(_url, "div.products_card form.forms div.price_byn div.price", ParseCost, @"^\d*р.\d*к."));
                 ///"Цена без скидки"
-                _productNew.PriceWithoutDiscount = await Task.Run(() => GetElement(url, "div.products_card form.forms div.price_byn div.price", ParseCost, @"\d*р.\d*к.\s*$"));
+                _productNew.PriceWithoutDiscount = await Task.Run(() => GetElement(_url, "div.products_card form.forms div.price_byn div.price", ParseCost, @"\d*р.\d*к.\s*$"));
                 ///"Размерность"
-                _productNew.Dimension = await Task.Run(() => GetElement(url, "div.products_card form.forms div.price_byn small.kg"));
+                _productNew.Dimension = await Task.Run(() => GetElement(_url, "div.products_card form.forms div.price_byn small.kg"));
                 ///
-                _productNew.MarkingGoods = ReplaceHelper(keyValuePairs, "Артикул:");
+                _productNew.MarkingGoods = ReplaceHelperInt(keyValuePairs, "Артикул:");
 
                 _productNew.BarCode = ReplaceHelper(keyValuePairs, "Штрих-код:");
 
@@ -156,7 +161,7 @@ namespace TTR43WEB.Models.Gipermall
 
                 _productNew.PriceOneLiter = ReplaceHelper(keyValuePairs, "Цена за 1 л:", (e) => decimal.Parse(e, CultureInfo.InvariantCulture));
 
-                return _productNew;
+                return count;
             }
             catch (Exception)
             {
@@ -215,7 +220,7 @@ namespace TTR43WEB.Models.Gipermall
             {
                 if (keyValuePairs.ContainsKey(key))
                 {
-                    return keyValuePairs.ContainsKey(key) ? keyValuePairs[key] : String.Empty;
+                    return keyValuePairs.ContainsKey(key) ? keyValuePairs[key] : string.Empty;
                 }
                 else
                 {
@@ -227,6 +232,23 @@ namespace TTR43WEB.Models.Gipermall
                 return default;
             }
         }
-
+        public int? ReplaceHelperInt(Dictionary<string, string> keyValuePairs, string key)
+        {
+            try
+            {
+                if (keyValuePairs.ContainsKey(key))
+                {
+                    return int.Parse(keyValuePairs.GetValueOrDefault(key));
+                }
+                else
+                {
+                    return default;
+                }
+            }
+            catch (Exception)
+            {
+                return default;
+            }
+        }
     }
 }
