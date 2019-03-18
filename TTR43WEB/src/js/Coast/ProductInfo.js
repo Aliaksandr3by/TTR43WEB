@@ -48,22 +48,12 @@ class ProductInfo extends Component {
     }
     async getDataTable({ pageSize, productPage }) {
         try {
-            // const response = await fetch(urlControlActionGetTable, {
-            //     method: "POST", // *GET, POST, PUT, DELETE, etc.
-            //     headers: {
-            //         "Content-Type": "application/json",
-            //     },
-            //     body: JSON.stringify({
-            //         "pageSize": pageSize,
-            //         "productPage": productPage,
-            //     }),
-            // });
             const response = await fetch(`Gipermall/GetItemProduct/Page${productPage}/Size${pageSize}`, {
                 method: "GET", // *GET, POST, PUT, DELETE, etc.
             });
             const json = await response.json();
             window.localStorage.setItem("productPage", json.productPage);
-            window.localStorage.setItem("pageSize", json.productPage);
+            window.localStorage.setItem("pageSize", json.pageSize);
             return json;
         } catch (error) {
             this.setState({
@@ -92,7 +82,7 @@ class ProductInfo extends Component {
             if (json.description.id !== 0) {
                 M.toast(
                     {
-                        html: `${json.description.id} - ${json.description.name} добавлен в базу данных`,
+                        html: `${json.description.id} - ${json.description.name} добавлен в базу данных, ${json.description.price}`,
                         classes: "rounded"
                     }
                 );
@@ -152,7 +142,7 @@ class ProductInfo extends Component {
                                                         </th>);
                                                     } else if (el.toLowerCase() === "name") {
                                                         return (<td key={i}>
-                                                            <a href={item["url"]}>{item[el]}</a>
+                                                            <a target="_blank" rel="noopener noreferrer" href={item["url"]}>{item[el]}</a>
                                                         </td>);
                                                     } else if (el.toLowerCase() === "date") {
                                                         return (<td key={i}>
@@ -191,7 +181,7 @@ class ProductInfo extends Component {
                     <Pagination
                         state={this.state}
                         handleStateResultObject={this.handleStateResultObject}
-                    />,
+                    />
                 </React.Fragment>
             );
         } else if (items.length === 0) {

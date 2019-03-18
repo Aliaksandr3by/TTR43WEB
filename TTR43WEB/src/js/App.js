@@ -58,16 +58,25 @@ class App extends Component {
             <React.Fragment>
                 <header className="row" role="navigation">
                     <Navigate />
-                    <Login urlControlAction={this.urlControlAction} __RequestVerificationToken={__RequestVerificationToken} />
+                    <Login
+                        urlControlAction={this.urlControlAction}
+                        __RequestVerificationToken={__RequestVerificationToken} />
                 </header>
                 <main className="row" id="main" role="main">
                     <CoastTextareaUrl
                         stateChangeResult={this.stateChangeResult}
-                        urlData={urlControlActionGetCoastAsync}
+                        urlControlAction={this.urlControlAction}
                     />
-                    <ProductInfo name="table" products={products} />
+                    <ProductInfo
+                        urlControlAction={this.urlControlAction}
+                        name="table"
+                        products={products} />
                 </main>
-                <footer className="row" id="footer" role="status"></footer>
+                <footer className="row" id="footer" role="status">
+                    <React.Fragment>
+                        <div><p>qwe</p></div>
+                    </React.Fragment>
+                </footer>
             </React.Fragment>
         );
     }

@@ -71,3 +71,14 @@ const d = () => {
     });
 
 };
+
+const c = () => {
+    const tmp = Array.from(document.getElementById("thread-1501149").querySelectorAll("img.post__file-preview")).map(e=>(`https://2ch.hk${e.dataset.src}`));
+    const div = document.getElementsByTagName("body")[0].appendChild(document.createElement("div"));
+    tmp.map(e => {
+        let aa = document.createElement("p");
+        aa.textContent = e;
+        div.appendChild(aa);
+    });
+};
+

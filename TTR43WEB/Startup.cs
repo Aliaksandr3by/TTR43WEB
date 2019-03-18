@@ -16,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using TTR43WEB.Models.Gipermall;
 using TTR43WEB.Models.User;
+using TTR43WEB.Datum;
 
 namespace TTR43WEB
 {
@@ -39,9 +40,10 @@ namespace TTR43WEB
 
             services.AddDataProtection().SetDefaultKeyLifetime(TimeSpan.FromDays(14)); ;
 
-            services.AddDbContext<ProductsContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:ConnectionProduct"]));
-            services.AddScoped<Product, Product>();
+            services.AddDbContext<ProductContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:ConnectionProduct"]));
             services.AddScoped<IProductsContextQueryable, ProductsContextQueryable>();
+
+            services.AddScoped<Product, Product>();
 
             services.AddDbContext<UserContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:ConnectionProduct"]));
             services.AddScoped<UsersContextQueryable, UsersContextQueryable>();
@@ -111,9 +113,11 @@ namespace TTR43WEB
             app.UseMvc(routes =>
             {
                 routes.MapRoute(name: "index", template: "{controller=Gipermall}/{action=Index}");
+
                 routes.MapRoute(name: null, template: "{controller=Gipermall}/{action=OptionsURIinBase}");
 
                 routes.MapRoute(name: "table", template: "{controller=Gipermall}/{action=Table}/{id?}");
+
                 routes.MapRoute(name: "tableUrl", template: "{controller=Gipermall}/{action=AllItemsUrls}/{id?}");
 
                 routes.MapRoute(name: "getCoastAsync", template: "{controller=Gipermall}/{action=GetCoastAsync}/{id?}");

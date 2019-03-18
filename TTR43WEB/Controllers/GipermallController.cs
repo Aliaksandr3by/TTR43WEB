@@ -4,18 +4,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Primitives;
 using TTR43WEB.Filters;
-using Microsoft.EntityFrameworkCore;
-using System.Text;
 using Newtonsoft.Json.Linq;
-using AngleSharp;
-using Newtonsoft;
-using TTR43WEB.Models.Gipermall;
 using System.Net;
 using Microsoft.AspNetCore.Authorization;
-using System.IO;
+using TTR43WEB.Models.Gipermall;
+using TTR43WEB.Datum;
 
 namespace TTR43WEB.Controllers
 {
@@ -48,7 +42,7 @@ namespace TTR43WEB.Controllers
         /// <param name="ElementURI"></param>
         /// <returns></returns>
         [HttpOptions]
-        [ContentTypeJson]
+        [ContentTypeAddJson]
         [Allow]
         public IActionResult OptionsURIinBase([FromBody]ElementURIData ElementURI)
         {
@@ -79,67 +73,14 @@ namespace TTR43WEB.Controllers
             }
         }
 
-        [HttpPost]
-        [ContentTypeJson]
-        public IActionResult Table([FromBody]GetDataTable getDataTable)
-        {
-            var data = gipermollTableData.Products;
-
-            GetDataTable _getDataTable = getDataTable;
-
-            int pageSize = _getDataTable.pageSize;
-
-            int totalItems = data.Count<Product>();
-
-            int totalPages = (int)Math.Ceiling((decimal)totalItems / pageSize);
-
-            int productPage = _getDataTable.productPage > totalPages || _getDataTable.productPage < 0 ? 0 : _getDataTable.productPage;
-
-            Func<Product, DateTime?> fn2 = e => e.Date;
-
-            int countProducts = data.Count<Product>();
-
-            var valueDefault = from n in new int[] { totalItems, (new int[] { 200, totalItems }).Min(), 10, 15, 25, 30, 50, 75, 100, 150 }
-                               where n <= totalItems && n < 250
-                               orderby n
-                               select n;
-
-            var result = data
-                .OrderByDescending(fn2)
-                .Skip(productPage * pageSize)
-                .Take((new int[] { pageSize, countProducts }).Min())
-                .Select(e => new
-                {
-                    e.Id,
-                    e.Url,
-                    e.Name,
-                    e.MarkingGoods,
-                    e.Date,
-                    e.Price,
-                    e.PriceWithoutDiscount
-                });
-
-            var ProductInfo = Json(new
-            {
-                items = result,
-                isLoaded = true,
-                productPage,
-                totalPages,
-                pageSize,
-                valueDefault,
-                totalItems
-            });
-
-            return ProductInfo;
-        }
-
         [HttpGet]
-        [ContentTypeJson]
+        [Authorize]
+        [ContentTypeAddJson]
         public IActionResult GetItemProduct(int pageSize, int productPage)
         {
-            var data = gipermollTableData.Products;
+            var AllProducts = gipermollTableData.Products;
 
-            int totalItems = data.Count<Product>();
+            int totalItems = AllProducts.Count<Products>();
 
             int _pageSize = pageSize;
 
@@ -147,25 +88,24 @@ namespace TTR43WEB.Controllers
 
             int _productPage = (productPage > totalPages || productPage < 0) ? 0 : productPage;
 
-            Func<Product, DateTime?> fn2 = e => e.Date;
+            Func<Products, DateTime?> fn2 = e => e.Date;
 
-            int countProducts = data.Count<Product>();
+            int countProducts = AllProducts.Count<Products>();
 
-            var valueDefault = from n in new int[] { totalItems, (new int[] { 200, totalItems }).Min(), 5, 10, 15, 25, 30, 50, 75, 100, 150 }
-                               where n <= totalItems && n < 250
+            var valueDefault = from n in new int[] { totalItems, 3, 5, 10, 15, 25, 30, 50, 75, 100, 150, 200, 250 }
+                               where n <= totalItems
                                orderby n
                                select n;
-
-            var result = data
+            var result = AllProducts
                 .OrderByDescending(fn2)
                 .Skip(_productPage * _pageSize)
                 .Take((new int[] { _pageSize, countProducts }).Min())
                 .Select(e => new
                 {
                     e.Id,
-                    e.Url,
-                    e.Name,
-                    e.MarkingGoods,
+                    Url = e.UrlNavigation.UrlProduct,
+                    Name = e.NameNavigation.NameProduct,
+                    MarkingGoods = e.MarkingGoodsNavigation.MarkingGoodsProduct,
                     e.Date,
                     e.Price,
                     e.PriceWithoutDiscount
@@ -188,7 +128,33 @@ namespace TTR43WEB.Controllers
 
         [HttpPost]
         [Authorize]
-        [ContentTypeJson]
+        [ContentTypeAddJson]
+        [AccessControlAllowAll]
+        public async Task<IActionResult> GetCoastAsync([FromBody]JObject idGoods)
+        {
+
+            DataSend dataSendObj = idGoods.ToObject<DataSend>();
+
+            GetDataFromGipermall getDataFromGipermall = new GetDataFromGipermall(dataSendObj.IdGoods, _product);
+
+            var description = await getDataFromGipermall.GetFullDescriptionResult();
+
+            int resultBaseDataAdd = await gipermollTableData.SaveProduct(description);
+
+            var result = new
+            {
+                description = description,
+                resultBaseDataAdd,
+                isLoaded = true
+            };
+
+            return Json(result);
+        }
+
+
+        [HttpPost]
+        [Authorize]
+        [ContentTypeAddJson]
         public async Task<IActionResult> AllItemsUrls()
         {
             var data = gipermollTableData.Products;
@@ -203,31 +169,6 @@ namespace TTR43WEB.Controllers
             });
 
             return result;
-        }
-
-        [HttpPost]
-        [Authorize]
-        [ContentTypeJson]
-        [AccessControlAllow]
-        public async Task<IActionResult> GetCoastAsync([FromBody]JObject idGoods)
-        {
-
-            DataSend dataSendObj = idGoods.ToObject<DataSend>();
-
-            GetDataFromGipermall getDataFromGipermall = new GetDataFromGipermall(dataSendObj.IdGoods, _product);
-
-            int count = await getDataFromGipermall.GetFullDescriptionResult();
-
-            int resultBaseDataAdd = await gipermollTableData.SaveProduct(_product);
-
-            var result = new
-            {
-                description = _product,
-                resultBaseDataAdd,
-                isLoaded = true
-            };
-
-            return Json(result);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

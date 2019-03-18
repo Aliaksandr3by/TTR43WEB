@@ -6,6 +6,8 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using TTR43WEB.Models.Gipermall;
+using TTR43WEB.Datum;
 
 namespace TTR43WEB.Models.Gipermall
 {
@@ -13,13 +15,11 @@ namespace TTR43WEB.Models.Gipermall
     {
         readonly private Product _productNew;
         private readonly string _url;
-        private int count = 0;
 
         public GetDataFromGipermall(string url, Product product)
         {
-            this._productNew = product;
+            this._productNew = new Product();
             _url = url;
-            count++;
         }
 
         private async Task<IHtmlCollection<IElement>> GetDataAngleSharp(string url, string selectors)
@@ -128,7 +128,7 @@ namespace TTR43WEB.Models.Gipermall
             }
         }
 
-        public async Task<int> GetFullDescriptionResult()
+        public async Task<Product> GetFullDescriptionResult()
         {
             Dictionary<string, string> keyValuePairs = await Task.Run(() => GetDescription(_url, "ul.description"));
 
@@ -161,7 +161,7 @@ namespace TTR43WEB.Models.Gipermall
 
                 _productNew.PriceOneLiter = ReplaceHelper(keyValuePairs, "Цена за 1 л:", (e) => decimal.Parse(e, CultureInfo.InvariantCulture));
 
-                return count;
+                return _productNew;
             }
             catch (Exception)
             {

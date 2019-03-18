@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TTR43WEB.Filters
 {
-    public class ContentTypeJsonAttribute : ActionFilterAttribute
+    public class ContentTypeAddJsonAttribute : ActionFilterAttribute
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TTR43WEB.Filters
 {
-    public class AccessControlAllowAttribute : ActionFilterAttribute
+    public class AccessControlAllowAllAttribute : ActionFilterAttribute
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {

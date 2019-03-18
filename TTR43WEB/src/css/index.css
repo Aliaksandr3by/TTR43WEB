@@ -30,7 +30,15 @@ ul.pagination li:hover {
 #panelNavigation {
     position: fixed;
     bottom: 50px;
-    right: 50px;
+    right: 10px;
+}
+
+#panelNavigation:hover {
+    display: block;
+    z-index: 99999999;
+    border: 2px solid red;
+    border-radius: 5%;
+    background-color: aquamarine;
 }
 
 #progressBar {
@@ -38,16 +46,13 @@ ul.pagination li:hover {
 }
 
 @media screen and (min-width: 992px) {
-
     .wrapper {
         overflow-x: auto;
     }
-    
     td {
         /* max-width: 0;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap; */
     }
-
 }

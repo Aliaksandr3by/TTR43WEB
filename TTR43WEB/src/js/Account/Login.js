@@ -34,16 +34,10 @@ class Login extends Component {
         try {
             const { Login, Password } = this.state;
 
-            const data1 = new FormData();
-            data1.append("__RequestVerificationToken", this.props.__RequestVerificationToken);
-            data1.append("Login", Login);
-            data1.append("Password", Password);
-
-            const data = JSON.stringify({
-                "__RequestVerificationToken": this.props.__RequestVerificationToken,
-                "Login": Login,
-                "Password": Password,
-            });
+            const userData = new FormData();
+            userData.append("__RequestVerificationToken", this.props.__RequestVerificationToken);
+            userData.append("Login", Login);
+            userData.append("Password", Password);
 
             const response = await fetch(this.urlControlAction.urlControlActionAccountLogin, {
                 method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -58,7 +52,7 @@ class Login extends Component {
                 },
                 redirect: "follow", // manual, *follow, error
                 referrer: "no-referrer", // no-referrer, *client
-                body: data1, // body data type must match "Content-Type" header
+                body: userData, // body data type must match "Content-Type" header
             });
             const json = await response.json();
             //this.setState({ textarea: json.description });

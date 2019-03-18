@@ -5,7 +5,7 @@ import M from "materialize-css";
 class CoastTextareaUrl extends Component {
     static propTypes = {
         stateChangeResult: PropTypes.func.isRequired,
-        urlData: PropTypes.string.isRequired
+        urlControlAction: PropTypes.object.isRequired
     };
     constructor(props) {
         super(props);
@@ -41,7 +41,8 @@ class CoastTextareaUrl extends Component {
 
     OptionsURIinBase = async (url, elURI) => {
         try {
-            const response = await fetch(url, {
+            const { urlControlAction } = this.props;
+            const response = await fetch(urlControlAction.urlControlActionGetCoastAsync, {
                 method: "OPTIONS", // *GET, POST, PUT, DELETE, etc.
                 headers: {
                     "Content-Type": "application/json",
@@ -78,7 +79,8 @@ class CoastTextareaUrl extends Component {
 
     async getDataTable() {
         try {
-            const response = await fetch(urlControlActionGetAllItemsUrls, {
+            const { urlControlAction } = this.props;
+            const response = await fetch(urlControlAction.urlControlActionGetAllItemsUrls, {
                 method: "POST", // *GET, POST, PUT, DELETE, etc.
                 headers: {
                     "Content-Type": "application/json",
@@ -124,13 +126,14 @@ class CoastTextareaUrl extends Component {
 
     async getData(e) {
         try {
+            const { urlControlAction } = this.props;
             const data = this.formatDataURL(this.state);
             this.setState({ progress: 0 });
             for (const iterator of data) {
 
                 //this.OptionsURIinBase(urlControlActionOptionsURIinBase, iterator);
 
-                const response = await fetch(this.props.urlData, {
+                const response = await fetch(urlControlAction.urlControlActionGetCoastAsync, {
                     method: "POST", // *GET, POST, PUT, DELETE, etc.
                     headers: {
                         "Content-Type": "application/json",
