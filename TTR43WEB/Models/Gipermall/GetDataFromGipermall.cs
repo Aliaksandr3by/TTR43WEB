@@ -13,12 +13,12 @@ namespace TTR43WEB.Models.Gipermall
 {
     public class GetDataFromGipermall
     {
-        readonly private Product _productNew;
+        readonly private ProductEntity _productNew;
         private readonly string _url;
 
-        public GetDataFromGipermall(string url, Product product)
+        public GetDataFromGipermall(string url, ProductEntity product)
         {
-            this._productNew = new Product();
+            this._productNew = new ProductEntity();
             _url = url;
         }
 
@@ -128,7 +128,7 @@ namespace TTR43WEB.Models.Gipermall
             }
         }
 
-        public async Task<Product> GetFullDescriptionResult()
+        public async Task<ProductEntity> GetFullDescriptionResult()
         {
             Dictionary<string, string> keyValuePairs = await Task.Run(() => GetDescription(_url, "ul.description"));
 

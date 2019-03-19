@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace TTR43WEB.Models.Gipermall
 {
-    //[Table("Product")]
-    public class Product
+    //[Table("ProductEntity")]
+    public class ProductEntity
     {
         [Key]
         [HiddenInput(DisplayValue = false)]

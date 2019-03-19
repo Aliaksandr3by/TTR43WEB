@@ -129,10 +129,9 @@ class CoastTextareaUrl extends Component {
             const { urlControlAction } = this.props;
             const data = this.formatDataURL(this.state);
             this.setState({ progress: 0 });
+            //this.OptionsURIinBase(urlControlActionOptionsURIinBase, iterator);
             for (const iterator of data) {
-
-                //this.OptionsURIinBase(urlControlActionOptionsURIinBase, iterator);
-
+                
                 const response = await fetch(urlControlAction.urlControlActionGetCoastAsync, {
                     method: "POST", // *GET, POST, PUT, DELETE, etc.
                     headers: {
@@ -179,8 +178,9 @@ class CoastTextareaUrl extends Component {
             // });
 
             this.setState({ textarea: [] });
-            for (let i = 1500; i < 2000; i++) {
-                let tmp = [`https://gipermall.by/catalog/item_${Number(i)}.html`];
+            const dd = 2500 + 1;
+            for (let i = dd; i < dd + 500; i++) {
+                let tmp = `https://gipermall.by/catalog/item_${Number(i)}.html`;
                 this.handleStateResultArray(tmp, "textarea");
             }
 

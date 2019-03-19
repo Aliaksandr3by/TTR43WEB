@@ -74,7 +74,16 @@ namespace TTR43WEB.Datum
 
             modelBuilder.Entity<Products>(entity =>
             {
+                entity.HasKey(e => e.Guid)
+                    .HasName("PK_Product");
+
+                entity.Property(e => e.Guid)
+                    .HasColumnName("GUID")
+                    .HasDefaultValueSql("(newid())");
+
                 entity.Property(e => e.Date).HasColumnType("datetime");
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
 

@@ -6,6 +6,7 @@ namespace TTR43WEB.Datum
     public partial class Products
     {
         public int Id { get; set; }
+        public Guid Guid { get; set; }
         public DateTime? Date { get; set; }
         public int Url { get; set; }
         public int? Name { get; set; }

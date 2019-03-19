@@ -16,10 +16,10 @@ namespace TTR43WEB.Controllers
     public class GipermallController : Controller
     {
         private readonly IProductsContextQueryable gipermollTableData;
-        private readonly Product _product;
+        private readonly ProductEntity _product;
         private int cont = 0;
 
-        public GipermallController(IProductsContextQueryable gipermollTable, Product product)
+        public GipermallController(IProductsContextQueryable gipermollTable, ProductEntity product)
         {
             gipermollTableData = gipermollTable;
             _product = product;
@@ -103,14 +103,14 @@ namespace TTR43WEB.Controllers
                 .Select(e => new
                 {
                     e.Id,
-                    Url = e.UrlNavigation.UrlProduct,
-                    Name = e.NameNavigation.NameProduct,
-                    MarkingGoods = e.MarkingGoodsNavigation.MarkingGoodsProduct,
+                    Url = e.UrlNavigation?.UrlProduct,
+                    Name = e.NameNavigation?.NameProduct,
+                    MarkingGoods = e.MarkingGoodsNavigation?.MarkingGoodsProduct,
                     e.Date,
                     e.Price,
                     e.PriceWithoutDiscount
                 });
-            //.AsQueryable<Product>();
+            //.AsQueryable<ProductEntity>();
 
             var ProductInfo = Json(new
             {
@@ -132,23 +132,36 @@ namespace TTR43WEB.Controllers
         [AccessControlAllowAll]
         public async Task<IActionResult> GetCoastAsync([FromBody]JObject idGoods)
         {
-
-            DataSend dataSendObj = idGoods.ToObject<DataSend>();
-
-            GetDataFromGipermall getDataFromGipermall = new GetDataFromGipermall(dataSendObj.IdGoods, _product);
-
-            var description = await getDataFromGipermall.GetFullDescriptionResult();
-
-            int resultBaseDataAdd = await gipermollTableData.SaveProduct(description);
-
-            var result = new
+            try
             {
-                description = description,
-                resultBaseDataAdd,
-                isLoaded = true
-            };
+                DataSend dataSendObj = idGoods.ToObject<DataSend>();
 
-            return Json(result);
+                GetDataFromGipermall getDataFromGipermall = new GetDataFromGipermall(dataSendObj.IdGoods, _product);
+
+                var description = await getDataFromGipermall.GetFullDescriptionResult();
+
+                int resultBaseDataAdd = await gipermollTableData.SaveProduct(description);
+
+                var result = new
+                {
+                    description,
+                    resultBaseDataAdd,
+                    isLoaded = true
+                };
+
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                var result = new
+                {
+                    description = new { error = ex.Message},
+                    resultBaseDataAdd = 0,
+                    isLoaded = false
+                };
+
+                return Json(result);
+            }
         }
 
 

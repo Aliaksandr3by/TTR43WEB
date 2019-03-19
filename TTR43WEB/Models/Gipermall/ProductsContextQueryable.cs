@@ -37,12 +37,12 @@ namespace TTR43WEB.Models.Gipermall
         public IQueryable<Trademark> Trademark => context.Trademark;
         public IQueryable<Url> Url => context.Url;
 
-        public Task<int> SaveProduct(Product product)
+        public Task<int> SaveProduct(ProductEntity product)
         {
-            if (!context.Products.Any<Products>(
+            if (product.MarkingGoods != null && !context.Products.Any<Products>(
                 p => p.MarkingGoodsNavigation.MarkingGoodsProduct == product.MarkingGoods && 
                 p.Price == product.Price && 
-                p.PriceWithoutDiscount == product.PriceWithoutDiscount && false))
+                p.PriceWithoutDiscount == product.PriceWithoutDiscount))
             {
                 var tmp = (new Products()).ToProducts(product, context);
                 context.Products.Add(tmp);
