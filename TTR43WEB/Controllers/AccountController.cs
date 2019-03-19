@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TTR43WEB.Models.User;
+using TTR43WEB.Universal;
 
 namespace TTR43WEB.Controllers
 {
@@ -28,7 +29,19 @@ namespace TTR43WEB.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            return View();
+            try
+            {
+                var userAgent = Request.Headers["User-Agent"].FirstOrDefault();
+                var host = Request.Headers["Host"].FirstOrDefault(); 
+
+                var __RequestVerificationToken = Base64.Base64Encode(userAgent.ToString());
+
+                return this.Json(new { __RequestVerificationToken });
+            }
+            catch (Exception ex)
+            {
+                return this.Json(new { __RequestVerificationToken = "", error = ex.Message });
+            }
         }
 
         [HttpPost]

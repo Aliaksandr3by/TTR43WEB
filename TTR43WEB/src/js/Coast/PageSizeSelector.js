@@ -16,7 +16,7 @@ const PageSizeSelector = props => {
             "pageSize": pageSize,
             "productPage": productPage,
         });
-    }
+    };
 
     return (
         <div className="input-field right-align" id="panelNavigation">

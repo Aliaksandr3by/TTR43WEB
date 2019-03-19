@@ -19,6 +19,7 @@ class App extends Component {
         super(props);
         this.state = {
             products: [],
+            __RequestVerificationToken: "",
         };
         this.urlControlAction = this.props.urlControlAction;
     }
@@ -28,7 +29,19 @@ class App extends Component {
         M.FormSelect.init(document.querySelectorAll("select"), {});
         M.Sidenav.init(document.querySelectorAll(".sidenav"), {});
         console.log("componentDidMount");
+        try {
+            const response = await fetch(this.urlControlAction.urlControlActionAccountLogin);
+            const json = await response.json();
+            console.log(json);
+            this.setState(json);
+        } catch (error) {
+            this.setState({
+                error
+            });
+            console.error(error);
+        }
     }
+
     //непосредственно перед удалением его с экрана 
     async componentWillUnmount() {
         console.log("componentDidMount");

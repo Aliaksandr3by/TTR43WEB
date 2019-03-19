@@ -18,6 +18,16 @@ class CoastTextareaUrl extends Component {
         };
         this.handleChange = this.handleChange.bind(this);
     }
+    
+    componentDidMount() {
+        M.textareaAutoResize(document.getElementById("textareaURLstorige"));
+        this.setState({ "textarea": this.dataOperatorLocalS("dataTmp") });
+    }
+
+    async componentDidUpdate() {
+        M.textareaAutoResize(document.getElementById("textareaURLstorige"));
+        this.dataOperatorLocalS("dataTmp", this.state.textarea);
+    }
 
     getProgress = async (progress, length) => progress += 100 / length;
 
@@ -62,16 +72,6 @@ class CoastTextareaUrl extends Component {
         }
     };
 
-    componentDidMount() {
-        M.textareaAutoResize(document.getElementById("textareaURLstorige"));
-        this.setState({ "textarea": this.dataOperatorLocalS("dataTmp") });
-    }
-
-    async componentDidUpdate() {
-        M.textareaAutoResize(document.getElementById("textareaURLstorige"));
-        this.dataOperatorLocalS("dataTmp", this.state.textarea);
-    }
-
     handleChange(event) {
         const data = event.target.value;
         this.setState({ "textarea": data });
@@ -102,21 +102,20 @@ class CoastTextareaUrl extends Component {
 
     formatDataURL = ({ textarea }) => {
         return Array.isArray(textarea)
-            ? textarea
-            : (textarea.replace(/'|«|»|\\|"/g, "")
-                .split(/\s|,|\s,/))
+            ? [...textarea]
+            : [...(textarea.split(/\s|,|\s,/))]
                 .filter((item, i) => item !== "")
                 .map((e, i) => this.getItem_html(e));
     }
 
-    getItem_html = (e) => {
-        console.log(typeof e);
+    getItem_html = (element) => {
+        const _element = element.replace(/'|«|»|\\|"/g, ""); //!очищает данные от лишних символов
         let tmp = "";
-        if (typeof e === "number" || Number(e)) {
-            tmp = `https://gipermall.by/catalog/item_${Number(e)}.html`;
+        if (typeof _element === "number" || Number(_element)) {
+            tmp = `https://gipermall.by/catalog/item_${Number(_element)}.html`;
             return tmp;
-        } else if (typeof e === "string") {
-            let sowp = String(e).match(/item_\d*.html$/i);
+        } else if (typeof _element === "string") {
+            let sowp = String(_element).match(/item_\d*.html$/i);
             tmp = sowp[0] ? `https://gipermall.by/catalog/${sowp[0]}` : "";
             return tmp;
         } else {
@@ -131,7 +130,7 @@ class CoastTextareaUrl extends Component {
             this.setState({ progress: 0 });
             //this.OptionsURIinBase(urlControlActionOptionsURIinBase, iterator);
             for (const iterator of data) {
-                
+
                 const response = await fetch(urlControlAction.urlControlActionGetCoastAsync, {
                     method: "POST", // *GET, POST, PUT, DELETE, etc.
                     headers: {

@@ -56,7 +56,6 @@
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="src\fonts\" />
     <Folder Include="src\js\Components\" />
-    <Folder Include="Universal\" />
     <Folder Include="ViewModel\" />
   </ItemGroup>
 

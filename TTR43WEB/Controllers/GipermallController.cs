@@ -74,7 +74,7 @@ namespace TTR43WEB.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [AllowAnonymous]
         [ContentTypeAddJson]
         public IActionResult GetItemProduct(int pageSize, int productPage)
         {
@@ -170,10 +170,10 @@ namespace TTR43WEB.Controllers
         [ContentTypeAddJson]
         public async Task<IActionResult> AllItemsUrls()
         {
-            var data = gipermollTableData.Products;
+            var dataContext = gipermollTableData.Products;
 
             //var description = (from b in data orderby b.Url descending select b.Url).Distinct();
-            var description = data.OrderBy(e => e.Url).Select(e => e.Url).Distinct();
+            var description = dataContext.OrderBy(e => e.UrlNavigation.UrlProduct).Select(e => e.UrlNavigation.UrlProduct).Distinct();
 
             var result = Json(new
             {
