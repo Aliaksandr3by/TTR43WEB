@@ -49,9 +49,10 @@ const s = () => {
     const tmp = Array.from(document.querySelectorAll("a.to_favorite.fa.fa-heart")).map(e => e.getAttribute("data-product-id"));
     const div = document.getElementsByTagName("body")[0].appendChild(document.createElement("div"));
     tmp.map(e => {
-        div.appendChild((document.createElement("p")).textContent = `https://gipermall.by/catalog/item_${e.replace(/,/g, "")}.html`);
+        let a = document.createElement("p");
+        a.textContent = `https://gipermall.by/catalog/item_${e.replace(/,/g, "")}.html`;
+        div.appendChild(a);
     });
-
 };
 
 
