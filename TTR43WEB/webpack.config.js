@@ -133,8 +133,10 @@ module.exports = (env, argv) => {
             }),
             new WebpackMd5Hash(),
             new CleanWebpackPlugin({
-                cleanOnceBeforeBuildPatterns: ["**/*", "!**/*.js", "!**/*.css"],
-                dry: true,
+                cleanOnceBeforeBuildPatterns: devMode
+                    ? ["**/*.js", "*****/*", "**/*.map", "***/*.css", "!**/*production*", "!***/*production*"]
+                    : ["**/*"],
+                dry: false, //! true для тестирования без удаления!
                 verbose: true,
                 cleanStaleWebpackAssets: false,
             }),
@@ -146,21 +148,19 @@ module.exports = (env, argv) => {
                 inject: false,
                 hash: true,
                 template: `${paths.VIEW}/_BundledScriptsTemplate.cshtml`,
-                filename: `${paths.VIEW}/Shared/_BundledScripts.cshtml`,
+                filename: devMode ? `${paths.VIEW}/Shared/_BundledScriptsDev.cshtml` : `${paths.VIEW}/Shared/_BundledScriptsProd.cshtml`,
             }),
             new HtmlWebpackPlugin({
                 inject: false,
                 hash: true,
                 template: `${paths.VIEW}/_BundledCSSTemplate.cshtml`,
-                filename: `${paths.VIEW}/Shared/_BundledCSS.cshtml`,
+                filename: devMode ? `${paths.VIEW}/Shared/_BundledCSSDev.cshtml` : `${paths.VIEW}/Shared/_BundledCSSProd.cshtml`,
             }),
             new CopyWebpackPlugin([
-                {
-                    from: `${paths.SRC}/images`, to: `${paths.DIST}/image`
-                },
-                {
-                    from: `${paths.SRC}/statics`, to: `${paths.ROOT}`
-                }
+                { from: `${paths.SRC}/images`, to: `${paths.DIST}/image` },
+                { from: `${paths.SRC}/html`, to: `${paths.DIST}/html` },
+                { from: `${paths.SRC}/statics`, to: `${paths.ROOT}` },
+                { from: `${paths.SRC}/StaticFilesHide`, to: `${paths.ROOT}/StaticFilesHide` },
             ])
         ]
     };

@@ -35,6 +35,11 @@
     <Content Remove="wwwroot\public\htmlpage.html" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="SQLQuery1.sql" />
+    <None Remove="SQLQuery2.sql" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="0.11.0" />

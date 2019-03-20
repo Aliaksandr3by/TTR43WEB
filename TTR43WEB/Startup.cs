@@ -48,8 +48,6 @@ namespace TTR43WEB
             services.AddDbContext<UserContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:ConnectionProduct"]));
             services.AddScoped<UsersContextQueryable, UsersContextQueryable>();
 
-            //services.AddSingleton<ITable, EFTable>();
-
             // Inside your ConfigureServices method
             services.AddAuthentication(options =>
             {
@@ -96,13 +94,26 @@ namespace TTR43WEB
                 }
             });
 
-            app.UseFileServer(new FileServerOptions
+            if (env.IsDevelopment())
             {
-                //FileProvider = new PhysicalFileProvider(
-                //    Path.Combine(Directory.GetCurrentDirectory(), "StaticFilesHide")),
-                //    RequestPath = "~/StaticFilesHide",
-                //    EnableDirectoryBrowsing = true
-            });
+                app.UseFileServer(new FileServerOptions
+                {
+                    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/public/html")),
+                    RequestPath = "/Statics",
+                    EnableDirectoryBrowsing = true
+                });
+
+                app.UseDirectoryBrowser(new DirectoryBrowserOptions()
+                {
+                    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\StaticFilesHide")),
+
+                    RequestPath = new PathString("/StaticFile")
+                });
+            }
+            else
+            {
+
+            }
 
             app.UseAuthentication();
             app.UseHttpsRedirection();

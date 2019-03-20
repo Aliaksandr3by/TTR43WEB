@@ -7,20 +7,20 @@
     <meta http-equiv="Cache-Control" content="no-cache">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <environment include="Development">
-        <partial name="_BundledCSS" />
+        <partial name="_BundledCSSProd" />
     </environment>
     <environment exclude="Development">
-        <partial name="_BundledCSS" />
+        <partial name="_BundledCSSProd" />
     </environment>
     @Html.AntiForgeryToken()
 </head>
 <body>
     @RenderBody()
     <environment include="Development">
-        <partial name="_BundledScripts" />
+        <partial name="_BundledScriptsDev" />
     </environment>
     <environment exclude="Development">
-        <partial name="_BundledScripts" />
+        <partial name="_BundledScriptsProd" />
     </environment>
     @RenderSection("Scripts", required: false)
 </body>

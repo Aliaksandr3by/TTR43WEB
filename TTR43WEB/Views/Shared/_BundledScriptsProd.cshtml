@@ -1,0 +1,16 @@
+@{
+    StringBuilder jsUrl = default;
+    string replace = "../../wwwroot";
+    string insert = "";
+}
+
+<!--.JS-->
+    
+@{
+    jsUrl = new StringBuilder("../../wwwroot/public/js/app.production.bundle.1ac3bd7b3080ebea4bc9.js?7e18e0b8010b97dfb61e");
+    jsUrl.Replace(replace, insert);
+    <script src=@jsUrl></script>
+}
+    
+
+    
