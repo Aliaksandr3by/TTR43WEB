@@ -28,12 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
             rootContainer
         );
     }
-
-    window.addEventListener("keydown", e => {
-        //console.log(e.which);
-        //console.log(String.fromCharCode(e.which));
-    });
-
+    
 });
 
 /** мусор */

@@ -46,6 +46,7 @@ class ProductInfo extends Component {
             return item;
         }
     }
+    
     async getDataTable({ pageSize, productPage }) {
         try {
             const response = await fetch(`Gipermall/GetItemProduct/Page${productPage}/Size${pageSize}`, {
@@ -63,10 +64,16 @@ class ProductInfo extends Component {
             console.error(error);
         }
     }
+
     async componentDidMount() {
         const tmp = await this.getDataTable(this.state);
         this.setState(tmp);
     }
+
+    /**
+     * Метод обновляет данные выбранного продукта по нажатию на кнопку обновления;
+     * @param {Event} e 
+     */
     async dataUpdate(e) {
         try {
             const response = await fetch(urlControlActionGetCoastAsync, {
@@ -111,7 +118,7 @@ class ProductInfo extends Component {
                 <React.Fragment>
                     <table className="col s12 striped highlight" data-src={this.props.name}>
                         <caption><p>{this.props.name}</p></caption>
-                        <thead>
+                        <thead id="tableTop">
                             <tr>
                                 {
                                     Object.keys(items[0]).map((el, i) => {

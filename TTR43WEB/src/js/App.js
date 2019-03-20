@@ -7,6 +7,7 @@ import { Navigate } from "./Coast/Navigate";
 import CoastTextareaUrl from "./Coast/CoastTextareaUrl";
 
 import Login from "./Account/Login";
+import ProgressPage from "./Coast/ProgressPage";
 
 class App extends Component {
     static propTypes = {
@@ -20,8 +21,10 @@ class App extends Component {
         this.state = {
             products: [],
             __RequestVerificationToken: "",
+            progressAllPage: 0,
         };
         this.urlControlAction = this.props.urlControlAction;
+        
     }
 
     //взывается сразу же после отображения компонента на экране приведут к запуску жизненного цикла обновления и к повторному отображению компонента на экране
@@ -41,19 +44,18 @@ class App extends Component {
             console.error(error);
         }
     }
-
     //непосредственно перед удалением его с экрана 
     async componentWillUnmount() {
-        console.log("componentDidMount");
+
     }
 
     //предикат, способный отменить обновление;
     async shouldComponentUpdate(nextProps, nextState) {
-
+        
     }
     //вызывается сразу же после выполнения обновления, после вызова метода отображения render ;
     async componentDidUpdate() {
-        console.log("componentDidMount");
+
     }
 
     stateChangeResult = (array, name) => {
@@ -68,7 +70,7 @@ class App extends Component {
         const { products } = this.state;
         const { __RequestVerificationToken } = this.props;
         return (
-            <React.Fragment>
+            <div>
                 <header className="row" role="navigation">
                     <Navigate />
                     <Login
@@ -86,11 +88,9 @@ class App extends Component {
                         products={products} />
                 </main>
                 <footer className="row" id="footer" role="status">
-                    <React.Fragment>
-                        <div><p>qwe</p></div>
-                    </React.Fragment>
+                    <ProgressPage/>
                 </footer>
-            </React.Fragment>
+            </div>
         );
     }
 }

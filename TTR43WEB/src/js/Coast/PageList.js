@@ -26,6 +26,7 @@ const PageList = props => {
             "pageSize": pageSize,
             "productPage": productPage,
         });
+        document.documentElement.scrollTop = 0;
     };
 
     return (

@@ -33,6 +33,14 @@ ul.pagination li:hover {
     right: 10px;
 }
 
+#progressAllPage{
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+    height: 15px;
+    z-index: 99999999;
+}
+
 #panelNavigation:hover {
     display: block;
     z-index: 99999999;
