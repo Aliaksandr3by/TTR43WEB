@@ -4,7 +4,8 @@ import React from "react";
 
 const PageList = props => {
 
-    const { totalPages, productPage, pageSize, handleStateResultObject } = props;
+    const { handleStateResultObject } = props;
+    const { totalPages, productPage, pageSize } = props.state;
 
     const active = (productPage, i) => productPage === i ? "active pulse" : "waves-effect";
 
@@ -21,11 +22,14 @@ const PageList = props => {
         } else if (productPage >= totalPages) {
             productPage = 0;
         }
-        window.localStorage.setItem("productPage", productPage);
+        
         handleStateResultObject({
             "pageSize": pageSize,
             "productPage": productPage,
         });
+        
+        window.localStorage.setItem("productPage", productPage);
+
         document.documentElement.scrollTop = 0;
     };
 
@@ -57,9 +61,7 @@ const PageList = props => {
 };
 PageList.propTypes = {
     handleStateResultObject: PropTypes.func.isRequired,
-    pageSize: PropTypes.number.isRequired,
-    productPage: PropTypes.number.isRequired,
-    totalPages: PropTypes.number.isRequired,
+    state: PropTypes.object.isRequired,
 };
 
 export default PageList;

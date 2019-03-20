@@ -68,7 +68,6 @@ class CoastTextareaUrl extends Component {
                 isLoaded: true,
                 error
             });
-            console.error(error);
         }
     };
 
@@ -96,7 +95,6 @@ class CoastTextareaUrl extends Component {
                 isLoaded: true,
                 error
             });
-            console.error(error);
         }
     }
 
@@ -188,7 +186,6 @@ class CoastTextareaUrl extends Component {
                 isLoaded: true,
                 error
             });
-            console.error(error);
         }
     }
 

@@ -1,34 +1,36 @@
 /*global urlControlActionGetAllTable*/
 /*global urlControlActionGetTable*/
 
+import Cookies from "universal-cookie";
 import React from "react";
 import ReactDOM from "react-dom";
 import "../scss/index.scss";
 
-import App from "./App";
+import Root from "./Root";
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    const urlControlAction = {
-        urlControlActionGetIndex: "/Gipermall/Index",
-        urlControlActionGetCoastAsync: "/Gipermall/GetCoastAsync",
-        urlControlActionGetAllItemsUrls: "/Gipermall/AllItemsUrls",
-        urlControlActionGetTable: "/Gipermall/Table",
-        urlControlActionOptionsURIinBase: "/Gipermall/OptionsURIinBase",
-        urlControlActionAccountLogin: "/Account/Login",
-    };
-
     const rootContainer = document.getElementById("root-container");
-
-    const __RequestVerificationToken = document.querySelector("input[name=__RequestVerificationToken]").value;
-
+    
     if (rootContainer) {
+
+        const urlControlAction = {
+            urlControlActionGetIndex: "/Gipermall/Index",
+            urlControlActionGetCoastAsync: "/Gipermall/GetCoastAsync",
+            urlControlActionGetAllItemsUrls: "/Gipermall/AllItemsUrls",
+            urlControlActionGetTable: "/Gipermall/Table",
+            urlControlActionOptionsURIinBase: "/Gipermall/OptionsURIinBase",
+            urlControlActionAccountLogin: "/Account/Login",
+            urlControlActionAccountLogout: "/Account/Logout",
+            urlControlActionGETGipermallItemsProduct: "/Gipermall/ItemsProduct",
+        };
+ 
         ReactDOM.render(
-            <App __RequestVerificationToken={__RequestVerificationToken} urlControlAction={urlControlAction} />,
+            <Root urlControlAction={urlControlAction} />,
             rootContainer
         );
     }
-    
+
 });
 
 /** мусор */
@@ -51,9 +53,6 @@ const s = () => {
     });
 
 };
-
-
-
 
 
 const d = () => {

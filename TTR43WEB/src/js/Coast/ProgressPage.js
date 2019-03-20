@@ -30,17 +30,17 @@ class ProgressPage extends React.Component {
 
     handleScroll = async () => {
         const a = await this.getProgress();
-        console.log(a);
-
         if (this.state.progressAllPage !== a) {
             this.setState({ progressAllPage: a });
         }
     };
 
     render() {
+        const {progressAllPage} = this.state;
+        const classHide = progressAllPage === 0 || progressAllPage === 100 ? "hide" : "";
         return (
             <React.Fragment>
-                <progress id="progressAllPage" value={this.state.progressAllPage} max={100}></progress>
+                <progress className={classHide} id="progressAllPage" value={this.state.progressAllPage} max={100}></progress>
             </React.Fragment>
         );
     }

@@ -13,6 +13,7 @@ using TTR43WEB.Datum;
 
 namespace TTR43WEB.Controllers
 {
+    [Authorize]
     public class GipermallController : Controller
     {
         private readonly IProductsContextQueryable gipermollTableData;
@@ -26,12 +27,8 @@ namespace TTR43WEB.Controllers
             cont++;
         }
 
+        [AllowAnonymous]
         public IActionResult Index()
-        {
-            return View();
-        }
-
-        public IActionResult htmlpage()
         {
             return View();
         }
@@ -56,7 +53,6 @@ namespace TTR43WEB.Controllers
                 {
                     statusCode = statusCode,
                     ElementURI.ElementURI,
-                    isLoaded = true,
                 });
 
                 return result;
@@ -66,7 +62,6 @@ namespace TTR43WEB.Controllers
                 var result = Json(new
                 {
                     ElementURI.ElementURI,
-                    isLoaded = false,
                 });
 
                 return result;
@@ -76,8 +71,18 @@ namespace TTR43WEB.Controllers
         [HttpGet]
         [AllowAnonymous]
         [ContentTypeAddJson]
-        public IActionResult GetItemProduct(int pageSize, int productPage)
+        public IActionResult ItemsProduct(int pageSize, int productPage)
         {
+            
+            if (!HttpContext.User.Identity.IsAuthenticated)
+            {
+                return Json(new
+                {
+                    authorize = HttpContext.User.Identity.IsAuthenticated,
+                   // error = Content("не аутентифицирован"),
+                });
+            }
+
             var AllProducts = gipermollTableData.Products;
 
             int totalItems = AllProducts.Count<Products>();
@@ -115,7 +120,6 @@ namespace TTR43WEB.Controllers
             var ProductInfo = Json(new
             {
                 items = result,
-                isLoaded = true,
                 productPage = _productPage,
                 totalPages,
                 pageSize = _pageSize,
@@ -146,7 +150,6 @@ namespace TTR43WEB.Controllers
                 {
                     description,
                     resultBaseDataAdd,
-                    isLoaded = true
                 };
 
                 return Json(result);
@@ -155,9 +158,8 @@ namespace TTR43WEB.Controllers
             {
                 var result = new
                 {
-                    description = new { error = ex.Message},
+                    description = new { error = ex.Message },
                     resultBaseDataAdd = 0,
-                    isLoaded = false
                 };
 
                 return Json(result);
@@ -178,7 +180,6 @@ namespace TTR43WEB.Controllers
             var result = Json(new
             {
                 description,
-                isLoaded = true
             });
 
             return result;

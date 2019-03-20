@@ -122,7 +122,7 @@ namespace TTR43WEB
 
                 routes.MapRoute(name: "getCoastAsync", template: "{controller=Gipermall}/{action=GetCoastAsync}/{id?}");
 
-                routes.MapRoute(name: "GetItemProduct", template: "{controller=Gipermall}/{action=GetItemProduct}/Page{productPage:int}/Size{pageSize:int}");
+                routes.MapRoute(name: "ItemsProduct", template: "{controller=Gipermall}/{action=ItemsProduct}/Page{productPage:int}/Size{pageSize:int}");
 
                 routes.MapRoute(name: "htmlpage", template: "{controller=Gipermall}/{action=htmlpage}/{id?}");
 

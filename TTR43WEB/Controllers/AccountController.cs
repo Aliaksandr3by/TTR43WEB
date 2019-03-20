@@ -17,6 +17,7 @@ using TTR43WEB.Universal;
 
 namespace TTR43WEB.Controllers
 {
+    [Authorize]
     public class AccountController : Controller
     {
         private readonly UsersContextQueryable db;
@@ -27,20 +28,31 @@ namespace TTR43WEB.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Login()
         {
             try
             {
                 var userAgent = Request.Headers["User-Agent"].FirstOrDefault();
-                var host = Request.Headers["Host"].FirstOrDefault(); 
+                var host = Request.Headers["Host"].FirstOrDefault();
 
                 var __RequestVerificationToken = Base64.Base64Encode(userAgent.ToString());
 
-                return this.Json(new { __RequestVerificationToken });
+                return this.Json(new
+                {
+                    __RequestVerificationToken,
+                    authorize = HttpContext.User.Identity.IsAuthenticated,
+                }
+                );
             }
             catch (Exception ex)
             {
-                return this.Json(new { __RequestVerificationToken = "", error = ex.Message });
+                return this.Json(new
+                {
+                    __RequestVerificationToken = "",
+                    error = ex.Message,
+                    authorize = HttpContext.User.Identity.IsAuthenticated,
+                });
             }
         }
 
@@ -64,33 +76,36 @@ namespace TTR43WEB.Controllers
 
                     return Json(new
                     {
-                        user
+                        //authorize = HttpContext.User.Identity.IsAuthenticated,
+                        authorize = true,
                     });
                 }
 
                 ModelState.AddModelError("", "Некорректные логин и(или) пароль");
             }
-            
-            var errors = new List<string>();
+
+            var error = new List<string>();
 
             foreach (var modelStateVal in this.ViewData.ModelState.Values)
             {
-                errors.AddRange(modelStateVal.Errors.Select(error => error.ErrorMessage));
+                error.AddRange(modelStateVal.Errors.Select(err => err.ErrorMessage));
             }
 
-            var result = this.Json(new { model, status = "validation-error", errors });
-
-            return result;
+            return this.Json(new
+            {
+                error
+            }); ;
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Register()
         {
             return View();
         }
 
 
-        [Authorize]
+        
         public IActionResult BannerImage()
         {
             var file = Path.Combine(Directory.GetCurrentDirectory(), "public", "image", "Untitled.jpg");
@@ -99,6 +114,7 @@ namespace TTR43WEB.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterModel model)
         {
@@ -139,7 +155,12 @@ namespace TTR43WEB.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Login", "Account");
+
+            return Json(new
+            {
+                //authorize = HttpContext.User.Identity.IsAuthenticated,
+                authorize = false,
+            });
         }
     }
 }
