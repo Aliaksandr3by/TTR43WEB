@@ -5,6 +5,9 @@ TTR43WEB/wwwroot
 TTR43WEB/Properties
 TTR43WEB/Properties/PublishProfiles
 
+TTR43WEB/Views/Shared/_BundledCSS*.cshtml
+TTR43WEB/Views/Shared/_BundledScripts*.cshtml
+
 # User-specific files
 *.suo
 *.user

@@ -89,7 +89,7 @@ class CoastTextareaUrl extends Component {
                 }),
             });
             const json = await response.json();
-            this.setState({ textarea: json.description });
+            this.setState({ textarea: json.items });
         } catch (error) {
             this.setState({
                 isLoaded: true,
@@ -142,13 +142,13 @@ class CoastTextareaUrl extends Component {
                 this.setState({ progress: await this.getProgress(this.state.progress, data.length) });
 
                 if (json.resultBaseDataAdd) {
-                    this.props.stateChangeResult(json.description, "products");
+                    this.props.stateChangeResult(json.items, "items");
 
-                    M.toast({ html: `Товар ${json.description.name} добавлен, цена ${json.description.price} `, displayLength: 4000, classes: "rounded" });
+                    M.toast({ html: `Товар ${json.items.name} добавлен, цена ${json.items.price} `, displayLength: 4000, classes: "rounded" });
 
-                    console.log(json.description.name);
+                    console.log(json.items.name);
                 } else {
-                    M.toast({ html: `Товар ${json.description.name} не изменился`, displayLength: 4000, classes: "rounded" });
+                    M.toast({ html: `Товар ${json.items.name} не изменился`, displayLength: 4000, classes: "rounded" });
                 }
             }
             //
@@ -168,7 +168,7 @@ class CoastTextareaUrl extends Component {
     createDataTable = async () => {
         try {
 
-            // const description = [...Array(1000)].map((item, i) => {
+            // const items = [...Array(1000)].map((item, i) => {
             //     let tmp = [`https://gipermall.by/catalog/item_${Number(i)}.html`];
             //     this.handleStateResultArray(tmp, "textarea");
             //     return tmp;

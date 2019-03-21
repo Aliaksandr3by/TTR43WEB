@@ -8,7 +8,7 @@ import ProductInfo from "./Coast/ProductInfo";
 import { Navigate } from "./Coast/Navigate";
 import CoastTextareaUrl from "./Coast/CoastTextareaUrl";
 
-import Login from "./Account/Login";
+import Authenticate from "./Account/Authenticate";
 import ProgressPage from "./Coast/ProgressPage";
 import PageSizeSelector from "./Coast/PageSizeSelector";
 import PageList from "./Coast/PageList";
@@ -23,7 +23,8 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            authorize: JSON.parse(window.localStorage.getItem("authorize") || false),
+            AspNetCoreCookies: this.props.cookies.get(".AspNetCore.Cookies"),
+            Login: window.localStorage.getItem("Login") || "",
             error: null,
             isLoaded: false,
             items: [],
@@ -35,26 +36,21 @@ class App extends Component {
             name: "qweqweqwe",
         };
         this.urlControlAction = this.props.urlControlAction;
-        console.dir(this.props.cookies);
+        (async () => await this.getDataTable(this.state))();
+        (async () => await this.test(() => console.log(props), () => console.log(props)))();
+    }
+
+    async test(q, w) {
+        return new Promise((rs, rj) => {
+            rs(q());
+            rj(w());
+        });
     }
 
     //взывается сразу же после отображения компонента на экране приведут к запуску жизненного цикла обновления и к повторному отображению компонента на экране
     async componentDidMount() {
         M.FormSelect.init(document.querySelectorAll("select"), {});
         M.Sidenav.init(document.querySelectorAll(".sidenav"), {});
-
-        try {
-            const AccountLogin = await fetch(this.urlControlAction.urlControlActionAccountLogin);
-            const jsonAccountLogin = await AccountLogin.json();
-            this.setState({
-                ...jsonAccountLogin, ...{ isLoaded: true }
-            });
-            await this.getDataTable(this.state);
-        } catch (error) {
-            this.setState({
-                error
-            });
-        }
     }
 
     //непосредственно перед удалением его с экрана 
@@ -63,7 +59,9 @@ class App extends Component {
     }
     //предикат, способный отменить обновление;
     async shouldComponentUpdate(nextProps, nextState) {
-
+        //console.log(nextProps);
+        //console.log(nextState);
+        //return nextState !== this.state;
     }
     //вызывается сразу же после выполнения обновления, после вызова метода отображения render ;
     async componentDidUpdate() {
@@ -94,7 +92,7 @@ class App extends Component {
             const json = await response.json();
 
             this.setState({
-                ...json
+                ...json, ...{ isLoaded: true }
             });
 
             window.localStorage.setItem("productPage", json.productPage);
@@ -109,8 +107,8 @@ class App extends Component {
         }
     }
 
-    renderMainTable({ isLoaded, error, authorize, items, name }) {
-        if (isLoaded && items.length !== 0 && authorize) {
+    renderMainTable({ isLoaded, error, AspNetCoreCookies, items, name }) {
+        if (isLoaded && items.length !== 0 && AspNetCoreCookies) {
             return (
                 <React.Fragment>
                     <ProductInfo
@@ -134,10 +132,10 @@ class App extends Component {
                     <div>Error: items length = {items.length}</div>
                 </React.Fragment>
             );
-        } else if (!authorize) {
+        } else if (!AspNetCoreCookies) {
             return (
                 <React.Fragment>
-                    <div>authorize Error: {error}</div>
+                    <div>AspNetCoreCookies Error: {error}</div>
                 </React.Fragment>
             );
         } else if (error) {
@@ -156,7 +154,7 @@ class App extends Component {
     }
 
     render() {
-        const { authorize } = this.state;
+        const { AspNetCoreCookies, Login } = this.state;
 
         return (
             <React.Fragment>
@@ -164,10 +162,12 @@ class App extends Component {
                     <Navigate
                         urlControlAction={this.urlControlAction}
                     />
-                    <Login
+                    <Authenticate
                         urlControlAction={this.urlControlAction}
-                        authorize={authorize}
+                        AspNetCoreCookies={AspNetCoreCookies}
                         handleStateResultObject={this.handleStateResultObject}
+                        cookies={this.props.cookies}
+                        Login={Login}
                     />
                 </header>
                 <main className="row" id="main" role="main">

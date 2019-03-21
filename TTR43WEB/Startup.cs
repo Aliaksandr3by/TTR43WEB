@@ -57,6 +57,7 @@ namespace TTR43WEB
             .AddCookie(options =>
             {
                 options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
+                options.Cookie.HttpOnly = false;
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
@@ -138,8 +139,10 @@ namespace TTR43WEB
                 routes.MapRoute(name: "htmlpage", template: "{controller=Gipermall}/{action=htmlpage}/{id?}");
 
                 routes.MapRoute(name: "Login", template: "{controller=Account}/{action=Login}");
+                routes.MapRoute(name: "AccessDenied", template: "{controller=Account}/{action=AccessDenied}");
+                routes.MapRoute(name: "__RequestVerificationToken", template: "{controller=Account}/{action=RequestVerificationToken}");
 
-
+                
             });
         }
     }

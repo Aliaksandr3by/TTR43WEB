@@ -5,23 +5,21 @@ const PageSizeSelector = props => {
 
 
     const { handleStateResultObject } = props;
-    const { pageSize, productPage, valueDefault, children } = props.state;
+    const { pageSize, valueDefault, children } = props.state;
 
-    const onChangePageSize = (event, _productPage) => { //размер страниц
+    const onChangePageSize = (event) => { //размер страниц
         const pageSize = Number(event.target.value);
-        const productPage = Number(_productPage);
 
         window.localStorage.setItem("pageSize", pageSize);
         
         handleStateResultObject({
-            "pageSize": pageSize,
-            "productPage": productPage,
+            "pageSize": pageSize
         });
     };
 
     return (
         <div className="input-field right-align" id="panelNavigation">
-            <select className="browser-default" value={pageSize} onChange={e => onChangePageSize(e, productPage)} title={children}>
+            <select className="browser-default" value={pageSize} onChange={e => onChangePageSize(e)} title={children}>
                 {
                     valueDefault.map((item, i) => {
                         return (

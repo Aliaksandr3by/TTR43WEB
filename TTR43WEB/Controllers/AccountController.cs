@@ -29,6 +29,13 @@ namespace TTR43WEB.Controllers
 
         [HttpGet]
         [AllowAnonymous]
+        public IActionResult RequestVerificationToken()
+        {
+            return PartialView("__RequestVerificationToken");
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
         public IActionResult Login()
         {
             try
@@ -41,7 +48,7 @@ namespace TTR43WEB.Controllers
                 return this.Json(new
                 {
                     __RequestVerificationToken,
-                    authorize = HttpContext.User.Identity.IsAuthenticated,
+                    Login = HttpContext.User.Identity.Name,
                 }
                 );
             }
@@ -72,12 +79,11 @@ namespace TTR43WEB.Controllers
 
                 if (user != null)
                 {
-                    await Authenticate(model.Login); // аутентификация
+                    var id = await Authenticate(model.Login); // аутентификация
 
                     return Json(new
                     {
-                        //authorize = HttpContext.User.Identity.IsAuthenticated,
-                        authorize = true,
+                        Login = id.Name,
                     });
                 }
 
@@ -105,7 +111,7 @@ namespace TTR43WEB.Controllers
         }
 
 
-        
+
         public IActionResult BannerImage()
         {
             var file = Path.Combine(Directory.GetCurrentDirectory(), "public", "image", "Untitled.jpg");
@@ -127,9 +133,13 @@ namespace TTR43WEB.Controllers
                     db.Add(new User { Login = model.Email, Password = model.Password });
                     db.SaveChangesAsync();
 
-                    await Authenticate(model.Email); // аутентификация
+                    var id = await Authenticate(model.Email); // аутентификация
 
-                    return RedirectToAction("Index", "Home");
+                    return Json(new
+                    {
+                        authorize = id.IsAuthenticated,
+                        Login = id.Name,
+                    });
                 }
                 else
                 {
@@ -139,28 +149,41 @@ namespace TTR43WEB.Controllers
             return View(model);
         }
 
-        private async Task Authenticate(string userName)
+
+        [AllowAnonymous]
+        public async Task<IActionResult> AccessDenied()
+        {
+            return Json(new
+            {
+                authorize = "",
+            });
+        }
+
+        private async Task<ClaimsIdentity> Authenticate(string userName)
         {
             // создаем один claim
             var claims = new List<Claim>
             {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, userName)
+                new Claim(ClaimsIdentity.DefaultNameClaimType, userName),
+                //new Claim(ClaimTypes.Role, "Administrator"),
             };
             // создаем объект ClaimsIdentity
             ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
             // установка аутентификационных куки
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(id),
+                new AuthenticationProperties
+                    {
+                        ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10)
+                    }
+                );
+            return id;
         }
-
-        public async Task<IActionResult> Logout()
+        [AllowAnonymous]
+        public async Task Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
-            return Json(new
-            {
-                //authorize = HttpContext.User.Identity.IsAuthenticated,
-                authorize = false,
-            });
         }
     }
 }

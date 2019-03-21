@@ -13,9 +13,8 @@ const PageList = props => {
 
     const href = (pageSize, i) => `#/Page${i}/Size${pageSize}`;
 
-    const onSelectPage = (event, _productPage, _pageSize, _totalPages) => { //номер страницы
+    const onSelectPage = (event, _productPage, _totalPages) => { //номер страницы
         const totalPages = Number(_totalPages);
-        const pageSize = Number(_pageSize);
         let productPage = Number(_productPage);
         if (productPage < 0) {
             productPage = totalPages - 1;
@@ -24,8 +23,7 @@ const PageList = props => {
         }
         
         handleStateResultObject({
-            "pageSize": pageSize,
-            "productPage": productPage,
+            "productPage": productPage
         });
         
         window.localStorage.setItem("productPage", productPage);
@@ -37,7 +35,7 @@ const PageList = props => {
         <div className="center-align">
             <ul className="pagination">
                 <li className={disabled(productPage, 0)}>
-                    <a href={href(pageSize, productPage - 1)} onClick={e => onSelectPage(e, productPage - 1, pageSize, totalPages)}>
+                    <a href={href(pageSize, productPage - 1)} onClick={e => onSelectPage(e, productPage - 1, totalPages)}>
                         <i className="material-icons">chevron_left</i>
                     </a>
                 </li>
@@ -45,13 +43,13 @@ const PageList = props => {
                     [...Array(totalPages)].map((item, i) => {
                         return (
                             <li key={i} className={active(productPage, i)}>
-                                <a href={href(pageSize, i)} onClick={e => onSelectPage(e, i, pageSize, totalPages)}>{i}</a>
+                                <a href={href(pageSize, i)} onClick={e => onSelectPage(e, i, totalPages)}>{i}</a>
                             </li>
                         );
                     })
                 }
                 <li className={disabled(productPage, totalPages)}>
-                    <a href={href(pageSize, productPage + 1)} onClick={e => onSelectPage(e, productPage + 1, pageSize, totalPages)}>
+                    <a href={href(pageSize, productPage + 1)} onClick={e => onSelectPage(e, productPage + 1, totalPages)}>
                         <i className="material-icons" >chevron_right</i>
                     </a>
                 </li>

@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
             urlControlActionAccountLogin: "/Account/Login",
             urlControlActionAccountLogout: "/Account/Logout",
             urlControlActionGETGipermallItemsProduct: "/Gipermall/ItemsProduct",
+            urlControlActionGETAccountRequestVerificationToken: "/Account/RequestVerificationToken",
         };
  
         ReactDOM.render(
