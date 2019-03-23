@@ -125,18 +125,10 @@ namespace TTR43WEB
             app.UseMvc(routes =>
             {
                 routes.MapRoute(name: "index", template: "{controller=Gipermall}/{action=Index}");
-
-                routes.MapRoute(name: null, template: "{controller=Gipermall}/{action=OptionsURIinBase}");
-
-                routes.MapRoute(name: "table", template: "{controller=Gipermall}/{action=Table}/{id?}");
-
-                routes.MapRoute(name: "tableUrl", template: "{controller=Gipermall}/{action=AllItemsUrls}/{id?}");
-
-                routes.MapRoute(name: "getCoastAsync", template: "{controller=Gipermall}/{action=GetCoastAsync}/{id?}");
-
                 routes.MapRoute(name: "ItemsProduct", template: "{controller=Gipermall}/{action=ItemsProduct}/Page{productPage:int}/Size{pageSize:int}");
-
-                routes.MapRoute(name: "htmlpage", template: "{controller=Gipermall}/{action=htmlpage}/{id?}");
+                routes.MapRoute(name: null, template: "{controller=Gipermall}/{action=OptionsURIinBase}");
+                routes.MapRoute(name: "tableUrl", template: "{controller=Gipermall}/{action=AllItemsUrls}/{id?}");
+                routes.MapRoute(name: "getCoastAsync", template: "{controller=Gipermall}/{action=GetCoastAsync}/{id?}");
 
                 routes.MapRoute(name: "Login", template: "{controller=Account}/{action=Login}");
                 routes.MapRoute(name: "AccessDenied", template: "{controller=Account}/{action=AccessDenied}");

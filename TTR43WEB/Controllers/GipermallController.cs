@@ -18,13 +18,11 @@ namespace TTR43WEB.Controllers
     {
         private readonly IProductsContextQueryable gipermollTableData;
         private readonly ProductEntity _product;
-        private int cont = 0;
 
         public GipermallController(IProductsContextQueryable gipermollTable, ProductEntity product)
         {
             gipermollTableData = gipermollTable;
             _product = product;
-            cont++;
         }
 
         [AllowAnonymous]
@@ -131,7 +129,6 @@ namespace TTR43WEB.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         [ContentTypeAddJson]
         [AccessControlAllowAll]
         public async Task<IActionResult> GetCoastAsync([FromBody]JObject idGoods)
@@ -177,7 +174,6 @@ namespace TTR43WEB.Controllers
 
 
         [HttpPost]
-        [Authorize]
         [ContentTypeAddJson]
         public async Task<IActionResult> AllItemsUrls()
         {

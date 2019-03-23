@@ -26,9 +26,9 @@ class Authenticate extends Component {
     }
 
     async componentDidMount() {
-        this.handleStateResultObject({
-            AspNetCoreCookies: this.props.cookies.get(".AspNetCore.Cookies"),
-        });
+        // this.handleStateResultObject({
+        //     AspNetCoreCookies: this.props.cookies.get(".AspNetCore.Cookies"),
+        // });
     }
 
     async componentDidUpdate() {
@@ -41,8 +41,8 @@ class Authenticate extends Component {
 
             ///Костыль
             var VerificationToken = document.createElement("div");
-            const werwr = await fetch(this.urlControlAction.urlControlActionGETAccountRequestVerificationToken);
-            VerificationToken.innerHTML = await werwr.text();
+            const tmp = await fetch(this.urlControlAction.urlControlActionGETAccountRequestVerificationToken);
+            VerificationToken.innerHTML = await tmp.text();
             const __RequestVerificationToken = VerificationToken.querySelector("input[name=__RequestVerificationToken]").value;
             ///----------------
 
@@ -58,9 +58,6 @@ class Authenticate extends Component {
                 credentials: "same-origin", // include, *same-origin, omit
                 headers: {
                     "Accept": "application/json, application/xml, text/plain, text/html, *.*",
-                    //"Content-Type": "application/json",
-                    // "Content-Type": "multipart/form-data; boundary",
-                    // "Content-Type": "application/x-www-form-urlencoded;",
                 },
                 redirect: "follow", // manual, *follow, error
                 referrer: "no-referrer", // no-referrer, *client

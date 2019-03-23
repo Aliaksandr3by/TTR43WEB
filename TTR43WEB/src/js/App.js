@@ -36,15 +36,7 @@ class App extends Component {
             name: "qweqweqwe",
         };
         this.urlControlAction = this.props.urlControlAction;
-        (async () => await this.getDataTable(this.state))();
-        (async () => await this.test(() => console.log(props), () => console.log(props)))();
-    }
-
-    async test(q, w) {
-        return new Promise((rs, rj) => {
-            rs(q());
-            rj(w());
-        });
+        (async () => await this.handlePageOptions(this.state))();
     }
 
     //взывается сразу же после отображения компонента на экране приведут к запуску жизненного цикла обновления и к повторному отображению компонента на экране
@@ -68,22 +60,7 @@ class App extends Component {
 
     }
 
-    handleStateResultObject = async (object) => {
-        await this.setState((state, props) => {
-            return { ...state, ...object };
-        });
-        await this.getDataTable(this.state);
-    }
-
-    stateChangeResult = async (array, name) => {
-        await this.setState((state, props) => {
-            return {
-                [name]: [...state[name], array]
-            };
-        });
-    }
-
-    async getDataTable({ pageSize, productPage }) {
+    handlePageOptions = async ({pageSize = this.state.pageSize, productPage = this.state.productPage}) => {
         try {
             const response = await fetch(`${this.urlControlAction.urlControlActionGETGipermallItemsProduct}/Page${productPage}/Size${pageSize}`, {
                 method: "GET", // *GET, POST, PUT, DELETE, etc.
@@ -107,21 +84,34 @@ class App extends Component {
         }
     }
 
+    stateChangeResult = async (array, name) => {
+        await this.setState((state, props) => {
+            return {
+                [name]: [...state[name], array]
+            };
+        });
+    }
+    handleStateResultObject = async (object) => {
+        await this.setState((state, props) => {
+            return { ...state, ...object };
+        });
+        await this.handlePageOptions(this.state);
+    }
+
     renderMainTable({ isLoaded, error, AspNetCoreCookies, items, name }) {
         if (isLoaded && items.length !== 0 && AspNetCoreCookies) {
             return (
                 <React.Fragment>
                     <ProductInfo
                         urlControlAction={this.urlControlAction}
-                        handleStateResultObject={this.handleStateResultObject}
                         state={this.state}
                     />
                     <PageSizeSelector
-                        handleStateResultObject={this.handleStateResultObject}
+                        handlePageOptions={this.handlePageOptions}
                         state={this.state}
                     >Число элементов на листе</PageSizeSelector>
                     <PageList
-                        handleStateResultObject={this.handleStateResultObject}
+                        handlePageOptions={this.handlePageOptions}
                         state={this.state}
                     ></PageList>
                 </React.Fragment>
@@ -154,6 +144,7 @@ class App extends Component {
     }
 
     render() {
+
         const { AspNetCoreCookies, Login } = this.state;
 
         return (

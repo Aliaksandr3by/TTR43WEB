@@ -18,7 +18,7 @@ class CoastTextareaUrl extends Component {
         };
         this.handleChange = this.handleChange.bind(this);
     }
-    
+
     componentDidMount() {
         M.textareaAutoResize(document.getElementById("textareaURLstorige"));
         this.setState({ "textarea": this.dataOperatorLocalS("dataTmp") });
@@ -103,7 +103,7 @@ class CoastTextareaUrl extends Component {
             ? [...textarea]
             : [...(textarea.split(/\s|,|\s,/))]
                 .filter((item, i) => item !== "")
-                .map((e, i) => this.getItem_html(e));
+                .map((e, i) => this.getItem_html(e.trim()));
     }
 
     getItem_html = (element) => {
@@ -128,7 +128,6 @@ class CoastTextareaUrl extends Component {
             this.setState({ progress: 0 });
             //this.OptionsURIinBase(urlControlActionOptionsURIinBase, iterator);
             for (const iterator of data) {
-
                 const response = await fetch(urlControlAction.urlControlActionGetCoastAsync, {
                     method: "POST", // *GET, POST, PUT, DELETE, etc.
                     headers: {
@@ -136,22 +135,16 @@ class CoastTextareaUrl extends Component {
                     },
                     body: JSON.stringify({ "idGoods": iterator }),
                 });
-
                 const json = await response.json();
-
                 this.setState({ progress: await this.getProgress(this.state.progress, data.length) });
-
                 if (json.resultBaseDataAdd) {
                     this.props.stateChangeResult(json.items, "items");
-
                     M.toast({ html: `Товар ${json.items.name} добавлен, цена ${json.items.price} `, displayLength: 4000, classes: "rounded" });
-
                     console.log(json.items.name);
                 } else {
                     M.toast({ html: `Товар ${json.items.name} не изменился`, displayLength: 4000, classes: "rounded" });
                 }
             }
-            //
         } catch (error) {
             console.error(error);
         }
@@ -167,20 +160,12 @@ class CoastTextareaUrl extends Component {
 
     createDataTable = async () => {
         try {
-
-            // const items = [...Array(1000)].map((item, i) => {
-            //     let tmp = [`https://gipermall.by/catalog/item_${Number(i)}.html`];
-            //     this.handleStateResultArray(tmp, "textarea");
-            //     return tmp;
-            // });
-
             this.setState({ textarea: [] });
             const dd = 2500 + 1;
             for (let i = dd; i < dd + 500; i++) {
                 let tmp = `https://gipermall.by/catalog/item_${Number(i)}.html`;
                 this.handleStateResultArray(tmp, "textarea");
             }
-
         } catch (error) {
             this.setState({
                 isLoaded: true,

@@ -48,7 +48,8 @@ namespace TTR43WEB.Controllers
                 return this.Json(new
                 {
                     __RequestVerificationToken,
-                    Login = HttpContext.User.Identity.Name,
+                    login = HttpContext.User.Identity.Name,
+                    isAuthenticated = HttpContext.User.Identity.IsAuthenticated,
                 }
                 );
             }
@@ -175,7 +176,7 @@ namespace TTR43WEB.Controllers
                 new ClaimsPrincipal(id),
                 new AuthenticationProperties
                     {
-                        ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10)
+                        //ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10)
                     }
                 );
             return id;

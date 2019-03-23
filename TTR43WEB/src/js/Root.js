@@ -6,10 +6,11 @@ import { CookiesProvider } from "react-cookie";
 import App from "./App";
 
 const Root = (props) => {
+    const {urlControlAction = {}} = props;
     return (
         // https://www.npmjs.com/package/react-cookie
         <CookiesProvider>
-            <App urlControlAction={props.urlControlAction} />
+            <App urlControlAction={urlControlAction} />
         </CookiesProvider>
     );
 };
