@@ -33,9 +33,8 @@ class App extends Component {
             totalItems: 0,
             totalPages: 0,
             valueDefault: [],
-            name: "qweqweqwe",
+            name: "Товары",
         };
-        this.urlControlAction = this.props.urlControlAction;
         (async () => await this.handlePageOptions(this.state))();
     }
 
@@ -61,8 +60,9 @@ class App extends Component {
     }
 
     handlePageOptions = async ({pageSize = this.state.pageSize, productPage = this.state.productPage}) => {
+        const {urlControlAction = {}} = this.props;
         try {
-            const response = await fetch(`${this.urlControlAction.urlControlActionGETGipermallItemsProduct}/Page${productPage}/Size${pageSize}`, {
+            const response = await fetch(`${urlControlAction.urlControlActionGETGipermallItemsProduct}/Page${productPage}/Size${pageSize}`, {
                 method: "GET", // *GET, POST, PUT, DELETE, etc.
             });
 
@@ -98,12 +98,13 @@ class App extends Component {
         await this.handlePageOptions(this.state);
     }
 
-    renderMainTable({ isLoaded, error, AspNetCoreCookies, items, name }) {
+    renderMainTable({ isLoaded, error, AspNetCoreCookies, items }) {
+        const {urlControlAction = {}} = this.props;
         if (isLoaded && items.length !== 0 && AspNetCoreCookies) {
             return (
                 <React.Fragment>
                     <ProductInfo
-                        urlControlAction={this.urlControlAction}
+                        urlControlAction={urlControlAction}
                         state={this.state}
                     />
                     <PageSizeSelector
@@ -146,15 +147,16 @@ class App extends Component {
     render() {
 
         const { AspNetCoreCookies, Login } = this.state;
+        const {urlControlAction = {}} = this.props;
 
         return (
             <React.Fragment>
                 <header className="row" role="navigation">
                     <Navigate
-                        urlControlAction={this.urlControlAction}
+                        urlControlAction={urlControlAction}
                     />
                     <Authenticate
-                        urlControlAction={this.urlControlAction}
+                        urlControlAction={urlControlAction}
                         AspNetCoreCookies={AspNetCoreCookies}
                         handleStateResultObject={this.handleStateResultObject}
                         cookies={this.props.cookies}
@@ -163,7 +165,7 @@ class App extends Component {
                 </header>
                 <main className="row" id="main" role="main">
                     <CoastTextareaUrl
-                        urlControlAction={this.urlControlAction}
+                        urlControlAction={urlControlAction}
                         stateChangeResult={this.stateChangeResult}
                     />
                     {

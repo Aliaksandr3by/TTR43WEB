@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.DependencyInjection;
-using TTR43WEB.Datum;
+using DatumServer.Datum.Product;
 
 namespace TTR43WEB.Models.Gipermall
 {

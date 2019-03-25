@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace TTR43WEB.Models.Gipermall
+namespace DatumServer.Datum.Product
 {
-    public class Favorite
+    public partial class Favorites
     {
         public int Id { get; set; }
         public int ProductId { get; set; }

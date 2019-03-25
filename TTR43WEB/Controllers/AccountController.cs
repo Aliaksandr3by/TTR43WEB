@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using DatumServer.Datum.User;
 using TTR43WEB.Models.User;
 using TTR43WEB.Universal;
 
@@ -76,7 +77,7 @@ namespace TTR43WEB.Controllers
 
             if (ModelState.IsValid)
             {
-                User user = await db.Users.FirstOrDefaultAsync(u => u.Login == model.Login && u.Password == model.Password);
+                Users user = await db.Users.FirstOrDefaultAsync(u => u.Login == model.Login && u.Password == model.Password);
 
                 if (user != null)
                 {
@@ -127,11 +128,11 @@ namespace TTR43WEB.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = await db.Users.FirstOrDefaultAsync(u => u.Login == model.Email);
+                Users user = await db.Users.FirstOrDefaultAsync(u => u.Login == model.Email);
                 if (user == null)
                 {
                     // добавляем пользователя в бд
-                    db.Add(new User { Login = model.Email, Password = model.Password });
+                    db.Add(new Users { Login = model.Email, Password = model.Password });
                     db.SaveChangesAsync();
 
                     var id = await Authenticate(model.Email); // аутентификация

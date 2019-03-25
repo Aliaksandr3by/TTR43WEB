@@ -5,7 +5,7 @@ import M from "materialize-css";
 
 export const ProductInfo = (props) => {
 
-    const { items, name, urlControlAction } = props.state;
+    const { state: { items = [], name = "" }, urlControlAction = {} } = props;
 
     const _replacer = (item) => {
         return item.replace(/([A-Z])/g, " $1").replace(/^./,
@@ -35,6 +35,10 @@ export const ProductInfo = (props) => {
         }
     };
 
+    const cardStickyAction = ({ date = "", id = "", markingGoods = "", name = "", price = "", priceWithoutDiscount = "", url = "", }) => {
+        return `${name} - ${price}руб. - ${priceWithoutDiscount}руб.`;
+    };
+
     /**
      * Метод обновляет данные выбранного продукта по нажатию на кнопку обновления;
      * @param {Event} e 
@@ -51,21 +55,17 @@ export const ProductInfo = (props) => {
                 }),
             });
             const json = await response.json();
-            if (json.description.id !== 0) {
-                M.toast(
-                    {
-                        html: `${json.description.id} - ${json.description.name} добавлен в базу данных, ${json.description.price}`,
-                        classes: "rounded"
-                    }
-                );
-                console.log(json.description.name);
-            }
-            console.log(json.description);
+            M.toast(
+                {
+                    html: cardStickyAction(json.items),
+                    classes: "rounded"
+                }
+            );
         } catch (error) {
             console.error(error);
         }
     };
-    
+
     return (
         <React.Fragment>
             <table className="col s12 striped highlight" data-src={name}>
@@ -73,7 +73,7 @@ export const ProductInfo = (props) => {
                 <thead id="tableTop">
                     <tr>
                         {
-                            Object.keys(items[0]).map((el, i) => {
+                            Object.entries(items[0] = {}).map(([el, i]) => {
                                 if (el.toLowerCase() === "url") {
                                     return (<th key={i} >
                                         UPDATE

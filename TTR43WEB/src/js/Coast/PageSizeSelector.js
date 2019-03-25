@@ -3,7 +3,7 @@ import React from "react";
 
 const onChangePageSize = (event, pageSize, handleState ) => { //размер страниц
 
-    const newPageSize = Number(event.target.value);
+    const newPageSize = Number(event.target.value) + 1;
 
     window.localStorage.setItem("pageSize", newPageSize);
 

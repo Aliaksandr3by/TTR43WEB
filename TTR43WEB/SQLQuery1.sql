@@ -3,13 +3,29 @@ GO
 BACKUP DATABASE [Product] TO DISK = 'F:\Documents\sql_backup';
 GO
 
-drop table [dbo].[Dimension];
+--[Users]
+IF OBJECT_ID('dbo.Users', 'U') IS NOT NULL DROP TABLE [dbo].[Users];
+CREATE TABLE [dbo].[Users]
+(
+	[Guid] uniqueidentifier NOT NULL DEFAULT(newid()) PRIMARY KEY,
+	Login NVARCHAR(MAX) NOT NULL ,
+	Email NVARCHAR(MAX) NOT NULL,
+	TelephoneNumber int NOT NULL,
+	Password NVARCHAR(MAX) NOT NULL,
+	PasswordConfirm NVARCHAR(MAX) NOT NULL,
+	DateTimeRegistration datetime NOT NULL,
+);
+ALTER TABLE [dbo].[Users] ADD CONSTRAINT UNQ_TelephoneNumber UNIQUE(TelephoneNumber);
+INSERT INTO [dbo].[Users]([Login], [Email], [TelephoneNumber], [Password], [PasswordConfirm], [DateTimeRegistration]) VALUES (N'ADMIN', N'ADMIN', 0, N'ADMIN', N'ADMIN', GETDATE ())
+SELECT * FROM [dbo].[Users]
+
+
 ALTER TABLE [dbo].[Dimension] ADD CONSTRAINT PK_Dimension PRIMARY KEY(id);
 ALTER TABLE [dbo].[Dimension] ADD CONSTRAINT UNQ_Dimension_Dimension UNIQUE(Dimension);
 
 
 ALTER TABLE [dbo].[Products] ALTER COLUMN [GUID] uniqueidentifier NULL ; 
-ALTER TABLE [dbo].[Products] ADD [GUID] uniqueidentifier NULL; --дебавляем столбец гуид,
+ALTER TABLE [dbo].[Products] ADD [GUID] uniqueidentifier NULL; --добавляем столбец гуид,
 ALTER TABLE [dbo].[Products] ADD CONSTRAINT DFT_Products_GUID DEFAULT(newid()) FOR [GUID]; -- заносим дефолтное значение , которое будет при создации
 UPDATE [dbo].[Products] SET [GUID] = newid();  --заносим данные в столбец гуид
 

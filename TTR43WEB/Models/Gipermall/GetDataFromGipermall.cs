@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TTR43WEB.Models.Gipermall;
-using TTR43WEB.Datum;
+using DatumServer.Datum.Product;
 
 namespace TTR43WEB.Models.Gipermall
 {

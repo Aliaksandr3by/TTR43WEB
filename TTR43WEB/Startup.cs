@@ -16,7 +16,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using TTR43WEB.Models.Gipermall;
 using TTR43WEB.Models.User;
-using TTR43WEB.Datum;
+using DatumServer.Datum.Product;
+using DatumServer.Datum.User;
 
 namespace TTR43WEB
 {
@@ -42,11 +43,12 @@ namespace TTR43WEB
 
             services.AddDbContext<ProductContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:ConnectionProduct"]));
             services.AddScoped<IProductsContextQueryable, ProductsContextQueryable>();
-
             services.AddScoped<ProductEntity, ProductEntity>();
 
-            services.AddDbContext<UserContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:ConnectionProduct"]));
+            services.AddDbContext<UserContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:ConnectionUser"]));
             services.AddScoped<UsersContextQueryable, UsersContextQueryable>();
+
+
 
             // Inside your ConfigureServices method
             services.AddAuthentication(options =>

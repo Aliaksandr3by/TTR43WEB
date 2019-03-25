@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 using System.Net;
 using Microsoft.AspNetCore.Authorization;
 using TTR43WEB.Models.Gipermall;
-using TTR43WEB.Datum;
+using DatumServer.Datum.Product;
 
 namespace TTR43WEB.Controllers
 {

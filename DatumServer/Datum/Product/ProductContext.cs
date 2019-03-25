@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace TTR43WEB.Datum
+namespace DatumServer.Datum.Product
 {
     public partial class ProductContext : DbContext
     {
@@ -24,7 +24,6 @@ namespace TTR43WEB.Datum
         public virtual DbSet<Products> Products { get; set; }
         public virtual DbSet<Trademark> Trademark { get; set; }
         public virtual DbSet<Url> Url { get; set; }
-        public virtual DbSet<Users> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -37,7 +36,7 @@ namespace TTR43WEB.Datum
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasAnnotation("ProductVersion", "2.2.2-servicing-10034");
+            modelBuilder.HasAnnotation("ProductVersion", "2.2.3-servicing-35854");
 
             modelBuilder.Entity<BarCode>(entity =>
             {
@@ -146,13 +145,6 @@ namespace TTR43WEB.Datum
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.UrlProduct).IsRequired();
-            });
-
-            modelBuilder.Entity<Users>(entity =>
-            {
-                entity.Property(e => e.Login).IsRequired();
-
-                entity.Property(e => e.Password).IsRequired();
             });
         }
     }

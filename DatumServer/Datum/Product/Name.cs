@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TTR43WEB.Datum
+namespace DatumServer.Datum.Product
 {
     public partial class Name
     {

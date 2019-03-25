@@ -16,7 +16,7 @@ export const Navigate = props => {
                 </div>
             </nav>
             <ul className="sidenav" id="mobile-demo">
-                <li><a >gipermall</a></li>
+                <li><a>gipermall</a></li>
             </ul>
         </React.Fragment>
     );

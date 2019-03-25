@@ -1,7 +1,7 @@
 USE Product;
 GO
 
-SELECT * FROM [dbo].[Products] ORDER BY [Id] DESC ;
+SELECT * FROM [dbo].[Products] INNER JOIN [dbo].[Name] ON [Products].[Name] = [Name].id ORDER BY [Name] DESC ;
 SELECT * FROM [dbo].[Products] WHERE [MarkingGoods] is NULL;
 SELECT * FROM [dbo].[ManufacturingCountry];
 SELECT * FROM [dbo].[MarkingGoods] WHERE [MarkingGoodsProduct] = NULL;

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.DependencyInjection;
+using DatumServer.Datum.User;
 
 namespace TTR43WEB.Models.User
 {
@@ -17,9 +18,9 @@ namespace TTR43WEB.Models.User
 
         public UsersContextQueryable(UserContext ctx) => context = ctx;
 
-        public IQueryable<User> Users => context.Users;
+        public IQueryable<Users> Users => context.Users;
 
-        public void Add(User user)
+        public void Add(Users user)
         {
             context.Users.Add(user);
         }
