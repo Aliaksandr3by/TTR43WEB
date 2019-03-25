@@ -1,0 +1,9 @@
+﻿Install-Package Microsoft.EntityFrameworkCore -Version 2.2.3 -ProjectName DatumServer
+Install-Package Microsoft.EntityFrameworkCore.SqlServer -Version 2.2.3  -ProjectName DatumServer
+Install-Package Microsoft.EntityFrameworkCore.Tools -Version 2.2.3  -ProjectName DatumServer
+Install-Package Microsoft.EntityFrameworkCore.Design -Version 2.2.3 -ProjectName DatumServer
+
+Scaffold-DbContext -Force name="ConnectionProduct" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Datum/Product
+Scaffold-DbContext -Force name="ConnectionUser" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Datum/User
+
+https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/powershell

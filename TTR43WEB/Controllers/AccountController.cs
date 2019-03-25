@@ -153,7 +153,7 @@ namespace TTR43WEB.Controllers
 
 
         [AllowAnonymous]
-        public async Task<IActionResult> AccessDenied()
+        public IActionResult AccessDenied()
         {
             return Json(new
             {
