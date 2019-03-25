@@ -20,13 +20,13 @@ class Authenticate extends Component {
             errorUser: [],
             Login: "",
             Password: "",
-            userRegister: JSON.parse(window.localStorage.getItem("userRegister")),
+            userRegister: window.localStorage.getItem("userRegister")
+                ? JSON.parse(window.localStorage.getItem("userRegister"))
+                : { "FirstName": "", "LastName": "", "Role": "", "TelephoneNumber": "", "Email": "", "Login": "", "Password": "", "PasswordConfirm": "" },
         };
         this.handleChange = this.handleChange.bind(this);
         this.urlControlAction = this.props.urlControlAction;
         this.handleStateResultObject = this.props.handleStateResultObject;
-        const userRegister = JSON.parse(window.localStorage.getItem("userRegister"));
-        console.log(this.state);
     }
 
     async componentDidMount() {
@@ -96,17 +96,35 @@ class Authenticate extends Component {
         this.setState({ [event.target.dataset.role]: event.target.value });
     }
 
-    handleChangeRegister(event) {
+    handleChangeRegister(event) { //хеш пароля
         const tmp = { ...this.state.userRegister, ...{ [event.target.dataset.role]: event.target.value } };
-        this.setState((state, props) => {
-            return { "userRegister":  tmp};
-        });
         window.localStorage.setItem("userRegister", JSON.stringify(tmp));
+        this.setState((state, props) => {
+            return { "userRegister": tmp };
+        });
     }
 
     errorResult = (error = "") => {
-        return error ? <ul>{error.map((e, i) => <li key={i}>{`${i}: ${e}`}</li>)}</ul> : <p>{}</p>;
+        return error
+            ? <ul>
+                {error.map((e, i) => <li key={i}>{`${i}: ${e}`}</li>)}
+            </ul>
+            : <p>{""}</p>;
     };
+
+    handleStateFunctional = async (object) => {
+        await this.setState((state, props) => {
+            return { ...state, ...object };
+        });
+    }
+
+    async onResetClick(e) {
+        const items = Object.entries({ ...this.state.userRegister }).map(([el, val], i) => {
+            return [el, ""];
+        });
+        await this.handleStateFunctional({ userRegister: Object.fromEntries(items) });
+        window.localStorage.removeItem("userRegister");
+    }
 
     loginForm = (errorUser) => {
         return (
@@ -128,57 +146,71 @@ class Authenticate extends Component {
             </div>
         );
     }
-    userRegister
+
     registerForm = (errorUser = []) => {
+        const { FirstName, LastName, Role, TelephoneNumber, Email, Login, Password, PasswordConfirm } = this.state.userRegister;
         return (
             <div className="row">
-                <div className="row">
-                    <div className="input-field col s6">
-                        <input type="text" value={this.state.userRegister.FirstName} data-role="FirstName" onChange={this.handleChangeRegister.bind(this)} id="icon_prefix" className="validate" />
-                        <label className="active" htmlFor="icon_prefix">First Name</label>
+                <form>
+                    <div className="row">
+                        <div className="input-field col s6">
+                            <input type="text" value={FirstName} data-role="FirstName" onChange={this.handleChangeRegister.bind(this)} id="icon_prefix" className="validate" />
+                            <label className="active" htmlFor="icon_prefix">First Name</label>
+                        </div>
+                        <div className="input-field col s6">
+                            <input type="text" value={LastName} data-role="LastName" onChange={this.handleChangeRegister.bind(this)} id="last_name" className="validate" />
+                            <label className="active" htmlFor="last_name">Last Name</label>
+                        </div>
                     </div>
-                    <div className="input-field col s6">
-                        <input type="text" value={this.state.userRegister.LastName} data-role="LastName" onChange={this.handleChangeRegister.bind(this)} id="last_name" className="validate" />
-                        <label className="active" htmlFor="last_name">Last Name</label>
+                    <div className="row">
+                        <div className="input-field col s6">
+                            <input value={Email} data-role="Email" onChange={this.handleChangeRegister.bind(this)} id="email" type="email" className="validate" />
+                            <label className="active" htmlFor="email">Email</label>
+                        </div>
+                        <div className="input-field col s6">
+                            <input value={TelephoneNumber} data-role="TelephoneNumber" onChange={this.handleChangeRegister.bind(this)} id="TelephoneNumber" type="tel" className="validate" />
+                            <label className="active" htmlFor="TelephoneNumber">Telephone Number</label>
+                        </div>
                     </div>
-                </div>
-                <div className="row">
-                    <div className="input-field col s6">
-                        <input data-role="Email" onChange={this.handleChangeRegister.bind(this)} id="email" type="email" className="validate" />
-                        <label className="active" htmlFor="email">Email</label>
+                    <div className="row">
+                        <div className="input-field col s8">
+                            <input value={Login} data-role="Login" onChange={this.handleChangeRegister.bind(this)} id="login" type="text" className="validate" />
+                            <label className="active" htmlFor="login">Login</label>
+                        </div>
+                        <div className="input-field col s4">
+                            <select value={Role} data-role="Role" onChange={this.handleChangeRegister.bind(this)} id="role" className="browser-default">
+                                <option value="guest" >{"guest"}</option>
+                                <option value="admin" >{"admin"}</option>
+                            </select>
+                        </div>
                     </div>
-                    <div className="input-field col s6">
-                        <input data-role="TelephoneNumber" onChange={this.handleChangeRegister.bind(this)} id="TelephoneNumber" type="tel" className="validate" />
-                        <label className="active" htmlFor="TelephoneNumber">Telephone</label>
+                    <div className="row">
+                        <div className="input-field col s6">
+                            <input value={Password} data-role="Password" onChange={this.handleChangeRegister.bind(this)} id="password" type="password" className="validate" />
+                            <label className="active" htmlFor="password">Password</label>
+                        </div>
+                        <div className="input-field col s6">
+                            <input value={PasswordConfirm} data-role="PasswordConfirm" onChange={this.handleChangeRegister.bind(this)} id="passwordConfirm" type="password" className="validate" />
+                            <label className="active" htmlFor="passwordConfirm">Password Confirm</label>
+                        </div>
                     </div>
-                </div>
-                <div className="row">
-                    <div className="input-field col s8">
-                        <input data-role="Login" onChange={this.handleChangeRegister.bind(this)} id="login" type="text" className="validate" />
-                        <label className="active" htmlFor="login">Login</label>
+                    <div className="row">
+                        <ul>
+                            {errorUser.map((e, i) => <li key={i}>{`${i}: ${e}`}</li>)}
+                        </ul>
                     </div>
-                    <div className="input-field col s4">
-                        <select id="role" className="browser-default">
-                            <option defaultValue="1" >{"guest"}</option>
-                            <option defaultValue="2" >{"admin"}</option>
-                        </select>
+                    <div className="row">
+                        <div className="col s4">
+                            <button data-role="Send" onClick={this.onResetClick.bind(this)} type="reset" className="btn" >Reset<i className="material-icons right">reset</i></button>
+                        </div>
+                        <div className="col s4">
+                            <button data-role="Send" onClick={this.handleChangeRegister.bind(this)} type="button" className="btn" >sdf  <i className="material-icons right">cloud</i></button>
+                        </div>
+                        <div className="col s4">
+                            <button data-role="Send" onClick={this.handleChangeRegister.bind(this)} type="button" className="btn" >Submit<i className="material-icons right">send</i></button>
+                        </div>
                     </div>
-                </div>
-                <div className="row">
-                    <div className="input-field col s6">
-                        <input data-role="Password" onChange={this.handleChangeRegister.bind(this)} id="password" type="password" className="validate" />
-                        <label className="active" htmlFor="password">Password</label>
-                    </div>
-                    <div className="input-field col s6">
-                        <input data-role="PasswordConfirm" onChange={this.handleChangeRegister.bind(this)} id="passwordConfirm" type="password" className="validate" />
-                        <label className="active" htmlFor="passwordConfirm">Password Confirm</label>
-                    </div>
-                </div>
-                <div>
-                    <ul>
-                        {errorUser.map((e, i) => <li key={i}>{`${i}: ${e}`}</li>)}
-                    </ul>
-                </div>
+                </form>
             </div>
         );
     }

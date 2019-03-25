@@ -122,7 +122,7 @@ class App extends Component {
         } else if (items.length === 0) {
             return (
                 <React.Fragment>
-                    <div>Error: items length = {items.length}</div>
+                    <div>Loading {items.length}</div>
                 </React.Fragment>
             );
         } else if (!AspNetCoreCookies) {

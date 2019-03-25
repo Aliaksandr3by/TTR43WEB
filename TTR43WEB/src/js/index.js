@@ -4,16 +4,13 @@
 import Cookies from "universal-cookie";
 import React from "react";
 import ReactDOM from "react-dom";
-import "../scss/index.scss";
 
+import "../scss/index.scss";
 import Root from "./Root";
 
 document.addEventListener("DOMContentLoaded", () => {
-
     const rootContainer = document.getElementById("root-container");
-
     if (rootContainer) {
-
         const urlControlAction = {
             urlControlActionGetIndex: "/Gipermall/Index",
             urlControlActionGetCoastAsync: "/Gipermall/GetCoastAsync",
@@ -25,11 +22,9 @@ document.addEventListener("DOMContentLoaded", () => {
             urlControlActionGETGipermallItemsProduct: "/Gipermall/ItemsProduct",
             urlControlActionGETAccountRequestVerificationToken: "/Account/RequestVerificationToken",
         };
-
         ReactDOM.render(
             <Root urlControlAction={urlControlAction} />,
             rootContainer
         );
     }
-
 });

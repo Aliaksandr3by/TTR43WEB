@@ -73,7 +73,7 @@ export const ProductInfo = (props) => {
                 <thead id="tableTop">
                     <tr>
                         {
-                            Object.entries(items[0] = {}).map(([el, i]) => {
+                            Object.entries(items[0]).map(([el, val], i) => {
                                 if (el.toLowerCase() === "url") {
                                     return (<th key={i} >
                                         UPDATE
