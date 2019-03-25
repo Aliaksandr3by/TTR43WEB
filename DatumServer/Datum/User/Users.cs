@@ -13,5 +13,7 @@ namespace DatumServer.Datum.User
         public string PasswordConfirm { get; set; }
         public DateTime DateTimeRegistration { get; set; }
         public string Role { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
     }
 }

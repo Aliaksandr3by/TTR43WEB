@@ -16,7 +16,7 @@ namespace TTR43WEB.Models.Gipermall
         readonly private ProductEntity _productNew;
         private readonly string _url;
 
-        public GetDataFromGipermall(string url, ProductEntity product)
+        public GetDataFromGipermall(string url)
         {
             this._productNew = new ProductEntity();
             _url = url;

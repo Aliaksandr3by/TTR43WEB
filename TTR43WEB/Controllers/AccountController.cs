@@ -48,8 +48,6 @@ namespace TTR43WEB.Controllers
 
                 return this.Json(new
                 {
-                    __RequestVerificationToken,
-                    login = HttpContext.User.Identity.Name,
                     isAuthenticated = HttpContext.User.Identity.IsAuthenticated,
                 }
                 );
@@ -58,9 +56,7 @@ namespace TTR43WEB.Controllers
             {
                 return this.Json(new
                 {
-                    __RequestVerificationToken = "",
                     error = ex.Message,
-                    authorize = HttpContext.User.Identity.IsAuthenticated,
                 });
             }
         }
@@ -85,7 +81,7 @@ namespace TTR43WEB.Controllers
 
                     return Json(new
                     {
-                        Login = id.Name,
+                        user,
                     });
                 }
 
@@ -101,7 +97,7 @@ namespace TTR43WEB.Controllers
 
             return this.Json(new
             {
-                error
+                errorUser = error
             }); ;
         }
 

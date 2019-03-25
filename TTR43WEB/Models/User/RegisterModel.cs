@@ -25,5 +25,9 @@ namespace TTR43WEB.Models.User
         public string Role { get; set; }
 
         public DateTime DateTimeRegistration { get; set; }
+
+        public string FirstName { get; set; }
+
+        public string LastName { get; set; }
     }
 }

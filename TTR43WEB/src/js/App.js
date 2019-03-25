@@ -24,7 +24,9 @@ class App extends Component {
         super(props);
         this.state = {
             AspNetCoreCookies: this.props.cookies.get(".AspNetCore.Cookies"),
-            Login: window.localStorage.getItem("Login") || "",
+            user: {
+                login: window.localStorage.getItem("Login") || "",
+            },
             error: null,
             isLoaded: false,
             items: [],
@@ -59,8 +61,8 @@ class App extends Component {
 
     }
 
-    handlePageOptions = async ({pageSize = this.state.pageSize, productPage = this.state.productPage}) => {
-        const {urlControlAction = {}} = this.props;
+    handlePageOptions = async ({ pageSize = this.state.pageSize, productPage = this.state.productPage }) => {
+        const { urlControlAction = {} } = this.props;
         try {
             const response = await fetch(`${urlControlAction.urlControlActionGETGipermallItemsProduct}/Page${productPage}/Size${pageSize}`, {
                 method: "GET", // *GET, POST, PUT, DELETE, etc.
@@ -99,7 +101,7 @@ class App extends Component {
     }
 
     renderMainTable({ isLoaded, error, AspNetCoreCookies, items }) {
-        const {urlControlAction = {}} = this.props;
+        const { urlControlAction = {} } = this.props;
         if (isLoaded && items.length !== 0 && AspNetCoreCookies) {
             return (
                 <React.Fragment>
@@ -146,8 +148,8 @@ class App extends Component {
 
     render() {
 
-        const { AspNetCoreCookies, Login } = this.state;
-        const {urlControlAction = {}} = this.props;
+        const { AspNetCoreCookies = "", user = {} } = this.state;
+        const { urlControlAction = {} } = this.props;
 
         return (
             <React.Fragment>
@@ -160,7 +162,7 @@ class App extends Component {
                         AspNetCoreCookies={AspNetCoreCookies}
                         handleStateResultObject={this.handleStateResultObject}
                         cookies={this.props.cookies}
-                        Login={Login}
+                        user={user}
                     />
                 </header>
                 <main className="row" id="main" role="main">

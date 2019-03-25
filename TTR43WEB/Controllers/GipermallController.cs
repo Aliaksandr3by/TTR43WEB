@@ -17,12 +17,10 @@ namespace TTR43WEB.Controllers
     public class GipermallController : Controller
     {
         private readonly IProductsContextQueryable gipermollTableData;
-        private readonly ProductEntity _product;
 
-        public GipermallController(IProductsContextQueryable gipermollTable, ProductEntity product)
+        public GipermallController(IProductsContextQueryable gipermollTable)
         {
             gipermollTableData = gipermollTable;
-            _product = product;
         }
 
         [AllowAnonymous]
@@ -137,7 +135,7 @@ namespace TTR43WEB.Controllers
             {
                 DataSend dataSendObj = idGoods.ToObject<DataSend>();
 
-                GetDataFromGipermall getDataFromGipermall = new GetDataFromGipermall(dataSendObj.IdGoods, _product);
+                GetDataFromGipermall getDataFromGipermall = new GetDataFromGipermall(dataSendObj.IdGoods);
 
                 var e = await getDataFromGipermall.GetFullDescriptionResult();
 

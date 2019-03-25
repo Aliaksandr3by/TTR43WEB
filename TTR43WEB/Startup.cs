@@ -43,12 +43,9 @@ namespace TTR43WEB
 
             services.AddDbContext<ProductContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:ConnectionProduct"]));
             services.AddScoped<IProductsContextQueryable, ProductsContextQueryable>();
-            services.AddScoped<ProductEntity, ProductEntity>();
 
             services.AddDbContext<UserContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:ConnectionUser"]));
             services.AddScoped<UsersContextQueryable, UsersContextQueryable>();
-
-
 
             // Inside your ConfigureServices method
             services.AddAuthentication(options =>
