@@ -179,9 +179,13 @@ namespace TTR43WEB.Controllers
             return id;
         }
         [AllowAnonymous]
-        public async Task Logout()
+        public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return Json(new
+            {
+                authorize = HttpContext.User.Identity.IsAuthenticated
+            });
         }
     }
 }

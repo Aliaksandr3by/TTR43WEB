@@ -23,7 +23,7 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            AspNetCoreCookies: this.props.cookies.get(".AspNetCore.Cookies"),
+            AspNetCoreCookies: this.props.cookies.get(".AspNetCore.Cookies") || "",
             user: {
                 login: window.localStorage.getItem("Login") || "",
             },
@@ -34,16 +34,16 @@ class App extends Component {
             productPage: Number(window.localStorage.getItem("productPage")) || 0,
             totalItems: 0,
             totalPages: 0,
-            valueDefault: [],
-            name: "Товары",
         };
-        (async () => await this.handlePageOptions(this.state))();
+        //(async () => await this.handlePageOptions(this.state))();
     }
 
     //взывается сразу же после отображения компонента на экране приведут к запуску жизненного цикла обновления и к повторному отображению компонента на экране
     async componentDidMount() {
         M.FormSelect.init(document.querySelectorAll("select"), {});
         M.Sidenav.init(document.querySelectorAll(".sidenav"), {});
+
+        await this.handlePageOptions(this.state);
     }
 
     //непосредственно перед удалением его с экрана 
@@ -70,7 +70,7 @@ class App extends Component {
 
             const json = await response.json();
 
-            this.setState({
+            this.handleStateResultObject({
                 ...json, ...{ isLoaded: true }
             });
 
@@ -88,26 +88,41 @@ class App extends Component {
 
     stateChangeResult = async (array, name) => {
         await this.setState((state, props) => {
-            return {
-                [name]: [...state[name], array]
-            };
+            if (Array.isArray(array)) {
+                return {
+                    [name]: [...state[name], ...array]
+                };
+            } else {
+                return {
+                    [name]: [...state[name], array]
+                };
+            }
         });
     }
+    
     handleStateResultObject = async (object) => {
         await this.setState((state, props) => {
             return { ...state, ...object };
         });
-        await this.handlePageOptions(this.state);
+    }
+    
+    static count = 0;
+
+    countSet = () => {
+        return ++App.count;
     }
 
-    renderMainTable({ isLoaded, error, AspNetCoreCookies, items }) {
+    renderMainTable({ isLoaded, error, items }) {
         const { urlControlAction = {} } = this.props;
-        if (isLoaded && items.length !== 0 && AspNetCoreCookies) {
+        if (isLoaded && items.length !== 0) {
             return (
                 <React.Fragment>
                     <ProductInfo
                         urlControlAction={urlControlAction}
                         state={this.state}
+                        handleStateResultObject={this.handleStateResultObject}
+                        stateChangeResult={this.stateChangeResult}
+                        countSet={this.countSet}
                     />
                     <PageSizeSelector
                         handlePageOptions={this.handlePageOptions}
@@ -122,13 +137,7 @@ class App extends Component {
         } else if (items.length === 0) {
             return (
                 <React.Fragment>
-                    <div>Loading {items.length}</div>
-                </React.Fragment>
-            );
-        } else if (!AspNetCoreCookies) {
-            return (
-                <React.Fragment>
-                    <div>AspNetCoreCookies Error: {error}</div>
+                    <div>items: {items.length}</div>
                 </React.Fragment>
             );
         } else if (error) {

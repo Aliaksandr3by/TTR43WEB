@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React from "react";
 
-const onChangePageSize = (event, pageSize, handleState ) => { //размер страниц
+const onChangePageSize = (event, pageSize, handleState) => { //размер страниц
 
     const newPageSize = Number(event.target.value);
 
@@ -16,7 +16,9 @@ const onChangePageSize = (event, pageSize, handleState ) => { //размер с�
 
 const PageSizeSelector = props => {
 
-    const { state: { pageSize, valueDefault, children }, handlePageOptions } = props;
+    const { state: { pageSize, children }, handlePageOptions } = props;
+
+    const valueDefault = [3, 5, 10, 15, 25, 30, 50, 75, 100, 150, 200, 250];
 
     return (
         <div className="input-field right-align" id="panelNavigation">

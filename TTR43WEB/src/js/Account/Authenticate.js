@@ -68,7 +68,9 @@ class Authenticate extends Component {
             const json = await response.json();
             const { errorUser } = json;
             if (!errorUser) {
-                this.handleStateResultObject({ ...json, ...{ AspNetCoreCookies: this.props.cookies.get(".AspNetCore.Cookies") } });
+                const coreCookies = { "AspNetCoreCookies": this.props.cookies.get(".AspNetCore.Cookies") || false };
+                const result = { ...json, ...coreCookies };
+                this.handleStateResultObject(result);
                 window.localStorage.setItem("Login", Login);
             } else {
                 this.setState(json);
@@ -83,8 +85,11 @@ class Authenticate extends Component {
 
     logOut = async () => {
         try {
-            await fetch(this.urlControlAction.urlControlActionAccountLogout, { method: "POST" });
-            this.handleStateResultObject({ AspNetCoreCookies: this.props.cookies.get(".AspNetCore.Cookies") });
+            const response = await fetch(this.urlControlAction.urlControlActionAccountLogout, { method: "POST" });
+            if (await response.json()) {
+                const coreCookies = this.props.cookies.get(".AspNetCore.Cookies") || "";
+                this.handleStateResultObject({ "AspNetCoreCookies": coreCookies });
+            }
         } catch (error) {
             this.setState({
                 error
@@ -218,7 +223,7 @@ class Authenticate extends Component {
     render() {
         const { AspNetCoreCookies, user: { login } = {} } = this.props;
         const { error = null, errorUser = [] } = this.state;
-        if (AspNetCoreCookies) { // [|| 6][&& 7]
+        if (AspNetCoreCookies) {
             return (
                 <div className="row">
                     <div className="col s10" >

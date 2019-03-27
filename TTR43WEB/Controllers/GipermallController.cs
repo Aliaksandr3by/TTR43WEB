@@ -69,61 +69,30 @@ namespace TTR43WEB.Controllers
         [ContentTypeAddJson]
         public IActionResult ItemsProduct(int pageSize, int productPage)
         {
-            
-            if (!HttpContext.User.Identity.IsAuthenticated)
-            {
-                return Json(new
-                {
-                    authorize = HttpContext.User.Identity.IsAuthenticated,
-                   // error = Content("не аутентифицирован"),
-                });
-            }
-
             var AllProducts = gipermollTableData.Products;
 
-            int totalItems = AllProducts.Count<Products>();
+            Func<Products, DateTime?> sort = e => e.Date;
 
-            int _pageSize = pageSize;
+            var items = new PaginationOptions(AllProducts).
+                GetItems(sort, pageSize, productPage);
 
-            int totalPages = (int)Math.Ceiling((decimal)totalItems / _pageSize);
+            return Json(items);
+        }
 
-            int _productPage = (productPage > totalPages || productPage < 0) ? 0 : productPage;
+        [HttpPost]
+        [AllowAnonymous]
+        [ContentTypeAddJson]
+        public IActionResult ItemsProduct([FromBody] GetPageOptions getPageOptions)
+        {
+            var AllProducts = gipermollTableData.Products;
+            var _getPageOptions = getPageOptions;
 
-            Func<Products, DateTime?> fn2 = e => e.Date;
+            Func<Products, DateTime?> sort = e => e.Date;
 
-            int countProducts = AllProducts.Count<Products>();
+            var items = new PaginationOptions(AllProducts).
+                GetItems(sort, _getPageOptions.pageSize, _getPageOptions.productPage, _getPageOptions.addItems, _getPageOptions.skippedItems);
 
-            var valueDefault = from n in new int[] { totalItems, 3, 5, 10, 15, 25, 30, 50, 75, 100, 150, 200, 250 }
-                               where n <= totalItems
-                               orderby n
-                               select n;
-            var result = AllProducts
-                .OrderByDescending(fn2)
-                .Skip(_productPage * _pageSize)
-                .Take((new int[] { _pageSize, countProducts }).Min())
-                .Select(e => new
-                {
-                    e.Id,
-                    Url = e.UrlNavigation?.UrlProduct,
-                    Name = e.NameNavigation?.NameProduct,
-                    MarkingGoods = e.MarkingGoodsNavigation?.MarkingGoodsProduct,
-                    e.Date,
-                    e.Price,
-                    e.PriceWithoutDiscount
-                });
-            //.AsQueryable<ProductEntity>();
-
-            var ProductInfo = Json(new
-            {
-                items = result,
-                productPage = _productPage,
-                totalPages,
-                pageSize = _pageSize,
-                valueDefault,
-                totalItems
-            });
-
-            return ProductInfo;
+            return Json(items);
         }
 
         [HttpPost]

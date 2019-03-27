@@ -136,7 +136,7 @@ module.exports = (env, argv) => {
                 cleanOnceBeforeBuildPatterns: devMode
                     ? ["**/*.js", "*****/*", "**/*.map", "***/*.css", "!**/*production*", "!***/*production*"]
                     : ["**/*"],
-                dry: false, //! true для тестирования без удаления!
+                dry: false,
                 verbose: true,
                 cleanStaleWebpackAssets: false,
             }),

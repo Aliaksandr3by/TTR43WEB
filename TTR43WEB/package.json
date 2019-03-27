@@ -14,14 +14,15 @@
 		"tsc": "tsc -watch",
 		"browserify": "browserify ./dist/srcTest/test.js -o ./dist/srcTest/bundle.js"
 	},
-	"dependencies": {},
+	"dependencies": {
+		"core-js": "^3.0.0"
+	},
 	"devDependencies": {
 		"@babel/cli": "^7.2.3",
 		"@babel/core": "^7.4.0",
 		"@babel/plugin-proposal-class-properties": "^7.4.0",
 		"@babel/plugin-proposal-object-rest-spread": "^7.4.0",
 		"@babel/plugin-transform-runtime": "^7.4.0",
-		"@babel/polyfill": "^7.4.0",
 		"@babel/preset-env": "^7.4.2",
 		"@babel/preset-react": "^7.0.0",
 		"autoprefixer": "^9.5.0",
