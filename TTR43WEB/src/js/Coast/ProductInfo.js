@@ -84,7 +84,6 @@ export const ProductInfo = (props) => {
             
             stateChangeResult(result.items, "items");
 
-            return json;
         } catch (error) {
             handleStateResultObject({
                 isLoaded: true,

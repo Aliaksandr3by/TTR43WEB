@@ -21,6 +21,11 @@ namespace TTR43WEB.Models.Gipermall
             this.AllProducts = AllProducts;
         }
 
+        public async Task<dynamic> GetItemsAsync(Func<Products, DateTime?> sort, int pageSize, int productPage, int addItems = 0, int skippedItems = 0)
+        {
+            return await Task<dynamic>.Run<dynamic>(() => GetItems(sort, pageSize, productPage, addItems, skippedItems));
+        }
+
         public dynamic GetItems(Func<Products, DateTime?> sort, int pageSize, int productPage, int addItems = 0, int skippedItems = 0)
         {
             this._totalItems = AllProducts.Count();
