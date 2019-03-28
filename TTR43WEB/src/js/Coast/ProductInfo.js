@@ -72,16 +72,16 @@ export const ProductInfo = (props) => {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ 
-                    "pageSize": pageSize ,
-                    "productPage": productPage ,
+                body: JSON.stringify({
+                    "pageSize": pageSize,
+                    "productPage": productPage,
                     "addItems": e.target.value,
                     "skippedItems": items.length,
                 }),
             });
 
             const result = await response.json();
-            
+
             stateChangeResult(result.items, "items");
 
         } catch (error) {
@@ -160,7 +160,7 @@ export const ProductInfo = (props) => {
                                 if (el.toLowerCase() === "url") {
                                     return (<th key={i} >
                                         UPDATE
-                                        </th>);
+                        </th>);
                                 } else {
                                     return (<th key={i} >
                                         {_replacer(el)}
@@ -179,7 +179,7 @@ export const ProductInfo = (props) => {
                 </tfoot>
             </table>
             <div>
-                <button className={"btn"} onClick={onRefresh.bind(this)} value = {1} type="button">{"1"}</button>
+                <button className={"btn"} onClick={onRefresh.bind(this)} value={1} type="button">{"1"}</button>
             </div>
         </React.Fragment>
     );

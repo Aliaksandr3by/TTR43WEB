@@ -16,9 +16,11 @@ const onChangePageSize = (event, pageSize, handleState) => { //размер ст
 
 const PageSizeSelector = props => {
 
-    const { state: { pageSize, children }, handlePageOptions } = props;
+    const { state: { pageSize, totalItems, children }, handlePageOptions } = props;
 
-    const valueDefault = [3, 5, 10, 15, 25, 30, 50, 75, 100, 150, 200, 250];
+    const valueDefault = [3, 5, 10, 15, 25, ...[...Array(Math.round(totalItems / 50))].map((e, i, a) => Math.floor(50 * (i) / 25) * 25).filter((e, i) => e > 25), totalItems];
+
+    [...Array(Math.round(totalItems / 50))].map((e, i) => e * i);
 
     return (
         <div className="input-field right-align" id="panelNavigation">

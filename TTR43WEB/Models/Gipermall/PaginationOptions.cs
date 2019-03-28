@@ -26,6 +26,12 @@ namespace TTR43WEB.Models.Gipermall
             return await Task<dynamic>.Run<dynamic>(() => GetItems(sort, pageSize, productPage, addItems, skippedItems));
         }
 
+        public async Task<dynamic> GetItemsAsync(Func<Products, DateTime?> sort, GetPageOptions getPageOptions)
+        {
+            return await Task<dynamic>.Run<dynamic>(
+                () => this.GetItems(sort, getPageOptions.pageSize, getPageOptions.productPage, getPageOptions.addItems, getPageOptions.skippedItems));
+        }
+
         public dynamic GetItems(Func<Products, DateTime?> sort, int pageSize, int productPage, int addItems = 0, int skippedItems = 0)
         {
             this._totalItems = AllProducts.Count();
@@ -40,15 +46,15 @@ namespace TTR43WEB.Models.Gipermall
                             .OrderByDescending(sort)
                             .Skip(skip)
                             .Take(take)
-                            .Select(e => new
+                            .Select(e => new ProductEntityLite
                             {
-                                e.Id,
+                                Id = e.Id,
+                                Date = e.Date,
                                 Url = e.UrlNavigation?.UrlProduct,
                                 Name = e.NameNavigation?.NameProduct,
                                 MarkingGoods = e.MarkingGoodsNavigation?.MarkingGoodsProduct,
-                                e.Date,
-                                e.Price,
-                                e.PriceWithoutDiscount
+                                Price = e.Price,
+                                PriceWithoutDiscount = e.PriceWithoutDiscount
                             });
 
             if (addItems <= 0)

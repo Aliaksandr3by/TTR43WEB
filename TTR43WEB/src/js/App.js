@@ -99,13 +99,13 @@ class App extends Component {
             }
         });
     }
-    
+
     handleStateResultObject = async (object) => {
         await this.setState((state, props) => {
             return { ...state, ...object };
         });
     }
-    
+
     static count = 0;
 
     countSet = () => {
@@ -127,7 +127,7 @@ class App extends Component {
                     <PageSizeSelector
                         handlePageOptions={this.handlePageOptions}
                         state={this.state}
-                    >Число элементов на листе</PageSizeSelector>
+                    >{"Число элементов на листе"}</PageSizeSelector>
                     <PageList
                         handlePageOptions={this.handlePageOptions}
                         state={this.state}
@@ -137,7 +137,9 @@ class App extends Component {
         } else if (items.length === 0) {
             return (
                 <React.Fragment>
-                    <div>items: {items.length}</div>
+                    <div className="progress">
+                        <div className="indeterminate"></div>
+                    </div>
                 </React.Fragment>
             );
         } else if (error) {

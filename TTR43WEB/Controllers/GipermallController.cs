@@ -67,15 +67,12 @@ namespace TTR43WEB.Controllers
         [HttpGet]
         [AllowAnonymous]
         [ContentTypeAddJson]
-        public IActionResult ItemsProduct(int pageSize, int productPage)
+        public async Task<IActionResult> ItemsProduct(int pageSize, int productPage)
         {
             var AllProducts = gipermollTableData.Products;
-
             Func<Products, DateTime?> sort = e => e.Date;
-
-            var items = new PaginationOptions(AllProducts).
-                GetItems(sort, pageSize, productPage);
-
+            var tmp = new PaginationOptions(AllProducts);
+            var items = await tmp.GetItemsAsync(sort, pageSize, productPage);
             return Json(items);
         }
 
@@ -85,12 +82,9 @@ namespace TTR43WEB.Controllers
         public async Task<IActionResult> ItemsProduct([FromBody] GetPageOptions getPageOptions)
         {
             var AllProducts = gipermollTableData.Products;
-            var _getPageOptions = getPageOptions;
-
             Func<Products, DateTime?> sort = e => e.Date;
             var tmp = new PaginationOptions(AllProducts);
-            var items = await tmp.GetItemsAsync(sort, _getPageOptions.pageSize, _getPageOptions.productPage, _getPageOptions.addItems, _getPageOptions.skippedItems);
-
+            var items = await tmp.GetItemsAsync(sort, getPageOptions);
             return Json(items);
         }
 
