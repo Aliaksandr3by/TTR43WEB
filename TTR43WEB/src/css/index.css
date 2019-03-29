@@ -36,9 +36,18 @@ ul.pagination li:hover {
 #progressAllPage{
     position: fixed;
     bottom: 0px;
+    left: 0px;
+    right: 0px;
     width: 100%;
-    height: 15px;
+    height: 5px;
     z-index: 99999999;
+}
+
+.loadingBar{
+    position: fixed;
+    bottom: 10px;
+    left: 0px;
+    right: 0px;
 }
 
 #panelNavigation:hover {
@@ -56,11 +65,5 @@ ul.pagination li:hover {
 @media screen and (min-width: 992px) {
     .wrapper {
         overflow-x: auto;
-    }
-    td {
-        /* max-width: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap; */
     }
 }

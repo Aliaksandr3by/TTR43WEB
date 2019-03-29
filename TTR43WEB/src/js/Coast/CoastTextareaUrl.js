@@ -121,13 +121,21 @@ class CoastTextareaUrl extends Component {
         }
     }
 
+    cardStickyAction = ({ date = "", id = "", markingGoods = "", name = "", price = "", priceWithoutDiscount = "", url = "", }) => {
+        return `<a href="${url}" target="_blank">${name}(${markingGoods}) - ${price}руб. - ${priceWithoutDiscount}руб. (${date})</a>`;
+    };
+
     async getData(e) {
         try {
             const { urlControlAction } = this.props;
+
             const data = this.formatDataURL(this.state);
+
             this.setState({ progress: 0 });
+
             //this.OptionsURIinBase(urlControlActionOptionsURIinBase, iterator);
             for (const iterator of data) {
+
                 const response = await fetch(urlControlAction.urlControlActionGetCoastAsync, {
                     method: "POST", // *GET, POST, PUT, DELETE, etc.
                     headers: {
@@ -135,15 +143,22 @@ class CoastTextareaUrl extends Component {
                     },
                     body: JSON.stringify({ "idGoods": iterator }),
                 });
+
                 const json = await response.json();
+
                 this.setState({ progress: await this.getProgress(this.state.progress, data.length) });
+
                 if (json.resultBaseDataAdd) {
                     this.props.stateChangeResult(json.items, "items");
-                    M.toast({ html: `Товар ${json.items.name} добавлен, цена ${json.items.price} `, displayLength: 4000, classes: "rounded" });
-                    console.log(json.items.name);
+
+                    M.toast({ html: this.cardStickyAction(json.items), displayLength: 8000, classes: "rounded" });
+
+                    console.log(`${json.items.name}, ${json.items.price} / ${json.items.priceWithoutDiscount} | ${json.items.url}`);
+
                 } else {
                     M.toast({ html: `Товар ${json.items.name} не изменился`, displayLength: 4000, classes: "rounded" });
                 }
+
             }
         } catch (error) {
             console.error(error);

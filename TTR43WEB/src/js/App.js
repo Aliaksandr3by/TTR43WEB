@@ -136,11 +136,11 @@ class App extends Component {
             );
         } else if (items.length === 0) {
             return (
-                <React.Fragment>
+                <div className="loadingBar">
                     <div className="progress">
                         <div className="indeterminate"></div>
                     </div>
-                </React.Fragment>
+                </div>
             );
         } else if (error) {
             return (
@@ -151,7 +151,17 @@ class App extends Component {
         } else if (!isLoaded) {
             return (
                 <React.Fragment>
-                    <div>Loading...</div>
+                    <div className="preloader-wrapper big active">
+                        <div className="spinner-layer spinner-blue">
+                            <div className="circle-clipper left">
+                                <div className="circle"></div>
+                            </div><div className="gap-patch">
+                                <div className="circle"></div>
+                            </div><div className="circle-clipper right">
+                                <div className="circle"></div>
+                            </div>
+                        </div>
+                    </div>
                 </React.Fragment>
             );
         }
@@ -186,8 +196,8 @@ class App extends Component {
                     }
                 </main>
                 <footer className="row" id="footer" role="status">
-                    <ProgressPage />
                 </footer>
+                <ProgressPage />
             </React.Fragment>
         );
     }

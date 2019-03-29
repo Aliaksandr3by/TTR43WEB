@@ -35,7 +35,7 @@ export const ProductInfo = (props) => {
     const { state: { AspNetCoreCookies = "", items = [], pageSize, productPage }, urlControlAction = {}, handleStateResultObject, stateChangeResult } = props;
 
     const cardStickyAction = ({ date = "", id = "", markingGoods = "", name = "", price = "", priceWithoutDiscount = "", url = "", }) => {
-        return `${name} - ${price}руб. - ${priceWithoutDiscount}руб.`;
+        return `<a href="${url} target="_blank">${name}(${markingGoods}) - ${price}руб. - ${priceWithoutDiscount}руб. (${date})</a>`;
     };
 
     /**
@@ -56,7 +56,7 @@ export const ProductInfo = (props) => {
             const json = await response.json();
             M.toast(
                 {
-                    html: cardStickyAction(json.items),
+                    html: String(cardStickyAction(json.items)),
                     classes: "rounded"
                 }
             );

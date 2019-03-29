@@ -2,7 +2,7 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { instanceOf } from "prop-types";
-import { withCookies, Cookies } from "react-cookie";
+import { Cookies } from "react-cookie";
 import M from "materialize-css";
 
 class Authenticate extends Component {
@@ -34,11 +34,10 @@ class Authenticate extends Component {
     }
 
     async componentDidUpdate() {
-        const elems = document.querySelectorAll(".collapsible");
-        const instances = M.Collapsible.init(elems, {});
+        M.Collapsible.init(document.querySelectorAll(".collapsible"), {});
     }
 
-    login = async (e) => {
+    login = async () => {
         try {
             const { Login, Password } = this.state;
             ///Костыль

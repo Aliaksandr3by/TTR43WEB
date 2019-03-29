@@ -26,7 +26,7 @@ class ProgressPage extends React.Component {
         window.removeEventListener("scroll", this.handleScroll);
     }
 
-    getProgress = async () => Math.ceil((document.documentElement.scrollTop / (document.documentElement.scrollHeight - document.documentElement.clientHeight) * 100) / 5) * 5;
+    getProgress = async () => Math.round((document.documentElement.scrollTop / (document.documentElement.scrollHeight - document.documentElement.clientHeight) * 100));
 
     handleScroll = async () => {
         const a = await this.getProgress();
@@ -36,12 +36,10 @@ class ProgressPage extends React.Component {
     };
 
     render() {
-        const {progressAllPage} = this.state;
+        const { progressAllPage } = this.state;
         const classHide = progressAllPage === 0 || progressAllPage === 100 ? "hide" : "";
         return (
-            <React.Fragment>
-                <progress className={classHide} id="progressAllPage" value={this.state.progressAllPage} max={100}></progress>
-            </React.Fragment>
+            <progress className={classHide} id="progressAllPage" value={this.state.progressAllPage} max={100}></progress>
         );
     }
 }
