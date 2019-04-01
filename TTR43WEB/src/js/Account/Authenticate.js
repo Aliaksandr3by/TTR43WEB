@@ -17,13 +17,11 @@ class Authenticate extends Component {
         super(props);
         this.state = {
             error: null,
-            errorUser: [],
             Login: "",
             Password: "",
             userRegister: window.localStorage.getItem("userRegister")
                 ? JSON.parse(window.localStorage.getItem("userRegister"))
                 : { "FirstName": "", "LastName": "", "Role": "guest", "TelephoneNumber": "", "Email": "", "Login": "", "Password": "", "PasswordConfirm": "" },
-
         };
         this.handleChange = this.handleChange.bind(this);
         this.urlControlAction = this.props.urlControlAction;
@@ -99,6 +97,7 @@ class Authenticate extends Component {
             this.setState({
                 error
             });
+            console.error(this.state);
         }
     };
 
@@ -145,6 +144,7 @@ class Authenticate extends Component {
             this.setState({
                 error
             });
+            console.error(this.state);
         }
     };
 
@@ -159,6 +159,7 @@ class Authenticate extends Component {
             this.setState({
                 error
             });
+            console.error(this.state);
         }
     };
 

@@ -136,7 +136,7 @@ namespace TTR43WEB.Controllers
 
         [HttpPost]
         [ContentTypeAddJson]
-        public async Task<IActionResult> AllItemsUrls()
+        public IActionResult AllItemsUrls()
         {
             var dataContext = gipermollTableData.Products;
 
