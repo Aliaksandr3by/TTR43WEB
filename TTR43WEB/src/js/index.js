@@ -9,7 +9,7 @@ import { fetch as fetchPolyfill } from "whatwg-fetch";
 
 import "../scss/index.scss";
 import Root from "./Root";
-
+//!открытый пароль, не шифрованный пароль
 document.addEventListener("DOMContentLoaded", () => {
     if (!window.fetch) window.fetch = fetchPolyfill;
     const rootContainer = document.getElementById("root-container");

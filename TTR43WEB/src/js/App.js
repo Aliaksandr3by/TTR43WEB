@@ -190,6 +190,7 @@ class App extends Component {
                     <CoastTextareaUrl
                         urlControlAction={urlControlAction}
                         stateChangeResult={this.stateChangeResult}
+                        AspNetCoreCookies={AspNetCoreCookies}
                     />
                     {
                         this.renderMainTable(this.state)

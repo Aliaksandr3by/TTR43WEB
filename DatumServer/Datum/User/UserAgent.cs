@@ -8,5 +8,6 @@ namespace DatumServer.Datum.User
         public int IdUserAgent { get; set; }
         public string UserAgentData { get; set; }
         public Guid? GuidUser { get; set; }
+        public DateTime? DateAutorizate { get; set; }
     }
 }

@@ -42,11 +42,6 @@ namespace TTR43WEB.Controllers
         {
             try
             {
-                var userAgent = Request.Headers["User-Agent"].FirstOrDefault();
-                var host = Request.Headers["Host"].FirstOrDefault();
-
-                var __RequestVerificationToken = Base64.Base64Encode(userAgent.ToString());
-
                 var result = new
                 {
                     isAuthenticated = HttpContext.User.Identity.IsAuthenticated,
@@ -85,11 +80,8 @@ namespace TTR43WEB.Controllers
 
             if (ModelState.IsValid)
             {
-
-                bool flagTelephoneNumber = long.TryParse(model.Login, out long TelephoneNumber); //Convert.ToInt64(model.Login);
-                var user1 = await db.Users.FirstOrDefaultAsync((u) => u.TelephoneNumber == TelephoneNumber);
                 Users user = await db.Users.FirstOrDefaultAsync(
-                    (u) => (u.Login == model.Login || u.Email == model.Login || u.TelephoneNumber == TelephoneNumber) && u.Password == model.Password);
+                    (u) => (u.Login == model.Login || u.Email == model.Login || u.TelephoneNumber == _model.Login) && u.Password == model.Password);
 
                 if (user != null)
                 {
@@ -133,7 +125,7 @@ namespace TTR43WEB.Controllers
                     {
                         Login = model.Login,
                         Email = model.Email,
-                        TelephoneNumber = model.TelephoneNumber ?? default,
+                        TelephoneNumber = model.TelephoneNumber,
                         Password = model.Password,
                         PasswordConfirm = model.PasswordConfirm,
                         DateTimeRegistration = DateTime.Now,
@@ -163,7 +155,7 @@ namespace TTR43WEB.Controllers
                     {
                         ModelState.AddModelError("", "Некорректные логин и(или) пароль");
                     }
-                    else if (user.TelephoneNumber >= 0)
+                    else if (user.TelephoneNumber != String.Empty)
                     {
                         ModelState.AddModelError("", "Телефонный номер уже использован");
                     }
@@ -198,18 +190,21 @@ namespace TTR43WEB.Controllers
             {
                 UserAgentData = Request.Headers["User-Agent"].FirstOrDefault(),
                 GuidUser = user.Guid,
+                DateAutorizate = DateTime.Now,
             };
+
             db.GetUserContext().Add(userAgent);
+
             await db.GetUserContext().SaveChangesAsync();
-            // создаем один claim
+
+
             var claims = new List<Claim>
             {
                 new Claim(ClaimsIdentity.DefaultNameClaimType, user.Login),
-                //new Claim(ClaimTypes.Role, "Administrator"),
             };
-            // создаем объект ClaimsIdentity
+
             ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
-            // установка аутентификационных куки
+
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(id),

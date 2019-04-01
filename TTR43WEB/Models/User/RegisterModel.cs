@@ -19,8 +19,9 @@ namespace TTR43WEB.Models.User
         [Compare("Password", ErrorMessage = "Пароль введен неверно")]
         public string PasswordConfirm { get; set; }
 
-        [Required(ErrorMessage = "Не указан TelephoneNumber")]
-        public long? TelephoneNumber { get; set; }
+        [Required(ErrorMessage = "Не указан TelephoneNumber")] //+123 12 123-45-67
+        [RegularExpression(@"^\+\d{3}\s*.\d{2}.\s*[0-9]{3}.[0-9]{2}.[0-9]{2}$", ErrorMessage = "Формат +375 (12) 123-45-67")]
+        public string TelephoneNumber { get; set; }
 
         [Required(ErrorMessage = "Не указан Role")]
         public string Role { get; set; }

@@ -89,6 +89,7 @@ namespace TTR43WEB.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         [ContentTypeAddJson]
         [AccessControlAllowAll]
         public async Task<IActionResult> GetCoastAsync([FromBody]JObject idGoods)

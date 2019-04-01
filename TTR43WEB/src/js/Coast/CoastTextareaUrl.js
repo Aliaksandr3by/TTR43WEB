@@ -5,7 +5,8 @@ import M from "materialize-css";
 class CoastTextareaUrl extends Component {
     static propTypes = {
         stateChangeResult: PropTypes.func.isRequired,
-        urlControlAction: PropTypes.object.isRequired
+        urlControlAction: PropTypes.object.isRequired,
+        AspNetCoreCookies: PropTypes.string,
     };
     constructor(props) {
         super(props);
@@ -188,12 +189,14 @@ class CoastTextareaUrl extends Component {
     }
 
     render() {
+        const { AspNetCoreCookies } = this.props;
         return (
             <div className="row">
                 <form>
                     <div className="col s12">
                         <div className="input-field ">
                             <textarea
+                                placeholder={`Адрес товара "https://gipermall.by/cabinet/favorites/#/catalog/item_95308.html`}
                                 id="textareaURLstorige"
                                 className="materialize-textarea"
                                 onChange={this.handleChange}
@@ -203,26 +206,46 @@ class CoastTextareaUrl extends Component {
                         </div>
                     </div>
                     <div className="col s12">
-                        <button
-                            onClick={(e) => this.getDataTable(e)}
-                            className="btn waves-effect waves-light"
-                            type="button"
-                            name="action">Обновить все данные в базе<i className="material-icons left">cloud</i>
-                        </button>
-                        <button
-                            onClick={(e) => this.createDataTable(e)}
-                            className="btn waves-effect waves-light"
-                            type="button"
-                            name="action">Создать случайные ссылки<i className="material-icons left">create</i>
-                        </button>
-                        <button
-                            onClick={(e) => this.getData(e, this.formatDataURL(this.state), this.props)}
-                            className="btn waves-effect waves-light"
-                            type="button"
-                            name="action">Отправить<i className="material-icons right">send</i>
-                        </button>
-                        <div className={`progress`} id="progressBar">
-                            <div className="determinate" style={{ width: this.state.progress + "%" }}></div>
+                        <div className="col s3">
+                            {
+                                AspNetCoreCookies
+                                    ? (
+                                        <button
+                                            onClick={(e) => this.getDataTable(e)}
+                                            className="btn W100 waves-effect waves-light"
+                                            type="button"
+                                            name="action">Обновить все данные в базе<i className="material-icons left">cloud</i>
+                                        </button>
+                                    )
+                                    : null
+                            }
+                        </div>
+                        <div className="col s3">
+                            {
+                                AspNetCoreCookies
+                                    ? (
+                                        <button
+                                            onClick={(e) => this.createDataTable(e)}
+                                            className="btn W100 waves-effect waves-light"
+                                            type="button"
+                                            name="action">Создать случайные ссылки<i className="material-icons left">create</i>
+                                        </button>
+                                    )
+                                    : null
+                            }
+                        </div>
+                        <div className="col s3">
+                            <button
+                                onClick={(e) => this.getData(e, this.formatDataURL(this.state), this.props)}
+                                className="btn W100 waves-effect waves-light"
+                                type="button"
+                                name="action">Отправить<i className="material-icons right">send</i>
+                            </button>
+                        </div>
+                        <div className="col s3">
+                            <div className={`progress`} id="progressBar">
+                                <div className="determinate" style={{ width: this.state.progress + "%" }}></div>
+                            </div>
                         </div>
                     </div>
                 </form>

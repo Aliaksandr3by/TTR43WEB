@@ -34,16 +34,14 @@ namespace DatumServer.Datum.User
             {
                 entity.HasKey(e => e.IdUserAgent)
                     .HasName("PK__UserAgen__FC710A6CC4C40273");
+
+                entity.Property(e => e.DateAutorizate).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<Users>(entity =>
             {
                 entity.HasKey(e => e.Guid)
                     .HasName("PK__Users__A2B5777C8CDED7BA");
-
-                entity.HasIndex(e => e.TelephoneNumber)
-                    .HasName("UNQ_TelephoneNumber")
-                    .IsUnique();
 
                 entity.Property(e => e.Guid).HasDefaultValueSql("(newid())");
 
@@ -60,6 +58,8 @@ namespace DatumServer.Datum.User
                 entity.Property(e => e.Role)
                     .IsRequired()
                     .HasDefaultValueSql("(N'guest')");
+
+                entity.Property(e => e.TelephoneNumber).IsRequired();
             });
         }
     }
