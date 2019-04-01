@@ -22,7 +22,7 @@ class Authenticate extends Component {
             Password: "",
             userRegister: window.localStorage.getItem("userRegister")
                 ? JSON.parse(window.localStorage.getItem("userRegister"))
-                : { "FirstName": "", "LastName": "", "Role": "", "TelephoneNumber": "", "Email": "", "Login": "", "Password": "", "PasswordConfirm": "" },
+                : { "FirstName": "", "LastName": "", "Role": "guest", "TelephoneNumber": "", "Email": "", "Login": "", "Password": "", "PasswordConfirm": "" },
         };
         this.handleChange = this.handleChange.bind(this);
         this.urlControlAction = this.props.urlControlAction;
@@ -36,6 +36,57 @@ class Authenticate extends Component {
     async componentDidUpdate() {
         M.Collapsible.init(document.querySelectorAll(".collapsible"), {});
     }
+
+    register = async () => {
+        try {
+            const { Login, Password } = this.state;
+            ///Костыль
+            var VerificationToken = document.createElement("div");
+            const tmp = await fetch(this.urlControlAction.urlControlActionGETAccountRequestVerificationToken);
+            VerificationToken.innerHTML = await tmp.text();
+            const __RequestVerificationToken = VerificationToken.querySelector("input[name=__RequestVerificationToken]").value;
+            ///----------------
+
+            const userData = new FormData();
+            userData.append("__RequestVerificationToken", __RequestVerificationToken);
+            const regObject = this.state.userRegister;
+            for (const key in regObject) {
+                if (regObject.hasOwnProperty(key)) {
+                    userData.append(key, regObject[key]);
+                }
+            }
+
+            const response = await fetch(this.urlControlAction.urlControlActionAccountRegister, {
+                method: "POST", // *GET, POST, PUT, DELETE, etc.
+                mode: "cors", // no-cors, cors, *same-origin
+                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: "same-origin", // include, *same-origin, omit
+                headers: {
+                    "Accept": "application/json, application/xml, text/plain, text/html, *.*",
+                },
+                redirect: "follow", // manual, *follow, error
+                referrer: "no-referrer", // no-referrer, *client
+                body: userData, // body data type must match "Content-Type" header
+            });
+            const json = await response.json();
+            const { errorUser, count, user: { dateTimeRegistration, email, firstName, guid, lastName, login, password, passwordConfirm, role, telephoneNumber } } = json;
+            if (!errorUser && count > 0) {
+                const coreCookies = { "AspNetCoreCookies": this.props.cookies.get(".AspNetCore.Cookies") || false };
+                const result = { ...json, ...coreCookies };
+                this.handleStateResultObject(result);
+                window.localStorage.setItem("Login", login);
+                console.log(this.state);
+
+            } else {
+                this.setState(json);
+            }
+
+        } catch (error) {
+            this.setState({
+                error
+            });
+        }
+    };
 
     login = async () => {
         try {
@@ -133,20 +184,22 @@ class Authenticate extends Component {
     loginForm = (errorUser) => {
         return (
             <div className="row">
-                <div className="input-field ">
-                    <input className="validate" type="text" data-role="Login" id="Login" value={this.state.Login} onChange={this.handleChange} />
-                    <label htmlFor="Login">Введите Email</label>
-                </div>
-                <div className="input-field ">
-                    <input className="validate" type="Password" data-role="Password" id="Password" value={this.state.Password} onChange={this.handleChange} />
-                    <label htmlFor="Password">Введите пароль</label>
-                </div>
-                <div className="input-field ">
-                    <button type="button" className="btn" onClick={(e) => this.login(e)}>Войти</button>
-                </div>
-                <div>
-                    {this.errorResult(errorUser)}
-                </div>
+                <form>
+                    <div className="input-field ">
+                        <input className="validate" type="text" data-role="Login" id="Login" value={this.state.Login} onChange={this.handleChange} />
+                        <label htmlFor="Login">Введите Email</label>
+                    </div>
+                    <div className="input-field ">
+                        <input className="validate" type="Password" data-role="Password" id="Password" value={this.state.Password} onChange={this.handleChange} />
+                        <label htmlFor="Password">Введите пароль</label>
+                    </div>
+                    <div className="input-field ">
+                        <button type="button" className="btn" onClick={(e) => this.login(e)}>Войти</button>
+                    </div>
+                    <div>
+                        {this.errorResult(errorUser)}
+                    </div>
+                </form>
             </div>
         );
     }
@@ -204,14 +257,11 @@ class Authenticate extends Component {
                         </ul>
                     </div>
                     <div className="row">
-                        <div className="col s4">
-                            <button data-role="Send" onClick={this.onResetClick.bind(this)} type="reset" className="btn" >Reset<i className="material-icons right">reset</i></button>
+                        <div className="col s6">
+                            <button data-role="Reset" onClick={this.onResetClick.bind(this)} type="reset" className="btn" >Reset<i className="material-icons right">reset</i></button>
                         </div>
-                        <div className="col s4">
-                            <button data-role="Send" onClick={this.handleChangeRegister.bind(this)} type="button" className="btn" >sdf  <i className="material-icons right">cloud</i></button>
-                        </div>
-                        <div className="col s4">
-                            <button data-role="Send" onClick={this.handleChangeRegister.bind(this)} type="button" className="btn" >Submit<i className="material-icons right">send</i></button>
+                        <div className="col s6">
+                            <button data-role="Register" onClick={this.register.bind(this)} type="button" className="btn" >register<i className="material-icons right">send</i></button>
                         </div>
                     </div>
                 </form>

@@ -99,21 +99,21 @@ namespace TTR43WEB.Controllers
 
                 GetDataFromGipermall getDataFromGipermall = new GetDataFromGipermall(dataSendObj.IdGoods);
 
-                var e = await getDataFromGipermall.GetFullDescriptionResult();
+                var item = await getDataFromGipermall.GetFullDescriptionResult();
 
-                int resultBaseDataAdd = await gipermollTableData.SaveProduct(e);
+                int resultBaseDataAdd = await gipermollTableData.SaveProduct(item);
 
                 var result = new
                 {
                     items = new
                     {
-                        e.Id,
-                        Url = e.Url,
-                        Name = e.Name,
-                        MarkingGoods = e.MarkingGoods,
-                        e.Date,
-                        e.Price,
-                        e.PriceWithoutDiscount
+                        item.Id,
+                        Url = item.Url,
+                        Name = item.Name,
+                        MarkingGoods = item.MarkingGoods,
+                        item.Date,
+                        item.Price,
+                        item.PriceWithoutDiscount
                     },
                     resultBaseDataAdd,
                 };

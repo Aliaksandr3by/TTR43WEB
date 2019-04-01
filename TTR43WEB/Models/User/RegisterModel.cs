@@ -24,7 +24,7 @@ namespace TTR43WEB.Models.User
 
         public string Role { get; set; }
 
-        public DateTime DateTimeRegistration { get; set; }
+        public DateTime DateTimeRegistration { get; set; } = DateTime.Now;
 
         public string FirstName { get; set; }
 

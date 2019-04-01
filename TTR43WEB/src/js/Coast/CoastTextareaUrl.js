@@ -1,4 +1,4 @@
-import PropTypes from "prop-types";
+import PropTypes, { number } from "prop-types";
 import React, { Component } from "react";
 import M from "materialize-css";
 
@@ -84,12 +84,10 @@ class CoastTextareaUrl extends Component {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({
-
-                }),
+                body: JSON.stringify({}),
             });
-            const json = await response.json();
-            this.setState({ textarea: json.items });
+            const { description } = await response.json();
+            this.getData(null, description, { urlControlAction });
         } catch (error) {
             this.setState({
                 isLoaded: true,
@@ -125,11 +123,10 @@ class CoastTextareaUrl extends Component {
         return `<a href="${url}" target="_blank">${name}(${markingGoods}) - ${price}руб. - ${priceWithoutDiscount}руб. (${date})</a>`;
     };
 
-    async getData(e) {
+    async getData(e, formatDataURL, { urlControlAction }) {
         try {
-            const { urlControlAction } = this.props;
 
-            const data = this.formatDataURL(this.state);
+            const data = formatDataURL || [];
 
             this.setState({ progress: 0 });
 
@@ -173,12 +170,13 @@ class CoastTextareaUrl extends Component {
         });
     }
 
+    randomInteger = (min = 0, max = 5000) => Math.abs(Math.round(min - 0.5 + Math.random() * (max - min + 1)));
+
     createDataTable = async () => {
         try {
             this.setState({ textarea: [] });
-            const dd = 2500 + 1;
-            for (let i = dd; i < dd + 500; i++) {
-                let tmp = `https://gipermall.by/catalog/item_${Number(i)}.html`;
+            for (let i = 0; i < 300; i++) {
+                let tmp = `https://gipermall.by/catalog/item_${99508 + i}.html`; //this.randomInteger(95308, 95408)
                 this.handleStateResultArray(tmp, "textarea");
             }
         } catch (error) {
@@ -192,40 +190,42 @@ class CoastTextareaUrl extends Component {
     render() {
         return (
             <div className="row">
-                <div className="col s12">
-                    <div className="input-field ">
-                        <textarea
-                            id="textareaURLstorige"
-                            className="materialize-textarea"
-                            onChange={this.handleChange}
-                            onClick={this.handleChange}
-                            value={this.state.textarea}
-                        />
+                <form>
+                    <div className="col s12">
+                        <div className="input-field ">
+                            <textarea
+                                id="textareaURLstorige"
+                                className="materialize-textarea"
+                                onChange={this.handleChange}
+                                onClick={this.handleChange}
+                                value={this.state.textarea}
+                            />
+                        </div>
                     </div>
-                </div>
-                <div className="col s12">
-                    <button
-                        onClick={(e) => this.getDataTable(e)}
-                        className="btn waves-effect waves-light"
-                        type="button"
-                        name="action">Получить данные<i className="material-icons left">cloud</i>
-                    </button>
-                    <button
-                        onClick={(e) => this.createDataTable(e)}
-                        className="btn waves-effect waves-light"
-                        type="button"
-                        name="action">Создать ссылки<i className="material-icons left">create</i>
-                    </button>
-                    <button
-                        onClick={(e) => this.getData(e)}
-                        className="btn waves-effect waves-light"
-                        type="button"
-                        name="action">Отправить<i className="material-icons right">send</i>
-                    </button>
-                    <div className={`progress`} id="progressBar">
-                        <div className="determinate" style={{ width: this.state.progress + "%" }}></div>
+                    <div className="col s12">
+                        <button
+                            onClick={(e) => this.getDataTable(e)}
+                            className="btn waves-effect waves-light"
+                            type="button"
+                            name="action">Обновить все данные в базе<i className="material-icons left">cloud</i>
+                        </button>
+                        <button
+                            onClick={(e) => this.createDataTable(e)}
+                            className="btn waves-effect waves-light"
+                            type="button"
+                            name="action">Создать случайные ссылки<i className="material-icons left">create</i>
+                        </button>
+                        <button
+                            onClick={(e) => this.getData(e, this.formatDataURL(this.state), this.props)}
+                            className="btn waves-effect waves-light"
+                            type="button"
+                            name="action">Отправить<i className="material-icons right">send</i>
+                        </button>
+                        <div className={`progress`} id="progressBar">
+                            <div className="determinate" style={{ width: this.state.progress + "%" }}></div>
+                        </div>
                     </div>
-                </div>
+                </form>
             </div>
         );
     }

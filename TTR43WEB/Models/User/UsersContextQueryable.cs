@@ -10,7 +10,7 @@ using DatumServer.Datum.User;
 
 namespace TTR43WEB.Models.User
 {
-    public class UsersContextQueryable
+    public class UsersContextQueryable : IUsersContextQueryable
     {
         private readonly UserContext context;
 
@@ -25,14 +25,14 @@ namespace TTR43WEB.Models.User
             context.Users.Add(user);
         }
 
-        public async void SaveChangesAsync()
+        public int SaveChanges()
         {
-            await context.SaveChangesAsync();
+            return context.SaveChanges();
         }
 
-        public void SaveChanges()
+        public Task<int> SaveChangesAsync()
         {
-            context.SaveChanges();
+            return context.SaveChangesAsync();
         }
     }
 }

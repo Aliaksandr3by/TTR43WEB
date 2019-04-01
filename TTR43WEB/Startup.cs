@@ -45,7 +45,7 @@ namespace TTR43WEB
             services.AddScoped<IProductsContextQueryable, ProductsContextQueryable>();
 
             services.AddDbContext<UserContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:ConnectionUser"]));
-            services.AddScoped<UsersContextQueryable, UsersContextQueryable>();
+            services.AddScoped<IUsersContextQueryable, UsersContextQueryable>();
 
             // Inside your ConfigureServices method
             services.AddAuthentication(options =>
@@ -131,6 +131,7 @@ namespace TTR43WEB
                 routes.MapRoute(name: "getCoastAsync", template: "{controller=Gipermall}/{action=GetCoastAsync}/{id?}");
 
                 routes.MapRoute(name: "Login", template: "{controller=Account}/{action=Login}");
+                routes.MapRoute(name: "Register", template: "{controller=Account}/{action=Register}");
                 routes.MapRoute(name: "AccessDenied", template: "{controller=Account}/{action=AccessDenied}");
                 routes.MapRoute(name: "__RequestVerificationToken", template: "{controller=Account}/{action=RequestVerificationToken}");
 

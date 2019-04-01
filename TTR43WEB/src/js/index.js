@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
             urlControlActionGetTable: "/Gipermall/Table",
             urlControlActionOptionsURIinBase: "/Gipermall/OptionsURIinBase",
             urlControlActionAccountLogin: "/Account/Login",
+            urlControlActionAccountRegister: "/Account/Register",
             urlControlActionAccountLogout: "/Account/Logout",
             urlControlActionGETGipermallItemsProduct: "/Gipermall/ItemsProduct",
             urlControlActionGETAccountRequestVerificationToken: "/Account/RequestVerificationToken",

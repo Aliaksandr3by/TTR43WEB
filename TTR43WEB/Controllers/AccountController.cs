@@ -15,15 +15,16 @@ using Newtonsoft.Json.Linq;
 using DatumServer.Datum.User;
 using TTR43WEB.Models.User;
 using TTR43WEB.Universal;
+using static Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary;
 
 namespace TTR43WEB.Controllers
 {
     [Authorize]
     public class AccountController : Controller
     {
-        private readonly UsersContextQueryable db;
+        private readonly IUsersContextQueryable db;
 
-        public AccountController(UsersContextQueryable context)
+        public AccountController(IUsersContextQueryable context)
         {
             db = context;
         }
@@ -46,11 +47,12 @@ namespace TTR43WEB.Controllers
 
                 var __RequestVerificationToken = Base64.Base64Encode(userAgent.ToString());
 
-                return this.Json(new
+                var result = new
                 {
                     isAuthenticated = HttpContext.User.Identity.IsAuthenticated,
-                }
-                );
+                };
+
+                return this.Json(result);
             }
             catch (Exception ex)
             {
@@ -67,9 +69,6 @@ namespace TTR43WEB.Controllers
         public async Task<IActionResult> Login([FromForm]LoginModel _model)
         {
             LoginModel model = _model;
-            //LoginModel model = JsonConvert.DeserializeObject<LoginModel>(_model); //[FromForm]string _model
-            //var model = _model.ToObject<LoginModel>(); //[FromForm]JObject _model
-            var a = db.GetUserContext();
 
             if (ModelState.IsValid)
             {
@@ -88,6 +87,74 @@ namespace TTR43WEB.Controllers
                 ModelState.AddModelError("", "Некорректные логин и(или) пароль");
             }
 
+            List<string> ErrorMaker(ValueEnumerable modelStateEntries)
+            {
+                var error = new List<string>();
+
+                foreach (var modelStateVal in modelStateEntries)
+                {
+                    error.AddRange(modelStateVal.Errors.Select(err => err.ErrorMessage));
+                }
+
+                return error;
+            }
+
+            return this.Json(new
+            {
+                errorUser = ErrorMaker(this.ViewData.ModelState.Values),
+            });
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register([FromForm]RegisterModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                Users user = await db.Users.FirstOrDefaultAsync( u => u.Login == model.Login || u.TelephoneNumber == model.TelephoneNumber);
+                if (user == null)
+                {
+                    //model.DateTimeRegistration = DateTime.Now;
+
+                    db.Add(new Users {
+                        Login = model.Login,
+                        Email = model.Email,
+                        TelephoneNumber = model.TelephoneNumber,
+                        Password = model.Password,
+                        PasswordConfirm = model.PasswordConfirm,
+                        DateTimeRegistration = model.DateTimeRegistration,
+                        Role = model.Role,
+                        FirstName = model.FirstName,
+                        LastName = model.LastName,
+                    });
+
+                    int count = db.SaveChanges();
+
+                    var id = await Authenticate(model.Login); // аутентификация
+
+                    user = await db.Users.FirstOrDefaultAsync(u => u.Login == id.Name);
+
+                    return Json(new
+                    {
+                        user,
+                        userName = id.Name,
+                        count,
+                    });
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Некорректные логин и(или) пароль, телефонный номер");
+                }
+            }
+
             var error = new List<string>();
 
             foreach (var modelStateVal in this.ViewData.ModelState.Values)
@@ -98,53 +165,7 @@ namespace TTR43WEB.Controllers
             return this.Json(new
             {
                 errorUser = error
-            }); ;
-        }
-
-        [HttpGet]
-        [AllowAnonymous]
-        public IActionResult Register()
-        {
-            return View();
-        }
-
-
-
-        public IActionResult BannerImage()
-        {
-            var file = Path.Combine(Directory.GetCurrentDirectory(), "public", "image", "Untitled.jpg");
-
-            return PhysicalFile(file, "image/svg+xml");
-        }
-
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                Users user = await db.Users.FirstOrDefaultAsync(u => u.Login == model.Email);
-                if (user == null)
-                {
-                    // добавляем пользователя в бд
-                    db.Add(new Users { Login = model.Email, Password = model.Password });
-                    db.SaveChangesAsync();
-
-                    var id = await Authenticate(model.Email); // аутентификация
-
-                    return Json(new
-                    {
-                        authorize = id.IsAuthenticated,
-                        Login = id.Name,
-                    });
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Некорректные логин и(или) пароль");
-                }
-            }
-            return View(model);
+            });
         }
 
 
@@ -155,6 +176,13 @@ namespace TTR43WEB.Controllers
             {
                 authorize = "",
             });
+        }
+
+        public IActionResult BannerImage()
+        {
+            var file = Path.Combine(Directory.GetCurrentDirectory(), "public", "image", "Untitled.jpg");
+
+            return PhysicalFile(file, "image/svg+xml");
         }
 
         private async Task<ClaimsIdentity> Authenticate(string userName)

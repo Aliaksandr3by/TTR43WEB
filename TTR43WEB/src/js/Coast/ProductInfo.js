@@ -104,6 +104,9 @@ export const ProductInfo = (props) => {
                         return (
                             <tr key={index}>
                                 {
+                                    AspNetCoreCookies ? <td>{"favorite"}</td> : null
+                                }
+                                {
                                     Object.keys(item).map((el, i) => {
                                         if (el.toLowerCase() === "id") {
                                             return (<th key={i} name={`ID${item.id}`}>
@@ -156,18 +159,16 @@ export const ProductInfo = (props) => {
                 <thead id="tableTop">
                     <tr>
                         {
+                            AspNetCoreCookies ? <td>{"favorite"}</td> : null
+                        }
+                        {
                             Object.entries(items[0]).map(([el, val], i) => {
                                 if (el.toLowerCase() === "url") {
-                                    return (<th key={i} >
-                                        UPDATE
-                        </th>);
+                                    return (<th key={i}>UPDATE</th>);
                                 } else {
-                                    return (<th key={i} >
-                                        {_replacer(el)}
-                                    </th>);
+                                    return (<th key={i}>{_replacer(el)}</th>);
                                 }
-                            }
-                            )
+                            })
                         }
                     </tr>
                 </thead>
