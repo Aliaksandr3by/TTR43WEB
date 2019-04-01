@@ -19,15 +19,15 @@ namespace TTR43WEB.Models.User
         [Compare("Password", ErrorMessage = "Пароль введен неверно")]
         public string PasswordConfirm { get; set; }
 
-        [Required(ErrorMessage = "Не указан Login")]
-        public int TelephoneNumber { get; set; }
+        [Required(ErrorMessage = "Не указан TelephoneNumber")]
+        public long? TelephoneNumber { get; set; }
 
+        [Required(ErrorMessage = "Не указан Role")]
         public string Role { get; set; }
-
-        public DateTime DateTimeRegistration { get; set; } = DateTime.Now;
 
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
+
     }
 }

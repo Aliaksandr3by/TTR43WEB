@@ -15,7 +15,8 @@
 		"browserify": "browserify ./dist/srcTest/test.js -o ./dist/srcTest/bundle.js"
 	},
 	"dependencies": {
-		"core-js": "^3.0.0"
+		"core-js": "^3.0.0",
+		"whatwg-fetch": "^3.0.0"
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.2.3",

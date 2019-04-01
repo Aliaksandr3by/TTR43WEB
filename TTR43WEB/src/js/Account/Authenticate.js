@@ -69,13 +69,18 @@ class Authenticate extends Component {
                 body: userData, // body data type must match "Content-Type" header
             });
             const json = await response.json();
-            const { errorUser, count, user: { dateTimeRegistration, email, firstName, guid, lastName, login, password, passwordConfirm, role, telephoneNumber } } = json;
-            if (!errorUser && count > 0) {
-                const coreCookies = { "AspNetCoreCookies": this.props.cookies.get(".AspNetCore.Cookies") || false };
-                const result = { ...json, ...coreCookies };
-                this.handleStateResultObject(result);
-                window.localStorage.setItem("Login", login);
-                console.log(this.state);
+            const { errorUserRegister, count } = json;
+            if (!errorUserRegister && count > 0) {
+
+                try {
+                    const { user: { dateTimeRegistration, email, firstName, guid, lastName, login, password, passwordConfirm, role, telephoneNumber } = {} } = json;
+                    const coreCookies = { "AspNetCoreCookies": this.props.cookies.get(".AspNetCore.Cookies") || false };
+                    const result = { ...json, ...coreCookies };
+                    this.handleStateResultObject(result);
+                    window.localStorage.setItem("Login", login);
+                } catch (error) {
+                    console.error(error);
+                }
 
             } else {
                 this.setState(json);
@@ -116,8 +121,8 @@ class Authenticate extends Component {
                 body: userData, // body data type must match "Content-Type" header
             });
             const json = await response.json();
-            const { errorUser } = json;
-            if (!errorUser) {
+            const { errorUserLogin } = json;
+            if (!errorUserLogin) {
                 const coreCookies = { "AspNetCoreCookies": this.props.cookies.get(".AspNetCore.Cookies") || false };
                 const result = { ...json, ...coreCookies };
                 this.handleStateResultObject(result);
@@ -159,13 +164,17 @@ class Authenticate extends Component {
         });
     }
 
-    errorResult = (error = "") => {
-        return error
-            ? <ul>
-                {error.map((e, i) => <li key={i}>{`${i}: ${e}`}</li>)}
-            </ul>
-            : <p>{""}</p>;
-    };
+    telephoneNumberModificatory = (telephoneNumber) => {
+        const _t = [..."00000000000"];
+        const daf = [...telephoneNumber];
+        for (let i = 0; i < 13; i++) {
+            _t[i] = daf[i] || 0;
+        }
+        console.log(_t);
+        //_t.length = 11;
+        const qwe = `+ ${_t[0]}${_t[1]}${_t[2]} - ${_t[3]}${_t[4]} - ${_t[5]}${_t[6]}${_t[7]} - ${_t[8]}${_t[9]} - ${_t[10]}${_t[11]}`;
+        return telephoneNumber;
+    }
 
     handleStateFunctional = async (object) => {
         await this.setState((state, props) => {
@@ -187,7 +196,7 @@ class Authenticate extends Component {
                 <form>
                     <div className="input-field ">
                         <input className="validate" type="text" data-role="Login" id="Login" value={this.state.Login} onChange={this.handleChange} />
-                        <label htmlFor="Login">Введите Email</label>
+                        <label htmlFor="Login">Введите Email/Login/Phone</label>
                     </div>
                     <div className="input-field ">
                         <input className="validate" type="Password" data-role="Password" id="Password" value={this.state.Password} onChange={this.handleChange} />
@@ -196,15 +205,15 @@ class Authenticate extends Component {
                     <div className="input-field ">
                         <button type="button" className="btn" onClick={(e) => this.login(e)}>Войти</button>
                     </div>
-                    <div>
-                        {this.errorResult(errorUser)}
-                    </div>
+                    {
+                        this.errorResult(errorUser)
+                    }
                 </form>
             </div>
         );
     }
 
-    registerForm = (errorUser = []) => {
+    registerForm = (errorUser) => {
         const { FirstName, LastName, Role, TelephoneNumber, Email, Login, Password, PasswordConfirm } = this.state.userRegister;
         return (
             <div className="row">
@@ -225,7 +234,7 @@ class Authenticate extends Component {
                             <label className="active" htmlFor="email">Email</label>
                         </div>
                         <div className="input-field col s6">
-                            <input value={TelephoneNumber} data-role="TelephoneNumber" onChange={this.handleChangeRegister.bind(this)} id="TelephoneNumber" type="tel" className="validate" />
+                            <input value={this.telephoneNumberModificatory(TelephoneNumber)} data-role="TelephoneNumber" onChange={this.handleChangeRegister.bind(this)} id="TelephoneNumber" type="tel" className="validate" />
                             <label className="active" htmlFor="TelephoneNumber">Telephone Number</label>
                         </div>
                     </div>
@@ -252,9 +261,9 @@ class Authenticate extends Component {
                         </div>
                     </div>
                     <div className="row">
-                        <ul>
-                            {errorUser.map((e, i) => <li key={i}>{`${i}: ${e}`}</li>)}
-                        </ul>
+                        {
+                            this.errorResult(errorUser)
+                        }
                     </div>
                     <div className="row">
                         <div className="col s6">
@@ -269,9 +278,21 @@ class Authenticate extends Component {
         );
     }
 
+    errorResult = (errorUser = "") => {
+        return (<ul>
+            {
+                errorUser
+                    ? errorUser.map((e, i) => {
+                        return (<li data-error={"login error"} key={i}>{`${i} - ${e}`}</li>);
+                    })
+                    : (<li></li>)
+            }
+        </ul>);
+    }
+
     render() {
         const { AspNetCoreCookies, user: { login } = {} } = this.props;
-        const { error = null, errorUser = [] } = this.state;
+        const { error = null, errorUserLogin = [], errorUserRegister = [] } = this.state;
         if (AspNetCoreCookies) {
             return (
                 <div className="row">
@@ -296,13 +317,13 @@ class Authenticate extends Component {
                         <li>
                             <div className="collapsible-header"><i className="material-icons">filter_drama</i>Login</div>
                             <div className="collapsible-body">
-                                {this.loginForm(errorUser)}
+                                {this.loginForm(errorUserLogin)}
                             </div>
                         </li>
                         <li>
                             <div className="collapsible-header"><i className="material-icons">filter_drama</i>Register</div>
                             <div className="collapsible-body">
-                                {this.registerForm(errorUser)}
+                                {this.registerForm(errorUserRegister)}
                             </div>
                         </li>
                     </ul>

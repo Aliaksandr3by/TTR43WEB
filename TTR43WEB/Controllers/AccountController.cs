@@ -63,6 +63,19 @@ namespace TTR43WEB.Controllers
             }
         }
 
+
+        List<string> ErrorMaker(ValueEnumerable modelStateEntries)
+        {
+            var error = new List<string>();
+
+            foreach (var modelStateVal in modelStateEntries)
+            {
+                error.AddRange(modelStateVal.Errors.Select(err => err.ErrorMessage));
+            }
+
+            return error;
+        }
+
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -72,11 +85,15 @@ namespace TTR43WEB.Controllers
 
             if (ModelState.IsValid)
             {
-                Users user = await db.Users.FirstOrDefaultAsync(u => u.Login == model.Login && u.Password == model.Password);
+
+                bool flagTelephoneNumber = long.TryParse(model.Login, out long TelephoneNumber); //Convert.ToInt64(model.Login);
+                var user1 = await db.Users.FirstOrDefaultAsync((u) => u.TelephoneNumber == TelephoneNumber);
+                Users user = await db.Users.FirstOrDefaultAsync(
+                    (u) => (u.Login == model.Login || u.Email == model.Login || u.TelephoneNumber == TelephoneNumber) && u.Password == model.Password);
 
                 if (user != null)
                 {
-                    var id = await Authenticate(model.Login); // аутентификация
+                    var id = await Authenticate(user); // аутентификация
 
                     return Json(new
                     {
@@ -84,24 +101,12 @@ namespace TTR43WEB.Controllers
                     });
                 }
 
-                ModelState.AddModelError("", "Некорректные логин и(или) пароль");
-            }
-
-            List<string> ErrorMaker(ValueEnumerable modelStateEntries)
-            {
-                var error = new List<string>();
-
-                foreach (var modelStateVal in modelStateEntries)
-                {
-                    error.AddRange(modelStateVal.Errors.Select(err => err.ErrorMessage));
-                }
-
-                return error;
+                ModelState.AddModelError("", "Не найден логин и(или) пароль");
             }
 
             return this.Json(new
             {
-                errorUser = ErrorMaker(this.ViewData.ModelState.Values),
+                errorUserLogin = ErrorMaker(this.ViewData.ModelState.Values),
             });
         }
 
@@ -120,25 +125,28 @@ namespace TTR43WEB.Controllers
             if (ModelState.IsValid)
             {
                 Users user = await db.Users.FirstOrDefaultAsync( u => u.Login == model.Login || u.TelephoneNumber == model.TelephoneNumber);
-                if (user == null)
+                if (user == null && model.TelephoneNumber != null)
                 {
                     //model.DateTimeRegistration = DateTime.Now;
 
-                    db.Add(new Users {
+                    var tmpUser = new Users
+                    {
                         Login = model.Login,
                         Email = model.Email,
-                        TelephoneNumber = model.TelephoneNumber,
+                        TelephoneNumber = model.TelephoneNumber ?? default,
                         Password = model.Password,
                         PasswordConfirm = model.PasswordConfirm,
-                        DateTimeRegistration = model.DateTimeRegistration,
+                        DateTimeRegistration = DateTime.Now,
                         Role = model.Role,
                         FirstName = model.FirstName,
                         LastName = model.LastName,
-                    });
+                    };
+
+                    var tmp = db.Add(tmpUser);
 
                     int count = db.SaveChanges();
 
-                    var id = await Authenticate(model.Login); // аутентификация
+                    var id = await Authenticate(tmpUser); // аутентификация
 
                     user = await db.Users.FirstOrDefaultAsync(u => u.Login == id.Name);
 
@@ -151,20 +159,19 @@ namespace TTR43WEB.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Некорректные логин и(или) пароль, телефонный номер");
+                    if (user.Login != null)
+                    {
+                        ModelState.AddModelError("", "Некорректные логин и(или) пароль");
+                    }
+                    else if (user.TelephoneNumber >= 0)
+                    {
+                        ModelState.AddModelError("", "Телефонный номер уже использован");
+                    }
                 }
             }
-
-            var error = new List<string>();
-
-            foreach (var modelStateVal in this.ViewData.ModelState.Values)
-            {
-                error.AddRange(modelStateVal.Errors.Select(err => err.ErrorMessage));
-            }
-
             return this.Json(new
             {
-                errorUser = error
+                errorUserRegister = ErrorMaker(this.ViewData.ModelState.Values),
             });
         }
 
@@ -185,12 +192,19 @@ namespace TTR43WEB.Controllers
             return PhysicalFile(file, "image/svg+xml");
         }
 
-        private async Task<ClaimsIdentity> Authenticate(string userName)
+        private async Task<ClaimsIdentity> Authenticate(Users user)
         {
+            var userAgent = new UserAgent
+            {
+                UserAgentData = Request.Headers["User-Agent"].FirstOrDefault(),
+                GuidUser = user.Guid,
+            };
+            db.GetUserContext().Add(userAgent);
+            await db.GetUserContext().SaveChangesAsync();
             // создаем один claim
             var claims = new List<Claim>
             {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, userName),
+                new Claim(ClaimsIdentity.DefaultNameClaimType, user.Login),
                 //new Claim(ClaimTypes.Role, "Administrator"),
             };
             // создаем объект ClaimsIdentity

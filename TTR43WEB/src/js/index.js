@@ -5,10 +5,13 @@ import Cookies from "universal-cookie";
 import React from "react";
 import ReactDOM from "react-dom";
 
+import { fetch as fetchPolyfill } from "whatwg-fetch";
+
 import "../scss/index.scss";
 import Root from "./Root";
 
 document.addEventListener("DOMContentLoaded", () => {
+    if (!window.fetch) window.fetch = fetchPolyfill;
     const rootContainer = document.getElementById("root-container");
     if (rootContainer) {
         const urlControlAction = {

@@ -15,6 +15,7 @@ namespace DatumServer.Datum.User
         {
         }
 
+        public virtual DbSet<UserAgent> UserAgent { get; set; }
         public virtual DbSet<Users> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -28,6 +29,12 @@ namespace DatumServer.Datum.User
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("ProductVersion", "2.2.3-servicing-35854");
+
+            modelBuilder.Entity<UserAgent>(entity =>
+            {
+                entity.HasKey(e => e.IdUserAgent)
+                    .HasName("PK__UserAgen__FC710A6CC4C40273");
+            });
 
             modelBuilder.Entity<Users>(entity =>
             {
