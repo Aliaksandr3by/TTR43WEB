@@ -30,6 +30,11 @@ class Authenticate extends Component {
 
     async componentDidMount() {
         await this.isAuthenticated();
+        //window.addEventListener("keydown", this.loginKey);
+    }
+
+    async componentWillUnmount() {
+       // window.removeEventListener("keydown", this.loginKey);
     }
 
     async componentDidUpdate() {
@@ -101,6 +106,13 @@ class Authenticate extends Component {
         }
     };
 
+    loginKey = async (e) => {
+        //console.log(e.key);
+        if (e.key === "Enter") {
+            await this.login();
+        }
+    }
+
     login = async () => {
         try {
             const { Login, Password } = this.state;
@@ -122,7 +134,7 @@ class Authenticate extends Component {
                 cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
                 credentials: "same-origin", // include, *same-origin, omit
                 headers: {
-                    "Accept": "application/json, application/xml, text/plain, text/html, *.*",
+                    "Accept": "application/json, text/plain, text/html, *.*",
                 },
                 redirect: "follow", // manual, *follow, error
                 referrer: "no-referrer", // no-referrer, *client
@@ -190,14 +202,14 @@ class Authenticate extends Component {
 
     loginForm = (errorUser) => {
         return (
-            <div className="row">
+            <div className="row" >
                 <form>
                     <div className="input-field ">
-                        <input className="validate" type="text" data-role="Login" id="Login" value={this.state.Login} onChange={this.handleChange} />
+                        <input className="validate" type="text" data-role="Login" id="Login" value={this.state.Login} onChange={this.handleChange} onKeyDown={this.loginKey.bind(this)}/>
                         <label htmlFor="Login">Введите Email/Login/Phone</label>
                     </div>
                     <div className="input-field ">
-                        <input className="validate" type="Password" data-role="Password" id="Password" value={this.state.Password} onChange={this.handleChange} />
+                        <input className="validate" type="Password" data-role="Password" id="Password" value={this.state.Password} onChange={this.handleChange} onKeyDown={this.loginKey.bind(this)}/>
                         <label htmlFor="Password">Введите пароль</label>
                     </div>
                     <div className="input-field ">

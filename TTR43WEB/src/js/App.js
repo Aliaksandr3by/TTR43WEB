@@ -12,6 +12,7 @@ import Authenticate from "./Account/Authenticate";
 import ProgressPage from "./Coast/ProgressPage";
 import PageSizeSelector from "./Coast/PageSizeSelector";
 import PageList from "./Coast/PageList";
+import Filter from './Coast/Filer';
 
 class App extends Component {
     static propTypes = {
@@ -30,12 +31,22 @@ class App extends Component {
             error: null,
             isLoaded: false,
             items: [],
+            filter: App.getItemLocalStorage("filter"),
             pageSize: Number(window.localStorage.getItem("pageSize")) || 10,
             productPage: Number(window.localStorage.getItem("productPage")) || 0,
             totalItems: 0,
             totalPages: 0,
         };
         //(async () => await this.handlePageOptions(this.state))();
+    }
+
+    static getItemLocalStorage = (name = "") => {
+        try {
+            const that = window.localStorage.getItem(name);
+            return that ? JSON.parse(that) : [];
+        } catch (error) {
+            console.error(error.message);
+        }
     }
 
     //взывается сразу же после отображения компонента на экране приведут к запуску жизненного цикла обновления и к повторному отображению компонента на экране
@@ -117,6 +128,12 @@ class App extends Component {
         if (isLoaded && items.length !== 0) {
             return (
                 <React.Fragment>
+                    <Filter
+                        handleStateResultObject={this.handleStateResultObject}
+                        textplaceholder={"Название для быстрого поиска"}
+                        texttitle={"Возвращает полное совпадение"}
+                        filter={this.state.filter}
+                    />
                     <ProductInfo
                         urlControlAction={urlControlAction}
                         state={this.state}

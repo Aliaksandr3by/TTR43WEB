@@ -12,6 +12,13 @@
             "webRoot": "${workspaceFolder}/TTR43WEB/"
         },
         {
+            "type": "firefox",
+            "request": "launch",
+            "name": "Launch firefox",
+            "url": "https://localhost:5001/",
+            "webRoot": "${workspaceFolder}/TTR43WEB/"
+        },
+        {
             "type": "node",
             "request": "launch",
             "name": "Launch Webpack development",

@@ -3,15 +3,18 @@ import React, { Component } from "react";
 import M from "materialize-css";
 
 class CoastTextareaUrl extends Component {
+
     static propTypes = {
         stateChangeResult: PropTypes.func.isRequired,
         urlControlAction: PropTypes.object.isRequired,
         AspNetCoreCookies: PropTypes.string,
     };
+
     constructor(props) {
         super(props);
         this.state = {
             textarea: [],
+            URLs: [],
             error: null,
             isLoaded: false,
             progress: 0,
@@ -77,7 +80,7 @@ class CoastTextareaUrl extends Component {
         this.setState({ "textarea": data });
     }
 
-    async getDataTable() {
+    async updateAllItemsOnServer() {
         try {
             const { urlControlAction } = this.props;
             const response = await fetch(urlControlAction.urlControlActionGetAllItemsUrls, {
@@ -88,7 +91,7 @@ class CoastTextareaUrl extends Component {
                 body: JSON.stringify({}),
             });
             const { description } = await response.json();
-            this.getData(null, description, { urlControlAction });
+            this.sendURLsToServer(null, description, { urlControlAction });
         } catch (error) {
             this.setState({
                 isLoaded: true,
@@ -97,15 +100,17 @@ class CoastTextareaUrl extends Component {
         }
     }
 
-    formatDataURL = ({ textarea }) => {
-        return Array.isArray(textarea)
-            ? [...textarea]
-            : [...(textarea.split(/\s|,|\s,/))]
-                .filter((item, i) => item !== "")
-                .map((e, i) => this.getItem_html(e.trim()));
+    /**
+     * метод метод пилит текст на массив полных адресов.
+     * @param {string} text исходный текст;
+     * @param {string} urlFormatter обработчик адреса;
+     * @returns {Array} возвращает массив данных;
+     */
+    textURLsToArray = (text, urlFormatter) => {
+        return [...(text.split(/\s|,|\s,/))].filter((item, i) => item !== "").map((e, i) => urlFormatter(e.trim()));
     }
-
-    getItem_html = (element) => {
+    
+    convertToFullURLs = (element) => {
         const _element = element.replace(/'|«|»|\\|"/g, ""); //!очищает данные от лишних символов
         let tmp = "";
         if (typeof _element === "number" || Number(_element)) {
@@ -120,14 +125,20 @@ class CoastTextareaUrl extends Component {
         }
     }
 
+    getURLArrayFromText = ({ textarea }, getItem_html, textURLsToArray) => {
+        return Array.isArray(textarea)
+            ? [...textarea]
+            : textURLsToArray(textarea, getItem_html);
+    }
+
     cardStickyAction = ({ date = "", id = "", markingGoods = "", name = "", price = "", priceWithoutDiscount = "", url = "", }) => {
         return `<a href="${url}" target="_blank">${name}(${markingGoods}) - ${price}руб. - ${priceWithoutDiscount}руб. (${date})</a>`;
     };
 
-    async getData(e, formatDataURL, { urlControlAction }) {
+    async sendURLsToServer(e, formatteddURLToArray, { urlControlAction }) {
         try {
 
-            const data = formatDataURL || [];
+            const data = formatteddURLToArray || [];
 
             this.setState({ progress: 0 });
 
@@ -200,7 +211,7 @@ class CoastTextareaUrl extends Component {
                                 id="textareaURLstorige"
                                 className="materialize-textarea"
                                 onChange={this.handleChange}
-                                onClick={this.handleChange}
+                                onBlur={this.handleChange}
                                 value={this.state.textarea}
                             />
                         </div>
@@ -211,7 +222,7 @@ class CoastTextareaUrl extends Component {
                                 AspNetCoreCookies
                                     ? (
                                         <button
-                                            onClick={(e) => this.getDataTable(e)}
+                                            onClick={(e) => this.updateAllItemsOnServer(e)}
                                             className="btn W100 waves-effect waves-light"
                                             type="button"
                                             name="action">Обновить все данные в базе<i className="material-icons left">cloud</i>
@@ -236,7 +247,7 @@ class CoastTextareaUrl extends Component {
                         </div>
                         <div className="col s3">
                             <button
-                                onClick={(e) => this.getData(e, this.formatDataURL(this.state), this.props)}
+                                onClick={(e) => this.sendURLsToServer(e, this.getURLArrayFromText(this.state, this.convertToFullURLs, this.textURLsToArray), this.props)}
                                 className="btn W100 waves-effect waves-light"
                                 type="button"
                                 name="action">Отправить<i className="material-icons right">send</i>

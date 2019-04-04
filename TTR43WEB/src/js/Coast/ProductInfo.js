@@ -32,10 +32,10 @@ const _moneyConverter = (item) => {
 
 export const ProductInfo = (props) => {
 
-    const { state: { AspNetCoreCookies = "", items = [], pageSize, productPage }, urlControlAction = {}, handleStateResultObject, stateChangeResult } = props;
+    const { state: { AspNetCoreCookies = "", items = [], filter = [], pageSize, productPage }, urlControlAction = {}, handleStateResultObject, stateChangeResult } = props;
 
     const cardStickyAction = ({ date = "", id = "", markingGoods = "", name = "", price = "", priceWithoutDiscount = "", url = "", }) => {
-        return `<a href="${url} target="_blank">${name}(${markingGoods}) - ${price}руб. - ${priceWithoutDiscount}руб. (${date})</a>`;
+        return `<a href="${url}" target="_blank">${name}(${markingGoods}) - ${price}руб. - ${priceWithoutDiscount}руб. (${date})</a>`;
     };
 
     /**
@@ -65,7 +65,7 @@ export const ProductInfo = (props) => {
         }
     };
 
-    const onRefresh = async (e) => {
+    const addItemsOnTable = async (e) => {
         try {
             const response = await fetch(`${urlControlAction.urlControlActionGETGipermallItemsProduct}`, {
                 method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -92,11 +92,23 @@ export const ProductInfo = (props) => {
         }
     };
 
-    const renderTbodyTable = (itemsEl = [], AspNetCoreCookies = "") => {
-        const data = Array.from(itemsEl);
+    const renderTbodyTable = (itemsEl = [], AspNetCoreCookies = "", filter = []) => {
+        const data = [...itemsEl].filter((el, i) => {
+            const item = String(el.name).toLowerCase();
+            let flag = true;
+            for (const iterator of filter) {
+                flag = item.includes(iterator.toLowerCase());
+                if (!flag) {
+                    return flag;
+                }
+            }
+            return flag;
+        });
+
         if (!AspNetCoreCookies) {
             data.length = 4;
         }
+
         return (
             <tbody>
                 {
@@ -173,14 +185,14 @@ export const ProductInfo = (props) => {
                     </tr>
                 </thead>
                 {
-                    renderTbodyTable(items, AspNetCoreCookies)
+                    renderTbodyTable(items, AspNetCoreCookies, filter)
                 }
                 <tfoot>
 
                 </tfoot>
             </table>
             <div>
-                <button className={"btn"} onClick={onRefresh.bind(this)} value={1} type="button">{"1"}</button>
+                <button className={"btn"} onClick={addItemsOnTable.bind(this)} value={1} type="button">{"1"}</button>
             </div>
         </React.Fragment>
     );

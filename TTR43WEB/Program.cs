@@ -8,18 +8,21 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace TTR43WEB
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            CreateWebHostBuilder(args).Build().Run();
+namespace TTR43WEB {
+    public class Program {
+        public static void Main (string[] args) {
+            CreateWebHostBuilder (args).Build ().Run ();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) => WebHost
-            .CreateDefaultBuilder(args)
-            .UseStartup<Startup>()
-            .UseDefaultServiceProvider(options => options.ValidateScopes = false);
+        public static IWebHostBuilder CreateWebHostBuilder (string[] args) => WebHost
+            .CreateDefaultBuilder (args)
+            .ConfigureLogging ((hostingContext, logging) => {
+                logging.AddConfiguration (hostingContext.Configuration.GetSection ("Logging"));
+                logging.AddConsole ();
+                logging.AddDebug ();
+                logging.AddEventSourceLogger ();
+            })
+            .UseStartup<Startup> ()
+            .UseDefaultServiceProvider (options => options.ValidateScopes = false);
     }
 }
