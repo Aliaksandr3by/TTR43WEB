@@ -9,6 +9,10 @@
                 "build",
                 "${workspaceFolder}/TTR43WEB/TTR43WEB.csproj"
             ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
             "problemMatcher": "$msCompile"
         }
     ]

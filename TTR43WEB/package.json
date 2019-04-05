@@ -10,9 +10,7 @@
 	"scripts": {
 		"dev": "webpack --env.development --env.platform=web  --config webpack.config.js",
 		"build": "webpack --env.production --env.platform=web --config webpack.config.js",
-		"sass": "sass --watch src:dist",
-		"tsc": "tsc -watch",
-		"browserify": "browserify ./dist/srcTest/test.js -o ./dist/srcTest/bundle.js"
+		"sass": "sass --watch src:dist"
 	},
 	"dependencies": {
 		"core-js": "^3.0.0",

@@ -5,6 +5,10 @@ import { CookiesProvider } from "react-cookie";
 
 import App from "./App";
 
+/**
+ * Точка входа
+ * @param {*} props 
+ */
 const Root = (props) => {
     const {urlControlAction = {}} = props;
     return (

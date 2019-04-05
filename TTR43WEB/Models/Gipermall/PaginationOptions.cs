@@ -8,7 +8,6 @@ namespace TTR43WEB.Models.Gipermall
 {
     class PaginationOptions
     {
-
         readonly IQueryable<Products> AllProducts = default;
 
         int _pageSize;

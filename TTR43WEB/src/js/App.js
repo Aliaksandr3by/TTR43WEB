@@ -12,8 +12,15 @@ import Authenticate from "./Account/Authenticate";
 import ProgressPage from "./Coast/ProgressPage";
 import PageSizeSelector from "./Coast/PageSizeSelector";
 import PageList from "./Coast/PageList";
-import Filter from './Coast/Filer';
+import FastFilteringByName from "./Coast/FastFilteringByName";
 
+/**
+ * 
+ * @class App
+ * @extends {Component}
+ * @constructor
+ * @param {Any} props
+ */
 class App extends Component {
     static propTypes = {
         urlControlAction: PropTypes.object.isRequired,
@@ -31,7 +38,7 @@ class App extends Component {
             error: null,
             isLoaded: false,
             items: [],
-            filter: App.getItemLocalStorage("filter"),
+            filter: this.getItemLocalStorage("filter"),
             pageSize: Number(window.localStorage.getItem("pageSize")) || 10,
             productPage: Number(window.localStorage.getItem("productPage")) || 0,
             totalItems: 0,
@@ -40,14 +47,7 @@ class App extends Component {
         //(async () => await this.handlePageOptions(this.state))();
     }
 
-    static getItemLocalStorage = (name = "") => {
-        try {
-            const that = window.localStorage.getItem(name);
-            return that ? JSON.parse(that) : [];
-        } catch (error) {
-            console.error(error.message);
-        }
-    }
+    getItemLocalStorage = (name = "") => window.localStorage.getItem(name) ? JSON.parse(window.localStorage.getItem(name)) : [];
 
     //взывается сразу же после отображения компонента на экране приведут к запуску жизненного цикла обновления и к повторному отображению компонента на экране
     async componentDidMount() {
@@ -117,18 +117,12 @@ class App extends Component {
         });
     }
 
-    static count = 0;
-
-    countSet = () => {
-        return ++App.count;
-    }
-
     renderMainTable({ isLoaded, error, items }) {
         const { urlControlAction = {} } = this.props;
         if (isLoaded && items.length !== 0) {
             return (
                 <React.Fragment>
-                    <Filter
+                    <FastFilteringByName
                         handleStateResultObject={this.handleStateResultObject}
                         textplaceholder={"Название для быстрого поиска"}
                         texttitle={"Возвращает полное совпадение"}
@@ -139,7 +133,6 @@ class App extends Component {
                         state={this.state}
                         handleStateResultObject={this.handleStateResultObject}
                         stateChangeResult={this.stateChangeResult}
-                        countSet={this.countSet}
                     />
                     <PageSizeSelector
                         handlePageOptions={this.handlePageOptions}

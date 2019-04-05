@@ -2,16 +2,26 @@
 import PropTypes from "prop-types";
 import React from "react";
 
-const Filter = props => {
+/**
+ * Метод служит для фильтрации данных в главной таблице (без обращения к контроллеру (только то, что на экране))
+ * @param {*} param0 
+ */
+const fastFilteringByName = ({ handleStateResultObject, textplaceholder = "", texttitle = "", filter = [] }) => {
 
-    const { handleStateResultObject, textplaceholder = "", texttitle = "", filter = [] } = props;
-
+    /**
+     * Метод служит для сохранения текста поиска
+     * @param {Event} e 
+     */
     const filterSet = (e) => {
         const that = String(e.target.value).split(/\s|,|\s,/);
         handleStateResultObject({ "filter": that });
         window.localStorage.setItem("filter", JSON.stringify(that));
     };
 
+    /**
+     * Метод служит для сохранения текста поиска по нажатию на enter
+     * @param {*} e 
+     */
     const loginKey = (e) => {
         if (e.key === "Enter") {
             filterSet(e);
@@ -26,10 +36,11 @@ const Filter = props => {
         </div>
     );
 };
-Filter.propTypes = {
+fastFilteringByName.propTypes = {
     handleStateResultObject: PropTypes.func.isRequired,
     textplaceholder: PropTypes.string.isRequired,
     texttitle: PropTypes.string.isRequired,
+    filter: PropTypes.array.isRequired,
 };
 
-export default Filter;
+export default fastFilteringByName;

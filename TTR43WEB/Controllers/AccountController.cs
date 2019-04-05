@@ -19,6 +19,7 @@ using static Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary;
 
 namespace TTR43WEB.Controllers
 {
+    //TODO: подписать методы
     [Authorize]
     public class AccountController : Controller
     {

@@ -1,4 +1,10 @@
 {
     "workbench.editor.enablePreview": true,
-    "workbench.editor.enablePreviewFromQuickOpen": true
+    "workbench.editor.enablePreviewFromQuickOpen": true,
+    "taskExplorer.exclude": [
+        "**/TTR43WEB/TTR43WEB/obj/**",
+        "**/TTR43WEB/bin/**"
+    ],
+    "typescript.referencesCodeLens.enabled": true,
+    "javascript.referencesCodeLens.enabled": true
 }
