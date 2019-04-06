@@ -1,0 +1,22 @@
+﻿Построение классов по базе данных
+Scaffold-DbContext -Force name="ConnectionProduct" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Datum/Product
+Scaffold-DbContext -Force name="ConnectionUser" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Datum/User
+
+dotnet ef dbcontext scaffold name="ConnectionProduct" Microsoft.EntityFrameworkCore.SqlServer -s TTR43WEB -p DatumServer -o Datum/Product -f
+dotnet ef dbcontext scaffold name="ConnectionUser" Microsoft.EntityFrameworkCore.SqlServer -s TTR43WEB -p DatumServer -o Datum/User -f
+
+Добавления миграции
+Add-Migration MyFirstMigration -Context ContextGipermall
+
+Установка пакетов при мени пакета
+Install-Package Microsoft.EntityFrameworkCore -Version 2.2.3 -ProjectName DatumServer
+Install-Package Microsoft.EntityFrameworkCore.SqlServer -Version 2.2.3  -ProjectName DatumServer
+Install-Package Microsoft.EntityFrameworkCore.Tools -Version 2.2.3  -ProjectName DatumServer
+Install-Package Microsoft.EntityFrameworkCore.Design -Version 2.2.3 -ProjectName DatumServer
+
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.2.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.2.3">
+
+https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/powershell
