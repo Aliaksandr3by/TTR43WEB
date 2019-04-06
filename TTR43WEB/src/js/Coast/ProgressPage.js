@@ -13,7 +13,7 @@ class ProgressPage extends React.Component {
     }
 
     async componentDidMount() {
-        window.addEventListener("scroll", this.handleScroll);
+        document.addEventListener("scroll", this.taskHandleScroll);
     }
 
     async shouldComponentUpdate(nextProps, nextState) {
@@ -21,17 +21,40 @@ class ProgressPage extends React.Component {
         return progressAllPage !== nextState.progressAllPage;
     }
 
-    //непосредственно перед удалением его с экрана 
     async componentWillUnmount() {
-        window.removeEventListener("scroll", this.handleScroll);
+        document.removeEventListener("scroll", this.taskHandleScroll);
     }
 
-    getProgress = async () => Math.round((document.documentElement.scrollTop / (document.documentElement.scrollHeight - document.documentElement.clientHeight) * 100));
+    taskHandleScroll = (e) => {
+        this.handleScroll(e, this.state);
+    }
 
-    handleScroll = async () => {
-        const a = await this.getProgress();
-        if (this.state.progressAllPage !== a) {
-            this.setState({ progressAllPage: a });
+    /**
+     * Метод вычисляет процент прокрутки страницы относительно верха, при учете только существующих элементов
+     * @async
+     * @memberof ProgressPage
+     * @constructor
+     * 
+     */
+    getProgress = async ({ scrollTop, scrollHeight, clientHeight }) => {
+        //console.dir(scrollTop, scrollHeight, clientHeight);
+        return Math.round(scrollTop / (scrollHeight - clientHeight + 1) * 100);
+    };
+
+    /**
+     * 
+     * @async
+     * @memberof ProgressPage
+     */
+    handleScroll = async (e, { progressAllPage }) => {
+        const scrollOptions = {
+            scrollTop: document.documentElement.scrollTop,
+            scrollHeight: document.documentElement.scrollHeight,
+            clientHeight: document.documentElement.clientHeight,
+        };
+        const scroll = await this.getProgress(scrollOptions);
+        if (progressAllPage !== scroll) {
+            this.setState({ "progressAllPage": scroll });
         }
     };
 

@@ -15,11 +15,9 @@ import PageList from "./Coast/PageList";
 import FastFilteringByName from "./Coast/FastFilteringByName";
 
 /**
- * 
- * @class App
- * @extends {Component}
- * @constructor
- * @param {Any} props
+ * Главный компонент
+ * @componentName Main class
+ * @description Главный компонент
  */
 class App extends Component {
     static propTypes = {

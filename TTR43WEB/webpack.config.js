@@ -11,7 +11,7 @@ const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const WebpackMd5Hash = require("webpack-md5-hash");
+// const WebpackMd5Hash = require("webpack-md5-hash");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
@@ -79,13 +79,11 @@ module.exports = (env, argv) => {
                     test: /\.(sa|sc|c)ss$/,
                     exclude: /(node_modules|bower_components)/,
                     use: [
-                        {
-                            loader: devMode ? "style-loader" : MiniCssExtractPlugin.loader,
-                        },
+                        { loader: devMode ? "style-loader" : MiniCssExtractPlugin.loader, },
                         {
                             loader: "css-loader", // translates CSS into CommonJS modules
                             options: {
-                                sourceMap: true
+                                sourceMap: devMode ? false : true
                             }
                         },
                         {
@@ -101,18 +99,18 @@ module.exports = (env, argv) => {
                                         require("cssnano")({
                                             preset: "default",
                                             discardComments: {
-                                                removeAll: true
+                                                removeAll: devMode ? false : true
                                             }
                                         }),
                                     ];
                                 },
-                                sourceMap: true
+                                sourceMap: devMode ? false : true
                             }
                         },
                         {
                             loader: "sass-loader", // compiles Sass to CSS
                             options: {
-                                sourceMap: true
+                                sourceMap: devMode ? false : true
                             }
                         }
                     ]
@@ -131,7 +129,7 @@ module.exports = (env, argv) => {
                 lineToLine: devMode ? false : true,
                 noSources: devMode ? false : true
             }),
-            new WebpackMd5Hash(),
+            // new WebpackMd5Hash(),
             new CleanWebpackPlugin({
                 cleanOnceBeforeBuildPatterns: devMode
                     ? ["**/*.js", "*****/*", "**/*.map", "***/*.css", "!**/*production*", "!***/*production*"]

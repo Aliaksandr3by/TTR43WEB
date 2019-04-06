@@ -7,8 +7,34 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/TTR43WEB/TTR43WEB.csproj"
+                "${workspaceFolder}/TTR43WEB.sln"
             ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "publish",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "${workspaceFolder}/TTR43WEB.sln",
+                "-f",
+                "netcoreapp2.2",
+                "-c",
+                "Release",
+                "-r",
+                "win10-x64",
+                "-o",
+                "C:\\TTR43WEB"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
             "group": {
                 "kind": "build",
                 "isDefault": true

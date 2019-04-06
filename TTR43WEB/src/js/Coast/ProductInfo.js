@@ -2,35 +2,45 @@ import PropTypes from "prop-types";
 import React from "react";
 import M from "materialize-css";
 
-const _replacer = (item) => {
-    return item.replace(/([A-Z])/g, " $1").replace(/^./,
-        (str) => {
-            return str.toUpperCase();
-        });
+/**
+ * Метод преобразовывает названия переменных в названия столбцов таблицы
+ * @param {String} name - наименование переменной
+ * @return {String} текст
+ */
+const _replacer = (name) => {
+    return name.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase());
 };
 
-const _dateConverter = (item) => {
+/**
+ * Метод форматирует дату полученную с сервера в региональный формат
+ * @param {String} date - текст
+ * @return {Date} - Date
+ */
+const _dateConverter = (date) => {
     try {
-        const dateC = Date.parse(item);
-        const dateJS = new Date(dateC);
-        const result = dateJS.toLocaleString("RU-be");
-        return result;
+        const dateC = Date.parse(date);
+        return new Date(dateC).toLocaleString("RU-be");
     } catch (error) {
-        return item;
+        return date;
     }
 };
 
-const _moneyConverter = (item) => {
+/**
+ * Метод форматирует текст в денежный формат
+ * @param {String} cost - стоимость
+ * @return {String}  - отформатированная стоимость
+ */
+const _moneyConverter = (cost) => {
     try {
-        const money = item;
+        const money = cost;
         const result = money.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,");
         return `${result} р.`;
     } catch (error) {
-        return item;
+        return cost;
     }
 };
 
-export const ProductInfo = (props) => {
+const ProductInfo = (props) => {
 
     const { state: { AspNetCoreCookies = "", items = [], filter = [], pageSize, productPage }, urlControlAction = {}, handleStateResultObject, stateChangeResult } = props;
 
