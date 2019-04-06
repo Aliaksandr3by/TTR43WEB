@@ -1,8 +1,8 @@
-﻿using DatumServer.Datum.Product;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DatumServer.Datum.Product;
 
 namespace TTR43WEB.Models.Gipermall
 {
@@ -33,46 +33,59 @@ namespace TTR43WEB.Models.Gipermall
 
         public dynamic GetItems(Func<Products, DateTime?> sort, int pageSize, int productPage, int addItems = 0, int skippedItems = 0)
         {
-            this._totalItems = AllProducts.Count();
-            this._pageSize = pageSize;
-            this._totalPages = (int)Math.Ceiling((decimal)_totalItems / _pageSize);
-            this._productPage = (productPage > _totalPages || productPage < 0) ? 0 : productPage;
-
-            int skip = (_productPage * _pageSize) + (skippedItems > 0 ? skippedItems : 0);
-            int take = (new int[] { (addItems > 0 ? addItems : _pageSize), _totalItems }).Min();
-
-            var items = AllProducts
-                            .OrderByDescending(sort)
-                            .Skip(skip)
-                            .Take(take)
-                            .Select(e => new ProductEntityLite
-                            {
-                                Id = e.Id,
-                                Date = e.Date,
-                                Url = e.UrlNavigation?.UrlProduct,
-                                Name = e.NameNavigation?.NameProduct,
-                                MarkingGoods = e.MarkingGoodsNavigation?.MarkingGoodsProduct,
-                                Price = e.Price,
-                                PriceWithoutDiscount = e.PriceWithoutDiscount
-                            });
-
-            if (addItems <= 0)
+            try
             {
-                return new
+                this._totalItems = AllProducts.Count();
+                this._pageSize = pageSize;
+                this._totalPages = (int)Math.Ceiling((decimal)_totalItems / _pageSize);
+                this._productPage = (productPage > _totalPages || productPage < 0) ? 0 : productPage;
+
+                int skip = (_productPage * _pageSize) + (skippedItems > 0 ? skippedItems : 0);
+                int take = (new int[] {
+                    (addItems > 0 ? addItems : _pageSize), _totalItems
+                }).Min();
+
+                var items = AllProducts
+                    .OrderByDescending(sort)
+                    .Skip(skip)
+                    .Take(take)
+                    .Select(e => new ProductEntityLite
+                    {
+                        Id = e.Id,
+                        Date = e.Date,
+                        Url = e.UrlNavigation?.UrlProduct,
+                        Name = e.NameNavigation?.NameProduct,
+                        MarkingGoods = e.MarkingGoodsNavigation?.MarkingGoodsProduct,
+                        Price = e.Price,
+                        PriceWithoutDiscount = e.PriceWithoutDiscount
+                    });
+
+                if (addItems <= 0)
                 {
-                    items,
-                    productPage = _productPage,
-                    pageSize = _pageSize,
-                    totalPages = _totalPages,
-                    totalItems = _totalItems
-                };
+                    return new
+                    {
+                        items,
+                        productPage = _productPage,
+                        pageSize = _pageSize,
+                        totalPages = _totalPages,
+                        totalItems = _totalItems
+                    };
+                }
+                else
+                {
+                    return new
+                    {
+                        items,
+                    };
+                }
             }
-            else
+            catch (System.Exception ex)
             {
                 return new
                 {
-                    items,
+                    error = ex.Message,
                 };
+
             }
         }
     }

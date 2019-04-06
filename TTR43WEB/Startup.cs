@@ -82,17 +82,21 @@ namespace TTR43WEB {
             });
 
             if (env.IsDevelopment ()) {
-                app.UseFileServer (new FileServerOptions {
-                    FileProvider = new PhysicalFileProvider (Path.Combine (Directory.GetCurrentDirectory (), "wwwroot/public/html")),
-                        RequestPath = "/Statics",
-                        EnableDirectoryBrowsing = true
-                });
+                try {
+                    app.UseFileServer (new FileServerOptions {
+                        FileProvider = new PhysicalFileProvider (Path.Combine (Directory.GetCurrentDirectory (), "wwwroot/public/html")),
+                            RequestPath = "/Statics",
+                            EnableDirectoryBrowsing = true
+                    });
 
-                app.UseDirectoryBrowser (new DirectoryBrowserOptions () {
-                    FileProvider = new PhysicalFileProvider (Path.Combine (Directory.GetCurrentDirectory (), @"wwwroot\StaticFilesHide")),
+                    app.UseDirectoryBrowser (new DirectoryBrowserOptions () {
+                        FileProvider = new PhysicalFileProvider (Path.Combine (Directory.GetCurrentDirectory (), @"wwwroot\StaticFilesHide")),
 
-                        RequestPath = new PathString ("/StaticFile")
-                });
+                            RequestPath = new PathString ("/StaticFile")
+                    });
+                } catch (System.Exception ex) {
+                    Console.WriteLine (ex.Message);
+                }
             } else {
 
             }
