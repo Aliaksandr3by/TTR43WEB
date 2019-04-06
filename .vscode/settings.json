@@ -7,5 +7,6 @@
     ],
     "typescript.referencesCodeLens.enabled": true,
     "javascript.referencesCodeLens.enabled": true,
-    "editor.minimap.enabled": false
+    "editor.minimap.enabled": false,
+    "csharpfixformat.style.braces.onSameLine": false
 }

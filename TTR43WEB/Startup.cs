@@ -19,17 +19,25 @@ using Microsoft.Extensions.FileProviders;
 using TTR43WEB.Models.Gipermall;
 using TTR43WEB.Models.User;
 
-namespace TTR43WEB {
-    public class Startup {
-        public Startup (IConfiguration configuration) {
+namespace TTR43WEB
+{
+    public class Startup
+    {
+        public Startup (IConfiguration configuration)
+        {
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        public IConfiguration Configuration
+        {
+            get;
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices (IServiceCollection services) {
-            services.Configure<CookiePolicyOptions> (options => {
+        public void ConfigureServices (IServiceCollection services)
+        {
+            services.Configure<CookiePolicyOptions> (options =>
+            {
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
@@ -43,11 +51,13 @@ namespace TTR43WEB {
             services.AddScoped<IUsersContextQueryable, UsersContextQueryable> ();
 
             // Inside your ConfigureServices method
-            services.AddAuthentication (options => {
+            services.AddAuthentication (options =>
+                {
                     options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                     options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 })
-                .AddCookie (options => {
+                .AddCookie (options =>
+                {
                     options.LoginPath = new Microsoft.AspNetCore.Http.PathString ("/Account/Login");
                     options.Cookie.HttpOnly = false;
                 });
@@ -58,11 +68,15 @@ namespace TTR43WEB {
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure (IApplicationBuilder app, IHostingEnvironment env) {
+        public void Configure (IApplicationBuilder app, IHostingEnvironment env)
+        {
             //env.EnvironmentName = "Production";
-            if (env.IsDevelopment ()) {
+            if (env.IsDevelopment ())
+            {
                 app.UseDeveloperExceptionPage ();
-            } else {
+            }
+            else
+            {
                 app.UseExceptionHandler ("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts ();
@@ -75,29 +89,39 @@ namespace TTR43WEB {
             //options.DefaultFileNames.Add("index.html");
             //app.UseDefaultFiles(options);
 
-            app.UseStaticFiles (new StaticFileOptions {
-                OnPrepareResponse = ctx => {
+            app.UseStaticFiles (new StaticFileOptions
+            {
+                OnPrepareResponse = ctx =>
+                {
                     ctx.Context.Response.Headers.Append ("Cache-Control", $"public, max-age={cachePeriod}");
                 }
             });
 
-            if (env.IsDevelopment ()) {
-                try {
-                    app.UseFileServer (new FileServerOptions {
+            if (env.IsDevelopment ())
+            {
+                try
+                {
+                    app.UseFileServer (new FileServerOptions
+                    {
                         FileProvider = new PhysicalFileProvider (Path.Combine (Directory.GetCurrentDirectory (), "wwwroot/public/html")),
                             RequestPath = "/Statics",
                             EnableDirectoryBrowsing = true
                     });
 
-                    app.UseDirectoryBrowser (new DirectoryBrowserOptions () {
+                    app.UseDirectoryBrowser (new DirectoryBrowserOptions ()
+                    {
                         FileProvider = new PhysicalFileProvider (Path.Combine (Directory.GetCurrentDirectory (), @"wwwroot\StaticFilesHide")),
 
                             RequestPath = new PathString ("/StaticFile")
                     });
-                } catch (System.Exception ex) {
+                }
+                catch (System.Exception ex)
+                {
                     Console.WriteLine (ex.Message);
                 }
-            } else {
+            }
+            else
+            {
 
             }
 
@@ -107,7 +131,8 @@ namespace TTR43WEB {
             app.UseStatusCodePages ();
             //app.UseBrowserLink();
 
-            app.UseMvc (routes => {
+            app.UseMvc (routes =>
+            {
                 routes.MapRoute (name: "index", template: "{controller=Gipermall}/{action=Index}");
                 routes.MapRoute (name: "ItemsProduct", template: "{controller=Gipermall}/{action=ItemsProduct}/Page{productPage:int}/Size{pageSize:int}");
                 routes.MapRoute (name: "ItemsProductAdd", template: "{controller=Gipermall}/{action=ItemsProduct}");
