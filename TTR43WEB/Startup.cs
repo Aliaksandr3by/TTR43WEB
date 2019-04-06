@@ -22,6 +22,7 @@ using TTR43WEB.Models.User;
 namespace TTR43WEB {
     public class Startup {
         public Startup (IConfiguration configuration) {
+
             Configuration = configuration;
         }
 
