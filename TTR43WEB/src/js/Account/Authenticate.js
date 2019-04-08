@@ -5,6 +5,9 @@ import { instanceOf } from "prop-types";
 import { Cookies } from "react-cookie";
 import M from "materialize-css";
 
+import LoginForm from "./Components/LoginForm";
+import RegisterForm from "./Components/RegisterForm";
+
 class Authenticate extends Component {
     static propTypes = {
         urlControlAction: PropTypes.object.isRequired,
@@ -16,6 +19,7 @@ class Authenticate extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            status: "ok",
             error: null,
             Login: "",
             Password: "",
@@ -23,7 +27,6 @@ class Authenticate extends Component {
                 ? JSON.parse(window.localStorage.getItem("userRegister"))
                 : { "FirstName": "", "LastName": "", "Role": "guest", "TelephoneNumber": "", "Email": "", "Login": "", "Password": "", "PasswordConfirm": "" },
         };
-        this.handleChange = this.handleChange.bind(this);
         this.urlControlAction = this.props.urlControlAction;
         this.handleStateResultObject = this.props.handleStateResultObject;
     }
@@ -34,7 +37,7 @@ class Authenticate extends Component {
     }
 
     async componentWillUnmount() {
-       // window.removeEventListener("keydown", this.loginKey);
+        // window.removeEventListener("keydown", this.loginKey);
     }
 
     async componentDidUpdate() {
@@ -49,11 +52,10 @@ class Authenticate extends Component {
         return isAuthenticated;
     }
 
-    register = async () => {
+    onSignUpRegister = async () => {
         try {
-            const { Login, Password } = this.state;
             ///Костыль
-            var VerificationToken = document.createElement("div");
+            const VerificationToken = document.createElement("div");
             const tmp = await fetch(this.urlControlAction.urlControlActionGETAccountRequestVerificationToken);
             VerificationToken.innerHTML = await tmp.text();
             const __RequestVerificationToken = VerificationToken.querySelector("input[name=__RequestVerificationToken]").value;
@@ -106,18 +108,18 @@ class Authenticate extends Component {
         }
     };
 
-    loginKey = async (e) => {
+    onSignInKeyEnter = async (e) => {
         //console.log(e.key);
         if (e.key === "Enter") {
-            await this.login();
+            await this.onSignIn();
         }
     }
 
-    login = async () => {
+    onSignIn = async () => {
         try {
             const { Login, Password } = this.state;
             ///Костыль
-            var VerificationToken = document.createElement("div");
+            const VerificationToken = document.createElement("div");
             const tmp = await fetch(this.urlControlAction.urlControlActionGETAccountRequestVerificationToken);
             VerificationToken.innerHTML = await tmp.text();
             const __RequestVerificationToken = VerificationToken.querySelector("input[name=__RequestVerificationToken]").value;
@@ -142,8 +144,8 @@ class Authenticate extends Component {
             });
             const json = await response.json();
             const { errorUserLogin, user } = json;
-            console.warn(user);
             if (!errorUserLogin) {
+                console.warn(user);
                 const coreCookies = { "AspNetCoreCookies": this.props.cookies.get(".AspNetCore.Cookies") || false };
                 const result = { ...json, ...coreCookies };
                 this.handleStateResultObject(result);
@@ -160,7 +162,7 @@ class Authenticate extends Component {
         }
     };
 
-    logOut = async () => {
+    onLogOut = async () => {
         try {
             const response = await fetch(this.urlControlAction.urlControlActionAccountLogout, { method: "POST" });
             if (await response.json()) {
@@ -175,131 +177,40 @@ class Authenticate extends Component {
         }
     };
 
-    handleChange(event) {
-        this.setState({ [event.target.dataset.role]: event.target.value });
-    }
-
-    handleChangeUserRegister(event) {
-        const updatedDatum = { [event.target.dataset.role]: event.target.value };
+    handleChange(object) {
         this.setState((state, props) => {
-            return { userRegister: { ...state.userRegister, ...updatedDatum } };
+            return object;
         });
+        //console.log(this);
     }
 
-    handleStateFunctional = async (object) => {
+    handleStateFunctional = async (object, name) => {
         await this.setState((state, props) => {
-            return { ...state, ...object };
+            const tmp = { ...state[name] };
+            const tmp2 = { ...object };
+            const tmp3 ={...tmp, ...tmp2 };
+            return { [name]: tmp3 };
         });
+        //console.dir(this.state);
     };
 
     async onResetClick(e) {
         const items = Object.entries({ ...this.state.userRegister }).map(([el, val], i) => {
             return [el, ""];
         });
-        await this.handleStateFunctional({ userRegister: Object.fromEntries(items) });
+        await this.handleState({ userRegister: Object.fromEntries(items) });
         window.localStorage.removeItem("userRegister");
     }
 
-    loginForm = (errorUser) => {
-        return (
-            <div className="row" >
-                <form>
-                    <div className="input-field ">
-                        <input className="validate" type="text" data-role="Login" id="Login" value={this.state.Login} onChange={this.handleChange} onKeyDown={this.loginKey.bind(this)}/>
-                        <label htmlFor="Login">Введите Email/Login/Phone</label>
-                    </div>
-                    <div className="input-field ">
-                        <input className="validate" type="Password" data-role="Password" id="Password" value={this.state.Password} onChange={this.handleChange} onKeyDown={this.loginKey.bind(this)}/>
-                        <label htmlFor="Password">Введите пароль</label>
-                    </div>
-                    <div className="input-field ">
-                        <button type="button" className="btn" onClick={(e) => this.login(e)}>Войти</button>
-                    </div>
-                    {
-                        this.errorResult(errorUser)
-                    }
-                </form>
-            </div>
-        );
-    }
-
-    registerForm = (errorUser) => {
-        const { FirstName, LastName, Role, TelephoneNumber, Email, Login, Password, PasswordConfirm } = this.state.userRegister;
-
-        return (
-            <div className="row">
-                <form>
-                    <div className="row">
-                        <div className="input-field col s6">
-                            <input type="text" value={FirstName} data-role="FirstName" onChange={this.handleChangeUserRegister.bind(this)} id="icon_prefix" className="validate" />
-                            <label className="active" htmlFor="icon_prefix">First Name</label>
-                        </div>
-                        <div className="input-field col s6">
-                            <input type="text" value={LastName} data-role="LastName" onChange={this.handleChangeUserRegister.bind(this)} id="last_name" className="validate" />
-                            <label className="active" htmlFor="last_name">Last Name</label>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="input-field col s6">
-                            <input value={Email} data-role="Email" onChange={this.handleChangeUserRegister.bind(this)} id="email" type="email" className="validate" />
-                            <label className="active" htmlFor="email">Email</label>
-                        </div>
-                        <div className="input-field col s6">
-                            <input value={TelephoneNumber}
-                                data-role="TelephoneNumber"
-                                onChange={e => this.handleChangeUserRegister(e)}
-                                id="TelephoneNumber"
-                                className="validate"
-                                type="tel"
-                                pattern="^\+\d{3}\s*.\d{2}.\s*[0-9]{3}.[0-9]{2}.[0-9]{2}$"
-                                required />
-                            <label className="active" htmlFor="TelephoneNumber">Telephone Number</label>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="input-field col s8">
-                            <input value={Login} data-role="Login" onChange={this.handleChangeUserRegister.bind(this)} id="login" type="text" className="validate" />
-                            <label className="active" htmlFor="login">Login</label>
-                        </div>
-                        <div className="input-field col s4">
-                            <select value={Role} data-role="Role" onChange={this.handleChangeUserRegister.bind(this)} id="role" className="browser-default">
-                                <option value="guest" >{"guest"}</option>
-                                <option value="admin" >{"admin"}</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="input-field col s6">
-                            <input value={Password} data-role="Password" onChange={this.handleChangeUserRegister.bind(this)} id="password" type="password" className="validate" />
-                            <label className="active" htmlFor="password">Password</label>
-                        </div>
-                        <div className="input-field col s6">
-                            <input value={PasswordConfirm} data-role="PasswordConfirm" onChange={this.handleChangeUserRegister.bind(this)} id="passwordConfirm" type="password" className="validate" />
-                            <label className="active" htmlFor="passwordConfirm">Password Confirm</label>
-                        </div>
-                    </div>
-                    <div className="row">
-                        {
-                            this.errorResult(errorUser)
-                        }
-                    </div>
-                    <div className="row">
-                        <div className="col s6">
-                            <button data-role="Reset" onClick={this.onResetClick.bind(this)} type="reset" className="btn" >Reset<i className="material-icons right">reset</i></button>
-                        </div>
-                        <div className="col s6">
-                            <button data-role="Register" onClick={this.register.bind(this)} type="button" className="btn" >register<i className="material-icons right">send</i></button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        );
-    }
-
+    handleState = async (object) => {
+        await this.setState((state, props) => {
+            return { ...state, ...object };
+        });
+    };
     render() {
 
         const { AspNetCoreCookies, user: { login } = {} } = this.props;
-        const { error = null, errorUserLogin = [], errorUserRegister = [] } = this.state;
+        const { error = null, userRegister, errorUserLogin = [], errorUserRegister = [] } = this.state;
 
         if (AspNetCoreCookies) {
             return (
@@ -308,7 +219,7 @@ class Authenticate extends Component {
                         <p>{login}</p>
                     </div>
                     <div className="input-field col s2">
-                        <button type="button" className="btn" onClick={(e) => this.logOut(e)}>Выйти</button>
+                        <button type="button" className="btn" onClick={(e) => this.onLogOut(e)}>Выйти</button>
                     </div>
                 </div>
             );
@@ -325,13 +236,25 @@ class Authenticate extends Component {
                         <li>
                             <div className="collapsible-header"><i className="material-icons">filter_drama</i>Login</div>
                             <div className="collapsible-body">
-                                {this.loginForm(errorUserLogin)}
+                                <LoginForm
+                                    errorUser={errorUserLogin}
+                                    userData={this.state}
+                                    handleChange={this.handleChange.bind(this)}
+                                    onSignIn={this.onSignIn.bind(this)}
+                                    onSignInKeyEnter={this.onSignInKeyEnter.bind(this)}
+                                />
                             </div>
                         </li>
                         <li>
                             <div className="collapsible-header"><i className="material-icons">filter_drama</i>Register</div>
                             <div className="collapsible-body">
-                                {this.registerForm(errorUserRegister)}
+                                <RegisterForm
+                                    errorUser={errorUserRegister}
+                                    userRegister={userRegister}
+                                    handleStateFunctional={this.handleStateFunctional.bind(this)}
+                                    onResetClick={this.onResetClick.bind(this)}
+                                    onSignUpRegister={this.onSignUpRegister.bind(this)}
+                                />
                             </div>
                         </li>
                     </ul>

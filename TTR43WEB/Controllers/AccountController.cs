@@ -118,7 +118,7 @@ namespace TTR43WEB.Controllers
             if (ModelState.IsValid)
             {
                 Users user = await db.Users.FirstOrDefaultAsync( u => u.Login == model.Login || u.TelephoneNumber == model.TelephoneNumber);
-                if (user == null && model.TelephoneNumber != null)
+                if (user == null)
                 {
                     //model.DateTimeRegistration = DateTime.Now;
 
@@ -152,11 +152,11 @@ namespace TTR43WEB.Controllers
                 }
                 else
                 {
-                    if (user.Login != null)
+                    if (user.Login == model.Login)
                     {
-                        ModelState.AddModelError("", "Некорректные логин и(или) пароль");
+                        ModelState.AddModelError("", "Логин уже использован логин");
                     }
-                    else if (user.TelephoneNumber != String.Empty)
+                    if (user.TelephoneNumber == model.TelephoneNumber)
                     {
                         ModelState.AddModelError("", "Телефонный номер уже использован");
                     }
