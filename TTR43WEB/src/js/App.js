@@ -4,15 +4,13 @@ import { instanceOf } from "prop-types";
 import { withCookies, Cookies } from "react-cookie";
 import M from "materialize-css";
 
-import ProductInfo from "./Coast/ProductInfo";
-import { Navigate } from "./Coast/Navigate";
-import CoastTextareaUrl from "./Coast/CoastTextareaUrl";
-
+import Navigate from "./Navigate/Navigate";
 import Authenticate from "./Account/Authenticate";
+import CoastTextareaUrl from "./Coast/CoastTextareaUrl";
+import MainTable from "./MainPage/MainTable";
 import ProgressPage from "./Coast/ProgressPage";
-import PageSizeSelector from "./Coast/PageSizeSelector";
-import PageList from "./Coast/PageList";
-import FastFilteringByName from "./Coast/FastFilteringByName";
+
+
 
 /**
  * Главный компонент
@@ -59,12 +57,14 @@ class App extends Component {
     async componentWillUnmount() {
 
     }
+    
     //предикат, способный отменить обновление;
     async shouldComponentUpdate(nextProps, nextState) {
         //console.log(nextProps);
         //console.log(nextState);
         //return nextState !== this.state;
     }
+
     //вызывается сразу же после выполнения обновления, после вызова метода отображения render ;
     async componentDidUpdate() {
 
@@ -115,66 +115,6 @@ class App extends Component {
         });
     }
 
-    renderMainTable({ isLoaded, error, items }) {
-        const { urlControlAction = {} } = this.props;
-        if (isLoaded && items.length !== 0) {
-            return (
-                <React.Fragment>
-                    <FastFilteringByName
-                        handleStateResultObject={this.handleStateResultObject}
-                        textplaceholder={"Название для быстрого поиска"}
-                        texttitle={"Возвращает полное совпадение"}
-                        filter={this.state.filter}
-                    />
-                    <ProductInfo
-                        urlControlAction={urlControlAction}
-                        state={this.state}
-                        handleStateResultObject={this.handleStateResultObject}
-                        stateChangeResult={this.stateChangeResult}
-                    />
-                    <PageSizeSelector
-                        handlePageOptions={this.handlePageOptions}
-                        state={this.state}
-                    >{"Число элементов на листе"}</PageSizeSelector>
-                    <PageList
-                        handlePageOptions={this.handlePageOptions}
-                        state={this.state}
-                    ></PageList>
-                </React.Fragment>
-            );
-        } else if (items.length === 0) {
-            return (
-                <div className="loadingBar">
-                    <div className="progress">
-                        <div className="indeterminate"></div>
-                    </div>
-                </div>
-            );
-        } else if (error) {
-            return (
-                <React.Fragment>
-                    <div>Error: {error.message}</div>
-                </React.Fragment>
-            );
-        } else if (!isLoaded) {
-            return (
-                <React.Fragment>
-                    <div className="preloader-wrapper big active">
-                        <div className="spinner-layer spinner-blue">
-                            <div className="circle-clipper left">
-                                <div className="circle"></div>
-                            </div><div className="gap-patch">
-                                <div className="circle"></div>
-                            </div><div className="circle-clipper right">
-                                <div className="circle"></div>
-                            </div>
-                        </div>
-                    </div>
-                </React.Fragment>
-            );
-        }
-    }
-
     render() {
 
         const { AspNetCoreCookies = "", user = {} } = this.state;
@@ -189,7 +129,7 @@ class App extends Component {
                     <Authenticate
                         urlControlAction={urlControlAction}
                         AspNetCoreCookies={AspNetCoreCookies}
-                        handleStateResultObject={this.handleStateResultObject}
+                        handleStateResultObject={this.handleStateResultObject.bind(this)}
                         cookies={this.props.cookies}
                         user={user}
                     />
@@ -197,16 +137,20 @@ class App extends Component {
                 <main className="row" id="main" role="main">
                     <CoastTextareaUrl
                         urlControlAction={urlControlAction}
-                        stateChangeResult={this.stateChangeResult}
+                        stateChangeResult={this.stateChangeResult.bind(this)}
                         AspNetCoreCookies={AspNetCoreCookies}
                     />
-                    {
-                        this.renderMainTable(this.state)
-                    }
+                    <MainTable
+                        state={this.state}
+                        props={this.props}
+                        handleStateResultObject={this.handleStateResultObject.bind(this)}
+                        stateChangeResult={this.stateChangeResult.bind(this)}
+                        handlePageOptions={this.handlePageOptions.bind(this)}
+                    />
                 </main>
                 <footer className="row" id="footer" role="status">
+                    <ProgressPage />
                 </footer>
-                <ProgressPage />
             </React.Fragment>
         );
     }

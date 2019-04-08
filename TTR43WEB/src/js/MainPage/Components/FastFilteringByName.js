@@ -1,6 +1,7 @@
 
 import PropTypes from "prop-types";
-import React from "react";
+import React, { Component } from "react";
+import M from "materialize-css";
 
 /**
  * Метод служит для фильтрации данных в главной таблице (без обращения к контроллеру (только то, что на экране))

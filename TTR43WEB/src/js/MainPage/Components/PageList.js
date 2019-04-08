@@ -1,6 +1,7 @@
 
 import PropTypes from "prop-types";
-import React from "react";
+import React, { Component } from "react";
+import M from "materialize-css";
 
 const onSelectPage = (event, newProductPage, totalPages, handleState) => { //номер страницы
 

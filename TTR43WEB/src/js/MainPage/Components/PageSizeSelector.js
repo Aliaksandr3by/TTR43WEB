@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
-import React from "react";
+import React, { Component } from "react";
+import M from "materialize-css";
 
 const onChangePageSize = (event, pageSize, handleState) => { //размер страниц
 

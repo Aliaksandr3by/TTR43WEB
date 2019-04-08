@@ -1,9 +1,8 @@
 
 import PropTypes from "prop-types";
 import React from "react";
-import M from "materialize-css";
 
-export const Navigate = props => {
+const Navigate = props => {
     return (
         <React.Fragment>
             <nav>
@@ -25,3 +24,5 @@ export const Navigate = props => {
 Navigate.propTypes = {
 
 };
+
+export default Navigate;

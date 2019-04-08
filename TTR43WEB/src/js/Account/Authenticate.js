@@ -188,7 +188,7 @@ class Authenticate extends Component {
         await this.setState((state, props) => {
             const tmp = { ...state[name] };
             const tmp2 = { ...object };
-            const tmp3 ={...tmp, ...tmp2 };
+            const tmp3 = { ...tmp, ...tmp2 };
             return { [name]: tmp3 };
         });
         //console.dir(this.state);
@@ -234,7 +234,9 @@ class Authenticate extends Component {
                 <div className="row">
                     <ul className="collapsible">
                         <li>
-                            <div className="collapsible-header"><i className="material-icons">filter_drama</i>Login</div>
+                            <div className="collapsible-header">
+                                <i className="material-icons">filter_drama</i>Login
+                            </div>
                             <div className="collapsible-body">
                                 <LoginForm
                                     errorUser={errorUserLogin}
@@ -246,7 +248,9 @@ class Authenticate extends Component {
                             </div>
                         </li>
                         <li>
-                            <div className="collapsible-header"><i className="material-icons">filter_drama</i>Register</div>
+                            <div className="collapsible-header">
+                                <i className="material-icons">filter_drama</i>Register
+                            </div>
                             <div className="collapsible-body">
                                 <RegisterForm
                                     errorUser={errorUserRegister}

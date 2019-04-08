@@ -69,7 +69,7 @@ export const AjaxPOSTAsync = (url, object = null, method = "POST") => {
 
 
 export const createElementWithAttr = (object, options) => {
-    let element = window.document.createElement(object);
+    const element = window.document.createElement(object);
     for (const key in options) {
         switch (key) {
             case "textContent":
