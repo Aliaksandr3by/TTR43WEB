@@ -1,4 +1,3 @@
-"use strict";
 /*global __dirname*/
 
 //const launch = require("./Properties/launchSettings.json");
@@ -83,7 +82,7 @@ module.exports = (env, argv) => {
                         {
                             loader: "css-loader", // translates CSS into CommonJS modules
                             options: {
-                                sourceMap: devMode ? false : true
+                                sourceMap: true
                             }
                         },
                         {
@@ -104,13 +103,13 @@ module.exports = (env, argv) => {
                                         }),
                                     ];
                                 },
-                                sourceMap: devMode ? false : true
+                                sourceMap: true
                             }
                         },
                         {
                             loader: "sass-loader", // compiles Sass to CSS
                             options: {
-                                sourceMap: devMode ? false : true
+                                sourceMap: true
                             }
                         }
                     ]
@@ -126,8 +125,8 @@ module.exports = (env, argv) => {
             // }),
             new webpack.SourceMapDevToolPlugin({
                 filename: "[file].map",
-                lineToLine: devMode ? false : true,
-                noSources: devMode ? false : true
+                lineToLine: false,
+                noSources: false,
             }),
             // new WebpackMd5Hash(),
             new CleanWebpackPlugin({

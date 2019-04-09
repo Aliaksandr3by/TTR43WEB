@@ -11,12 +11,12 @@ using DatumServer.Datum.Product;
 
 namespace TTR43WEB.Models.Gipermall
 {
-    public class GetDataFromGipermall
+    public class GetProductFromSite
     {
         readonly private ProductEntity _productNew;
         private readonly string _url;
 
-        public GetDataFromGipermall(string url)
+        public GetProductFromSite(string url)
         {
             this._productNew = new ProductEntity();
             _url = url;
@@ -34,18 +34,15 @@ namespace TTR43WEB.Models.Gipermall
         /// </summary>
         /// <param name="tmp"></param>
         /// <returns>возвращает цену / безу без скидки</returns>
-
-        async Task<Dictionary<string, string>> GetDescription(string url, string selectors)
+        async Task<Dictionary<string, string>> GetProductDescription(string url, string selectors)
         {
             try
             {
                 var cells = await Task.Run(() => GetDataAngleSharp(url, selectors));
-
                 Dictionary<string, string> keyValuePairs = new Dictionary<string, string>();
 
                 foreach (var item_ul in cells)
                 {
-
                     foreach (var item_li in item_ul.QuerySelectorAll("li"))
                     {
                         var a1 = item_li.QuerySelector("strong").TextContent.ToString();
@@ -61,12 +58,9 @@ namespace TTR43WEB.Models.Gipermall
 
                 return keyValuePairs;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return new Dictionary<string, string>
-                {
-                    [ex.Source] = ex.Message
-                };
+                throw;
             }
         }
 
@@ -130,23 +124,22 @@ namespace TTR43WEB.Models.Gipermall
 
         public async Task<ProductEntity> GetFullDescriptionResult()
         {
-            Dictionary<string, string> keyValuePairs = await Task.Run(() => GetDescription(_url, "ul.description"));
-
             try
             {
-                ///"Название"
+                Dictionary<string, string> keyValuePairs = await Task.Run(() => GetProductDescription(_url, "ul.description"));
+
                 _productNew.Name = await Task.Run(() => GetElement(_url, "div.breadcrumbs span"));
-                ///"Адрес"
+
                 _productNew.Url = _url;
-                ///"Время"
+
                 _productNew.Date = DateTime.Now;
-                ///"Цена"
+
                 _productNew.Price = await Task.Run(() => GetElement(_url, "div.products_card form.forms div.price_byn div.price", ParseCost, @"^\d*р.\d*к."));
-                ///"Цена без скидки"
+
                 _productNew.PriceWithoutDiscount = await Task.Run(() => GetElement(_url, "div.products_card form.forms div.price_byn div.price", ParseCost, @"\d*р.\d*к.\s*$"));
-                ///"Размерность"
+
                 _productNew.Dimension = await Task.Run(() => GetElement(_url, "div.products_card form.forms div.price_byn small.kg"));
-                ///
+
                 _productNew.MarkingGoods = ReplaceHelperInt(keyValuePairs, "Артикул:");
 
                 _productNew.BarCode = ReplaceHelper(keyValuePairs, "Штрих-код:");
@@ -165,7 +158,7 @@ namespace TTR43WEB.Models.Gipermall
             }
             catch (Exception)
             {
-                return default;
+                throw;
             }
         }
 
@@ -198,9 +191,7 @@ namespace TTR43WEB.Models.Gipermall
                 {
                     Regex regexMass = new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
                     var tp = regexMass.Replace(keyValuePairs["Масса / Объем:"], string.Empty);
-                    return double.Parse(
-                        s: tp,
-                        provider: CultureInfo.InvariantCulture);
+                    return double.Parse(s: tp, provider: CultureInfo.InvariantCulture);
                 }
                 else
                 {
@@ -212,7 +203,6 @@ namespace TTR43WEB.Models.Gipermall
                 return default;
             }
         }
-
 
         public string ReplaceHelper(Dictionary<string, string> keyValuePairs, string key)
         {
@@ -232,6 +222,7 @@ namespace TTR43WEB.Models.Gipermall
                 return default;
             }
         }
+
         public int? ReplaceHelperInt(Dictionary<string, string> keyValuePairs, string key)
         {
             try

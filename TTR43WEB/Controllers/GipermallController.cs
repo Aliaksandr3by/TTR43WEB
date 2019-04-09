@@ -92,13 +92,11 @@ namespace TTR43WEB.Controllers
         [AllowAnonymous]
         [ContentTypeAddJson]
         [AccessControlAllowAll]
-        public async Task<IActionResult> GetCoastAsync([FromBody]JObject idGoods)
+        public async Task<IActionResult> GetCoastAsync([FromBody]DataSend idGoods)
         {
             try
             {
-                DataSend dataSendObj = idGoods.ToObject<DataSend>();
-
-                GetDataFromGipermall getDataFromGipermall = new GetDataFromGipermall(dataSendObj.IdGoods);
+                GetProductFromSite getDataFromGipermall = new GetProductFromSite(idGoods.IdGoods);
 
                 var item = await getDataFromGipermall.GetFullDescriptionResult();
 
@@ -109,12 +107,12 @@ namespace TTR43WEB.Controllers
                     items = new
                     {
                         item.Id,
-                        Url = item.Url,
-                        Name = item.Name,
-                        MarkingGoods = item.MarkingGoods,
+                        item.Url,
+                        item.Name,
+                        item.MarkingGoods,
                         item.Date,
                         item.Price,
-                        item.PriceWithoutDiscount
+                        item.PriceWithoutDiscount,
                     },
                     resultBaseDataAdd,
                 };

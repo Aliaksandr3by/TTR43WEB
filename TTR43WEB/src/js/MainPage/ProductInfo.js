@@ -124,7 +124,7 @@ const ProductInfo = (props) => {
                 {
                     data.map((item, index) => {
                         return (
-                            <tr key={index}>
+                            <tr key={item.id}>
                                 {
                                     AspNetCoreCookies ? <td>{"favorite"}</td> : null
                                 }

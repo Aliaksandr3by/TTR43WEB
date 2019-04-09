@@ -13,14 +13,14 @@ class CoastTextareaUrl extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            textarea: [],
+            textarea: "",
             URLs: [],
             error: null,
             isLoaded: false,
             progress: 0,
             resultBaseDataAdd: 0,
         };
-        this.handleChange = this.handleChange.bind(this);
+        this.textAreaUpdater = this.textAreaUpdater.bind(this);
     }
 
     componentDidMount() {
@@ -44,7 +44,7 @@ class CoastTextareaUrl extends Component {
      */
     dataOperatorLocalS = (key, value = null) => {
         if (key && !value) {
-            return window.localStorage.getItem(key) ? JSON.parse(window.localStorage.getItem(key)) : [];
+            return window.localStorage.getItem(key) ? JSON.parse(window.localStorage.getItem(key)) : "";
         } else if (key && value) {
             window.localStorage.setItem(key, JSON.stringify(value));
             return true;
@@ -75,7 +75,7 @@ class CoastTextareaUrl extends Component {
         }
     };
 
-    handleChange(event) {
+    textAreaUpdater(event) {
         const data = event.target.value;
         this.setState({ "textarea": data });
     }
@@ -112,13 +112,14 @@ class CoastTextareaUrl extends Component {
     
     convertToFullURLs = (element) => {
         const _element = element.replace(/'|«|»|\\|"/g, ""); //!очищает данные от лишних символов
+        const domen = String(_element).match(/^https:\/\/(\w*[\w|-]\w*.by)/i) || [`https://gipermall.by`, `https://e-dostavka.by`];
         let tmp = "";
         if (typeof _element === "number" || Number(_element)) {
-            tmp = `https://gipermall.by/catalog/item_${Number(_element)}.html`;
+            tmp = `${domen[0]}/catalog/item_${Number(_element)}.html`;
             return tmp;
         } else if (typeof _element === "string") {
-            let sowp = String(_element).match(/item_\d*.html$/i);
-            tmp = sowp[0] ? `https://gipermall.by/catalog/${sowp[0]}` : "";
+            const sowp = String(_element).match(/item_\d*.html$/i);
+            tmp = sowp[0] ? `${domen[0]}/catalog/${sowp[0]}` : "";
             return tmp;
         } else {
             return tmp;
@@ -188,7 +189,7 @@ class CoastTextareaUrl extends Component {
         try {
             this.setState({ textarea: [] });
             for (let i = 0; i < 300; i++) {
-                let tmp = `https://gipermall.by/catalog/item_${99508 + i}.html`; //this.randomInteger(95308, 95408)
+                const tmp = `https://gipermall.by/catalog/item_${99508 + i}.html`; //this.randomInteger(95308, 95408)
                 this.handleStateResultArray(tmp, "textarea");
             }
         } catch (error) {
@@ -203,17 +204,18 @@ class CoastTextareaUrl extends Component {
         const { AspNetCoreCookies } = this.props;
         return (
             <div className="row">
-                <form>
+                <div>
                     <div className="col s12">
                         <div className="input-field ">
                             <textarea
-                                placeholder={`Адрес товара "https://gipermall.by/cabinet/favorites/#/catalog/item_95308.html`}
+                                placeholder={`https://gipermall.by/cabinet/favorites/#/catalog/item_95308.html`}
                                 id="textareaURLstorige"
                                 className="materialize-textarea"
-                                onChange={this.handleChange}
-                                onBlur={this.handleChange}
+                                onChange={this.textAreaUpdater}
+                                onBlur={this.textAreaUpdater}
                                 value={this.state.textarea}
                             />
+                            <label className="active" htmlFor="textareaURLstorige">{"Адрес товара"}</label>
                         </div>
                     </div>
                     <div className="col s12">
@@ -259,7 +261,7 @@ class CoastTextareaUrl extends Component {
                             </div>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
         );
     }
