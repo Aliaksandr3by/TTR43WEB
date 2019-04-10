@@ -34,13 +34,17 @@ class App extends Component {
             error: null,
             isLoaded: false,
             items: [],
+            favorite: [], //window.localStorage.getItem("favorite") ? JSON.parse(window.localStorage.getItem("favorite")) : [],
             filter: this.getItemLocalStorage("filter"),
             pageSize: Number(window.localStorage.getItem("pageSize")) || 10,
             productPage: Number(window.localStorage.getItem("productPage")) || 0,
             totalItems: 0,
             totalPages: 0,
         };
-        //(async () => await this.handlePageOptions(this.state))();
+
+        (async () => {
+
+        })();
     }
 
     getItemLocalStorage = (name = "") => window.localStorage.getItem(name) ? JSON.parse(window.localStorage.getItem(name)) : [];
@@ -50,6 +54,7 @@ class App extends Component {
         M.FormSelect.init(document.querySelectorAll("select"), {});
         M.Sidenav.init(document.querySelectorAll(".sidenav"), {});
 
+        if (this.state.AspNetCoreCookies) await this.getAllProductsFavorite();
         await this.handlePageOptions(this.state);
     }
 
@@ -57,7 +62,7 @@ class App extends Component {
     async componentWillUnmount() {
 
     }
-    
+
     //предикат, способный отменить обновление;
     async shouldComponentUpdate(nextProps, nextState) {
         //console.log(nextProps);
@@ -68,6 +73,37 @@ class App extends Component {
     //вызывается сразу же после выполнения обновления, после вызова метода отображения render ;
     async componentDidUpdate() {
 
+    }
+
+    /**
+     *Метод получает перечень избранных товаров авторизованного пользователя
+     *
+     * @memberof App
+     */
+    getAllProductsFavorite = async () => {
+        try {
+            const response = await fetch(`${this.props.urlControlAction.urlControlActionGetAllProductsFavorite}`, {
+                method: "POST", // *GET, POST, PUT, DELETE, etc.
+                mode: "cors", // no-cors, cors, *same-origin
+                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: "same-origin", // include, *same-origin, omit
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                redirect: "follow", // manual, *follow, error
+                referrer: "no-referrer", // no-referrer, *client
+            });
+
+            const result = await response.json();
+
+            this.stateChangeResult(result, "favorite");
+
+            window.localStorage.setItem("favorite", JSON.stringify(result));
+
+            return result;
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     handlePageOptions = async ({ pageSize = this.state.pageSize, productPage = this.state.productPage }) => {
@@ -146,6 +182,7 @@ class App extends Component {
                         handleStateResultObject={this.handleStateResultObject.bind(this)}
                         stateChangeResult={this.stateChangeResult.bind(this)}
                         handlePageOptions={this.handlePageOptions.bind(this)}
+                        getAllProductsFavorite={this.getAllProductsFavorite.bind(this)}
                     />
                 </main>
                 <footer className="row" id="footer" role="status">

@@ -44,10 +44,10 @@ namespace TTR43WEB
 
             services.AddDataProtection ().SetDefaultKeyLifetime (TimeSpan.FromDays (14));;
 
-            services.AddDbContext<ProductContext> (options => options.UseSqlServer (Configuration["ConnectionStrings2:ConnectionProduct"]));
+            services.AddDbContext<ProductContext> (options => options.UseSqlServer (Configuration["ConnectionStrings:ConnectionProduct"]));
             services.AddScoped<IProductsContextQueryable, ProductsContextQueryable> ();
 
-            services.AddDbContext<UserContext> (options => options.UseSqlServer (Configuration["ConnectionStrings2:ConnectionUser"]));
+            services.AddDbContext<UserContext> (options => options.UseSqlServer (Configuration["ConnectionStrings:ConnectionUser"]));
             services.AddScoped<IUsersContextQueryable, UsersContextQueryable> ();
 
             // Inside your ConfigureServices method
@@ -139,7 +139,8 @@ namespace TTR43WEB
                 routes.MapRoute (name: null, template: "{controller=Gipermall}/{action=OptionsURIinBase}");
                 routes.MapRoute (name: "tableUrl", template: "{controller=Gipermall}/{action=AllItemsUrls}/{id?}");
                 routes.MapRoute (name: "getCoastAsync", template: "{controller=Gipermall}/{action=GetCoastAsync}/{id?}");
-                routes.MapRoute (name: "addProductToFavorite", template: "{controller=Gipermall}/{action=AddProductToFavorite}/{id?}");
+                routes.MapRoute (name: "addProductToFavorite", template: "{controller=Gipermall}/{action=AddProductToFavorite}/{id?}"); 
+                routes.MapRoute (name: "getAllProductsFavorite", template: "{controller=Gipermall}/{action=GetAllProductsFavorite}/{id?}");
 
                 routes.MapRoute (name: "Login", template: "{controller=Account}/{action=Login}");
                 routes.MapRoute (name: "Register", template: "{controller=Account}/{action=Register}");

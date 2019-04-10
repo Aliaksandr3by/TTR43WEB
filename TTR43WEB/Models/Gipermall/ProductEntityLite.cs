@@ -13,5 +13,6 @@ namespace DatumServer.Datum.Product
         public int? MarkingGoods { get; set; }
         public decimal? Price { get; set; } = 0;
         public decimal? PriceWithoutDiscount { get; set; } = 0;
+        public bool Status { get; set; }
     }
 }

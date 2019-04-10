@@ -10,17 +10,23 @@ using System.Net;
 using Microsoft.AspNetCore.Authorization;
 using TTR43WEB.Models.Gipermall;
 using DatumServer.Datum.Product;
+using TTR43WEB.Models.User;
+using DatumServer.Datum.User;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 
 namespace TTR43WEB.Controllers
 {
     [Authorize]
     public class GipermallController : Controller
     {
-        private readonly IProductsContextQueryable gipermollTableData;
+        private readonly IProductsContextQueryable _productsContextQueryable;
+        private readonly IUsersContextQueryable _usersContextQueryable;
 
-        public GipermallController(IProductsContextQueryable gipermollTable)
+        public GipermallController(IProductsContextQueryable productsContextQueryable, IUsersContextQueryable usersContextQueryable)
         {
-            gipermollTableData = gipermollTable;
+            _productsContextQueryable = productsContextQueryable;
+            _usersContextQueryable = usersContextQueryable;
         }
 
         [AllowAnonymous]
@@ -69,7 +75,7 @@ namespace TTR43WEB.Controllers
         [ContentTypeAddJson]
         public async Task<IActionResult> ItemsProduct(int pageSize, int productPage)
         {
-            var AllProducts = gipermollTableData.Products;
+            var AllProducts = _productsContextQueryable.Products;
             Func<Products, DateTime?> sort = e => e.Date;
             var tmp = new PaginationOptions(AllProducts);
             var items = await tmp.GetItemsAsync(sort, pageSize, productPage);
@@ -81,7 +87,7 @@ namespace TTR43WEB.Controllers
         [ContentTypeAddJson]
         public async Task<IActionResult> ItemsProduct([FromBody] GetPageOptions getPageOptions)
         {
-            var AllProducts = gipermollTableData.Products;
+            var AllProducts = _productsContextQueryable.Products;
             Func<Products, DateTime?> sort = e => e.Date;
             var tmp = new PaginationOptions(AllProducts);
             var items = await tmp.GetItemsAsync(sort, getPageOptions);
@@ -91,42 +97,103 @@ namespace TTR43WEB.Controllers
         [HttpPost]
         [ContentTypeAddJson]
         [AccessControlAllowAll]
-        public async Task<IActionResult> AddProductToFavorite([FromBody]DataSend idGoods)
+        public async Task<IActionResult> GetAllProductsFavorite()
         {
-            try //!не реализован
+            try
             {
-                GetProductFromSite getDataFromGipermall = new GetProductFromSite(idGoods.IdGoods);
-
-                var item = await getDataFromGipermall.GetFullDescriptionResult();
-
-                var resultBaseDataAdd = await gipermollTableData.SaveProduct(item);
-
-                var result = new
+                if (HttpContext.User.Identity.IsAuthenticated)
                 {
-                    items = new
-                    {
-                        item.Id,
-                        item.Url,
-                        item.Name,
-                        item.MarkingGoods,
-                        item.Date,
-                        item.Price,
-                        item.PriceWithoutDiscount,
-                    },
-                    resultBaseDataAdd,
-                };
+                    var userGuid = _usersContextQueryable.Users.FirstOrDefault(e => e.Login == HttpContext.User.Identity.Name).Guid;
 
-                return Json(result);
+                    var favorite = _usersContextQueryable.UserFavorites.Select(e => new UserFavorite
+                    {
+                        Guid = e.Guid,
+                        UserGuid = e.UserGuid,
+                        ProductGuid = e.ProductGuid,
+                        DateTimeAdd = e.DateTimeAdd,
+                        DateTimeRemove = e.DateTimeRemove,
+                        Status = e.Status,
+                    }).Where(e=> e.UserGuid == userGuid);
+
+                    return Json(favorite);
+                }
+
+                return Json(new
+                {
+                    errorFavorites = "Пользователь не аутентифицирован",
+                });
             }
             catch (Exception ex)
             {
-                var result = new
+                return Json(new
                 {
-                    description = new { error = ex.Message },
-                    resultBaseDataAdd = 0,
-                };
+                    errorFavorites = ex.Message,
+                });
+            }
+        }
 
-                return Json(result);
+        [HttpPost]
+        [ContentTypeAddJson]
+        [AccessControlAllowAll]
+        public async Task<IActionResult> AddProductToFavorite([FromBody]ProductEntityLite productEntityLite)
+        {
+            try
+            {
+                if (HttpContext.User.Identity.IsAuthenticated)
+                {
+                    var userGuid = _usersContextQueryable.Users.FirstOrDefault(e => e.Login == HttpContext.User.Identity.Name).Guid;
+
+                    UserFavorite userFavorite = default;
+                    UserFavorite result = default;
+
+                    if (productEntityLite.Status)
+                    {
+                        userFavorite = _usersContextQueryable.UserFavorites.FirstOrDefault(e => e.ProductGuid == productEntityLite.Guid);
+                        userFavorite.DateTimeRemove = DateTime.Now;
+                        userFavorite.Status = productEntityLite.Status;
+
+                        result = _usersContextQueryable.UpdateUserFavorite(userFavorite).Entity;
+                    }
+                    else
+                    {
+                        userFavorite = new UserFavorite
+                        {
+                            UserGuid = userGuid,
+                            ProductGuid = productEntityLite.Guid,
+                            DateTimeAdd = DateTime.Now,
+                            Status = productEntityLite.Status,
+                        };
+                        result = _usersContextQueryable.AddUserFavorite(userFavorite).Entity;
+                    }
+
+                    var count = await _usersContextQueryable.SaveChangesAsync();
+
+                    return Json(new
+                    {
+                        favorite = new
+                        {
+                            Guid = result.Guid,
+                            UserGuid = result.UserGuid,
+                            ProductGuid = result.ProductGuid,
+                            DateTimeAdd = result.DateTimeAdd,
+                            DateTimeRemove = result.DateTimeRemove,
+                            Status = result.Status,
+                        },
+                    });
+                }
+
+                return Json(new
+                {
+                    errorFavorites = "Пользователь не аутентифицирован",
+                });
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    errorFavorites = ex.Message,
+                });
             }
         }
 
@@ -141,7 +208,7 @@ namespace TTR43WEB.Controllers
                 GetProductFromSite getDataFromGipermall = new GetProductFromSite(idGoods.IdGoods);
 
                 ProductEntity productEntity = await getDataFromGipermall.GetFullDescriptionResult();
-                Guid Guid = await gipermollTableData.SaveProduct(productEntity);
+                Guid Guid = await _productsContextQueryable.SaveProduct(productEntity);
                 bool flag = Guid.Empty == Guid; 
 
                 var result = new
@@ -178,7 +245,7 @@ namespace TTR43WEB.Controllers
         [ContentTypeAddJson]
         public IActionResult AllItemsUrls()
         {
-            var dataContext = gipermollTableData.Products;
+            var dataContext = _productsContextQueryable.Products;
 
             //var description = (from b in data orderby b.Url descending select b.Url).Distinct();
             var description = dataContext.OrderBy(e => e.UrlNavigation.UrlProduct).Select(e => e.UrlNavigation.UrlProduct).Distinct();

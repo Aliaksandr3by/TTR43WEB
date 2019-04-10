@@ -88,9 +88,18 @@ namespace TTR43WEB.Controllers
                 {
                     var id = await Authenticate(user); // аутентификация
 
+                    UserLite userLite = new UserLite
+                    {
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        Email = user.Email,
+                        Guid = user.Guid,
+                        TelephoneNumber = user.TelephoneNumber,
+                    };
+
                     return Json(new
                     {
-                        user,
+                        user = userLite,
                     });
                 }
 
@@ -118,10 +127,9 @@ namespace TTR43WEB.Controllers
             if (ModelState.IsValid)
             {
                 Users user = await db.Users.FirstOrDefaultAsync( u => u.Login == model.Login || u.TelephoneNumber == model.TelephoneNumber);
+
                 if (user == null)
                 {
-                    //model.DateTimeRegistration = DateTime.Now;
-
                     var tmpUser = new Users
                     {
                         Login = model.Login,

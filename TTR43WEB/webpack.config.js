@@ -125,8 +125,8 @@ module.exports = (env, argv) => {
             // }),
             new webpack.SourceMapDevToolPlugin({
                 filename: "[file].map",
-                lineToLine: false,
-                noSources: false,
+                //lineToLine: true,
+                // noSources: false,
             }),
             // new WebpackMd5Hash(),
             new CleanWebpackPlugin({

@@ -13,6 +13,8 @@ namespace TTR43WEB.Models.User
         EntityEntry<Users> AddUser(Users user); 
 
         EntityEntry<UserFavorite> AddUserFavorite(UserFavorite user);
+        EntityEntry<UserFavorite> RemoveUserFavorite(UserFavorite user);
+        EntityEntry<UserFavorite> UpdateUserFavorite(UserFavorite user);
 
         EntityEntry<UserAgent> AddUserAgent(UserAgent user);
 

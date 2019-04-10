@@ -46,6 +46,15 @@ namespace TTR43WEB.Models.User
             return context.UserFavorite.Add(favorite);
         }
 
+        public EntityEntry<UserFavorite> RemoveUserFavorite(UserFavorite favorite)
+        {
+            return context.UserFavorite.Remove(favorite);
+        }
+        public EntityEntry<UserFavorite> UpdateUserFavorite(UserFavorite favorite)
+        {
+            return context.UserFavorite.Update(favorite);
+        }
+
         public EntityEntry<UserAgent> AddUserAgent(UserAgent agent)
         {
             return context.UserAgent.Add(agent);

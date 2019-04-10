@@ -8,13 +8,15 @@ import PageList from "./Components/PageList";
 import FastFilteringByName from "./Components/FastFilteringByName";
 import ProductInfo from "./ProductInfo";
 import LoadingBar from "./Components/LoadingBar";
+import AddItemsOnTable from "./Components/AddItemsOnTable";
 
-const MainTable = ({ state, props, handleStateResultObject, stateChangeResult, handlePageOptions }) => {
+
+const MainTable = ({ state, props, handleStateResultObject, stateChangeResult, handlePageOptions, getAllProductsFavorite }) => {
 
     const { isLoaded, error, items, filter } = state;
     const { urlControlAction = {} } = props;
 
-    if (isLoaded && items.length !== 0) {
+    if (isLoaded && items.length > 0) {
         return (
             <React.Fragment>
                 <FastFilteringByName
@@ -28,11 +30,17 @@ const MainTable = ({ state, props, handleStateResultObject, stateChangeResult, h
                     state={state}
                     handleStateResultObject={handleStateResultObject}
                     stateChangeResult={stateChangeResult}
+                    getAllProductsFavorite={getAllProductsFavorite}
                 />
                 <PageSizeSelector
                     handlePageOptions={handlePageOptions}
                     state={state} >{"Число элементов на листе"}
                 </PageSizeSelector>
+                <AddItemsOnTable
+                    urlControlAction={urlControlAction}
+                    state={state}
+                    stateChangeResult={stateChangeResult}
+                ></AddItemsOnTable>
                 <PageList
                     handlePageOptions={handlePageOptions}
                     state={state}

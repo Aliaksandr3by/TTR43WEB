@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
             urlControlActionOptionsURIinBase: "/Gipermall/OptionsURIinBase",
             urlControlActionGETGipermallItemsProduct: "/Gipermall/ItemsProduct",
             urlControlActionAddProductToFavorite: "/Gipermall/AddProductToFavorite",
+            urlControlActionGetAllProductsFavorite: "/Gipermall/GetAllProductsFavorite",
             urlControlActionAccountLogin: "/Account/Login",
             urlControlActionAccountRegister: "/Account/Register",
             urlControlActionAccountLogout: "/Account/Logout",

@@ -22,10 +22,10 @@ const _dateConverter = (date) => {
     try {
         const dateC = Date.parse(date);
         const newDate = (new Date(dateC)).toLocaleString("RU-be");
-        console.log(newDate);
+        //console.log(newDate);
         return newDate;
     } catch (error) {
-        console.log(date);
+        //console.log(date);
         return date;
     }
 };
@@ -45,9 +45,28 @@ const _moneyConverter = (cost) => {
     }
 };
 
-const ProductInfo = (props) => {
+const dataFilter = (items, filter, AspNetCoreCookies) => {
+    const data = [...items].filter((el, i) => {
+        const item = String(el.name).toLowerCase();
+        let flag = true;
+        for (const iterator of filter) {
+            flag = item.includes(iterator.toLowerCase());
+            if (!flag) {
+                return flag;
+            }
+        }
 
-    const { state: { AspNetCoreCookies = "", items = [], filter = [], pageSize, productPage }, urlControlAction = {}, handleStateResultObject, stateChangeResult } = props;
+        return flag;
+    });
+    if (!AspNetCoreCookies) {
+        data.length = 4;
+    }
+    return data;
+};
+
+const ProductInfo = (props) => {
+    //console.dir(props);
+    const { state: { AspNetCoreCookies = "", items = [], filter = [], favorite = [] }, urlControlAction = {}, stateChangeResult, getAllProductsFavorite } = props;
 
     const cardStickyAction = ({ date = "", id = "", markingGoods = "", name = "", price = "", priceWithoutDiscount = "", url = "", }) => {
         return `<a href="${url}" target="_blank">${name}(${markingGoods}) - ${price}руб. - ${priceWithoutDiscount}руб. (${date})</a>`;
@@ -80,124 +99,20 @@ const ProductInfo = (props) => {
         }
     };
 
-    const addItemsOnTable = async (e) => {
-        try {
-            const response = await fetch(`${urlControlAction.urlControlActionGETGipermallItemsProduct}`, {
-                method: "POST", // *GET, POST, PUT, DELETE, etc.
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    "pageSize": pageSize,
-                    "productPage": productPage,
-                    "addItems": e.target.value,
-                    "skippedItems": items.length,
-                }),
-            });
-
-            const result = await response.json();
-
-            stateChangeResult(result.items, "items");
-
-        } catch (error) {
-            handleStateResultObject({
-                isLoaded: true,
-                error
-            });
-        }
-    };
-
-    const renderTbodyTable = (itemsEl = [], AspNetCoreCookies = "", filter = []) => {
-        try {
-            const data = [...itemsEl].filter((el, i) => {
-                const item = String(el.name).toLowerCase();
-                let flag = true;
-                for (const iterator of filter) {
-                    flag = item.includes(iterator.toLowerCase());
-                    if (!flag) {
-                        return flag;
-                    }
-                }
-                return flag;
-            });
-
-            if (!AspNetCoreCookies) {
-                data.length = 4;
-            }
-
-            return (
-                <tbody>
-                    {
-                        data.map((item, index) => {
-                            return (
-                                <tr key={item.id ? item.id : index}>
-                                    {
-                                        AspNetCoreCookies ? <td><ButtonFavorite favorite={false} itemId={item.id} itemURL={item.url} /></td> : null
-                                    }
-                                    {
-                                        Object.keys(item).map((el, i) => {
-                                            if (el.toLowerCase() === "id") {
-                                                return (<th key={i} name={`ID${item.id}`}>
-                                                    <a href="#!">{item[el]}</a>
-                                                </th>);
-                                            } else if (el.toLowerCase() === "name") {
-                                                return (<td key={i}>
-                                                    <a target="_blank" rel="noopener noreferrer" href={item["url"]}>{item[el]}</a>
-                                                </td>);
-                                            } else if (el.toLowerCase() === "date") {
-                                                return (<td key={i}>
-                                                    {_dateConverter(item[el])}
-                                                </td>);
-                                            } else if (el.toLowerCase() === "price") {
-                                                return (<td key={i} title={item[el]}>
-                                                    {_moneyConverter(item[el])}
-                                                </td>);
-                                            } else if (el.toLowerCase() === "pricewithoutdiscount") {
-                                                return (<td key={i} title={item[el]}>
-                                                    {_moneyConverter(item[el])}
-                                                </td>);
-                                            } else if (el.toLowerCase() === "url") {
-                                                return (<td key={i} >
-                                                    <a className="btn-floating btn-small waves-effect waves-light red">
-                                                        <i className="material-icons"
-                                                            onClick={e => dataUpdate(e)}
-                                                            data-update-url={item[el]}>update</i>
-                                                    </a>
-                                                </td>);
-                                            } else {
-                                                return (
-                                                    <td key={i}>
-                                                        {item[el]}
-                                                    </td>
-                                                );
-                                            }
-                                        })
-                                    }
-                                </tr>
-                            );
-                        })
-                    }
-                </tbody>
-            );
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
     return (
         <div className="row">
             <div className="col s12">
                 <table className="col s12 striped highlight" data-src={name}>
-                    <caption><p>{"name"}</p></caption>
                     <thead id="tableTop">
                         <tr>
                             {
-                                AspNetCoreCookies ? <td>{"favorite"}</td> : null
-                            }
-                            {
-                                Object.entries(items[0]).map(([el, val], i) => {
+                                Array.from(items[0] || {}).map((el, i) => {
                                     if (el.toLowerCase() === "url") {
                                         return (<th key={i}>UPDATE</th>);
+                                    } else if (el.toLowerCase() === "guid") {
+                                        return (
+                                            AspNetCoreCookies ? <th key={i} title="Guid">{"favorite"}</th> : null
+                                        );
                                     } else {
                                         return (<th key={i}>{_replacer(el)}</th>);
                                     }
@@ -205,19 +120,77 @@ const ProductInfo = (props) => {
                             }
                         </tr>
                     </thead>
-                    {
-                        renderTbodyTable(items, AspNetCoreCookies, filter)
-                    }
+                    <tbody>
+                        {
+                            dataFilter(items, filter, AspNetCoreCookies).map((item, index) => {
+                                return (
+                                    <tr key={item.id ? item.id : index}>
+                                        {
+                                            Object.keys(item).map((el, i) => {
+                                                if (el.toLowerCase() === "id") {
+                                                    return (<th key={i} name={`ID${item.id}`}>
+                                                        <a href="#!">{item[el]}</a>
+                                                    </th>);
+                                                } else if (el.toLowerCase() === "name") {
+                                                    return (<td key={i}>
+                                                        <a target="_blank" rel="noopener noreferrer" href={item["url"]}>{item[el]}</a>
+                                                    </td>);
+                                                } else if (el.toLowerCase() === "guid") {
+                                                    return (
+                                                        AspNetCoreCookies
+                                                            ? (<td key={i}>
+                                                                <ButtonFavorite
+                                                                    stateChangeResult={stateChangeResult}
+                                                                    getAllProductsFavorite={getAllProductsFavorite}
+                                                                    urlControlAction={urlControlAction}
+                                                                    favorite={favorite}
+                                                                    itemGuid={item[el]}
+                                                                    itemId={item.id}
+                                                                    itemURL={item.url}
+                                                                    markingGoods={item.markingGoods} />
+                                                            </td>)
+                                                            : null
+                                                    );
+                                                } else if (el.toLowerCase() === "date") {
+                                                    return (<td key={i}>
+                                                        {_dateConverter(item[el])}
+                                                    </td>);
+                                                } else if (el.toLowerCase() === "price") {
+                                                    return (<td key={i} title={item[el]}>
+                                                        {_moneyConverter(item[el])}
+                                                    </td>);
+                                                } else if (el.toLowerCase() === "pricewithoutdiscount") {
+                                                    return (<td key={i} title={item[el]}>
+                                                        {_moneyConverter(item[el])}
+                                                    </td>);
+                                                } else if (el.toLowerCase() === "url") {
+                                                    return (<td key={i} >
+                                                        <a className="btn-floating btn-small waves-effect waves-light red">
+                                                            <i className="material-icons"
+                                                                onClick={e => dataUpdate(e)}
+                                                                data-update-url={item[el]}>update</i>
+                                                        </a>
+                                                    </td>);
+                                                } else {
+                                                    return (
+                                                        <td key={i}>
+                                                            {item[el]}
+                                                        </td>
+                                                    );
+                                                }
+                                            })
+                                        }
+                                    </tr>
+                                );
+                            })
+                        }
+                    </tbody>
                     <tfoot>
 
                     </tfoot>
                 </table>
             </div>
-            <div className="col s12">
-                <button className={"btn-floating btn-large pulse waves-effect waves-light red right"} onClick={addItemsOnTable.bind(this)} value={1} type="button">
-                    <i className="Large material-icons ">add</i>
-                </button>
-            </div>
+
         </div>
     );
 };

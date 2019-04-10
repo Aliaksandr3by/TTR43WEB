@@ -136,22 +136,27 @@ class Authenticate extends Component {
                 cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
                 credentials: "same-origin", // include, *same-origin, omit
                 headers: {
-                    "Accept": "application/json, text/plain, text/html, *.*",
+                    "Accept": "application/json",
                 },
                 redirect: "follow", // manual, *follow, error
                 referrer: "no-referrer", // no-referrer, *client
                 body: userData, // body data type must match "Content-Type" header
             });
+
             const json = await response.json();
             const { errorUserLogin, user } = json;
+
             if (!errorUserLogin) {
-                console.warn(user);
+
                 const coreCookies = { "AspNetCoreCookies": this.props.cookies.get(".AspNetCore.Cookies") || false };
                 const result = { ...json, ...coreCookies };
                 this.handleStateResultObject(result);
                 window.localStorage.setItem("Login", Login);
+
             } else {
+
                 this.setState(json);
+                
             }
 
         } catch (error) {
