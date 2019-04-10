@@ -9,9 +9,10 @@ import FastFilteringByName from "./Components/FastFilteringByName";
 import ProductInfo from "./ProductInfo";
 import LoadingBar from "./Components/LoadingBar";
 import AddItemsOnTable from "./Components/AddItemsOnTable";
+import FavoriteSelect from "./Components/FavoriteSelect";
 
 
-const MainTable = ({ state, props, handleStateResultObject, stateChangeResult, handlePageOptions, getAllProductsFavorite }) => {
+const MainTable = ({ state, props, handleStateResultObject, stateChangeResult, handlePageOptions, getAllProductsFavorite, handleState }) => {
 
     const { isLoaded, error, items, filter } = state;
     const { urlControlAction = {} } = props;
@@ -24,6 +25,10 @@ const MainTable = ({ state, props, handleStateResultObject, stateChangeResult, h
                     textplaceholder={"Название для быстрого поиска"}
                     texttitle={"Возвращает полное совпадение"}
                     filter={filter}
+                />
+                <FavoriteSelect
+                    handleState={handleState}
+                    state={state}
                 />
                 <ProductInfo
                     urlControlAction={urlControlAction}

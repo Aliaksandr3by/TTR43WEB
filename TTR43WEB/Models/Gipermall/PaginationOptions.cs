@@ -49,17 +49,7 @@ namespace TTR43WEB.Models.Gipermall
                     .OrderByDescending(sort)
                     .Skip(skip)
                     .Take(take)
-                    .Select(e => new ProductEntityLite
-                    {
-                        Guid = e.Guid,
-                        Id = e.Id,
-                        Date = e.Date,
-                        Url = e.UrlNavigation?.UrlProduct,
-                        Name = e.NameNavigation?.NameProduct,
-                        MarkingGoods = e.MarkingGoodsNavigation?.MarkingGoodsProduct,
-                        Price = e.Price,
-                        PriceWithoutDiscount = e.PriceWithoutDiscount
-                    });
+                    .Select(e => new ProductEntityLite().ToProductEntityLite(e));
 
                 if (addItems <= 0)
                 {

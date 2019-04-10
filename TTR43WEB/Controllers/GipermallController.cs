@@ -111,9 +111,7 @@ namespace TTR43WEB.Controllers
                         UserGuid = e.UserGuid,
                         ProductGuid = e.ProductGuid,
                         DateTimeAdd = e.DateTimeAdd,
-                        DateTimeRemove = e.DateTimeRemove,
-                        Status = e.Status,
-                    }).Where(e=> e.UserGuid == userGuid);
+                    }).Where(e => e.UserGuid == userGuid);
 
                     return Json(favorite);
                 }
@@ -143,16 +141,13 @@ namespace TTR43WEB.Controllers
                 {
                     var userGuid = _usersContextQueryable.Users.FirstOrDefault(e => e.Login == HttpContext.User.Identity.Name).Guid;
 
-                    UserFavorite userFavorite = default;
+                    UserFavorite userFavorite = _usersContextQueryable.UserFavorites.FirstOrDefault(e => e.UserGuid == userGuid && e.ProductGuid == productEntityLite.Guid);
+
                     UserFavorite result = default;
 
-                    if (productEntityLite.Status)
+                    if (userFavorite != null)
                     {
-                        userFavorite = _usersContextQueryable.UserFavorites.FirstOrDefault(e => e.ProductGuid == productEntityLite.Guid);
-                        userFavorite.DateTimeRemove = DateTime.Now;
-                        userFavorite.Status = productEntityLite.Status;
-
-                        result = _usersContextQueryable.UpdateUserFavorite(userFavorite).Entity;
+                        result = _usersContextQueryable.RemoveUserFavorite(userFavorite).Entity;
                     }
                     else
                     {
@@ -161,7 +156,6 @@ namespace TTR43WEB.Controllers
                             UserGuid = userGuid,
                             ProductGuid = productEntityLite.Guid,
                             DateTimeAdd = DateTime.Now,
-                            Status = productEntityLite.Status,
                         };
                         result = _usersContextQueryable.AddUserFavorite(userFavorite).Entity;
                     }
@@ -172,12 +166,7 @@ namespace TTR43WEB.Controllers
                     {
                         favorite = new
                         {
-                            Guid = result.Guid,
-                            UserGuid = result.UserGuid,
-                            ProductGuid = result.ProductGuid,
-                            DateTimeAdd = result.DateTimeAdd,
-                            DateTimeRemove = result.DateTimeRemove,
-                            Status = result.Status,
+                            productGuid = result.ProductGuid,
                         },
                     });
                 }
@@ -208,23 +197,15 @@ namespace TTR43WEB.Controllers
                 GetProductFromSite getDataFromGipermall = new GetProductFromSite(idGoods.IdGoods);
 
                 ProductEntity productEntity = await getDataFromGipermall.GetFullDescriptionResult();
-                Guid Guid = await _productsContextQueryable.SaveProduct(productEntity);
-                bool flag = Guid.Empty == Guid; 
+
+                productEntity.Guid = await _productsContextQueryable.SaveProduct(productEntity);
+
+                ProductEntityLite productEntityLite = new ProductEntityLite().ToProductEntityLite(productEntity);
 
                 var result = new
                 {
-                    items = new
-                    {
-                        productEntity.Id,
-                        productEntity.Guid,
-                        productEntity.Url,
-                        productEntity.Name,
-                        productEntity.MarkingGoods,
-                        productEntity.Date,
-                        productEntity.Price,
-                        productEntity.PriceWithoutDiscount,
-                    },
-                    guidIsEmpty = flag,
+                    items = productEntityLite,
+                    guidIsEmpty = Guid.Empty == productEntityLite.Guid,
                 };
 
                 return Json(result);

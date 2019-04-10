@@ -54,8 +54,6 @@ namespace DatumServer.Datum.User
 
                 entity.Property(e => e.DateTimeAdd).HasColumnType("datetime");
 
-                entity.Property(e => e.DateTimeRemove).HasColumnType("datetime");
-
                 entity.HasOne(d => d.UserGu)
                     .WithMany(p => p.UserFavorite)
                     .HasForeignKey(d => d.UserGuid)

@@ -45,19 +45,33 @@ const _moneyConverter = (cost) => {
     }
 };
 
-const dataFilter = (items, filter, AspNetCoreCookies) => {
-    const data = [...items].filter((el, i) => {
-        const item = String(el.name).toLowerCase();
-        let flag = true;
-        for (const iterator of filter) {
-            flag = item.includes(iterator.toLowerCase());
-            if (!flag) {
-                return flag;
-            }
-        }
+const dataFilter = (items, filter, AspNetCoreCookies, favorite = [], favoriteSelect = false) => {
 
-        return flag;
-    });
+    let data = items;
+
+    if (filter) {
+        data = [...items].filter((el, i) => {
+            const item = String(el.name).toLowerCase();
+            let flag = true;
+            for (const iterator of filter) {
+                flag = item.includes(iterator.toLowerCase());
+                if (!flag) {
+                    return flag;
+                }
+            }
+
+            return flag;
+        });
+    }
+
+    if (favoriteSelect) {
+        data = [...items].filter((el, i) => {
+            return favorite.find((eFilter, iFilter) => {
+                return el.guid === eFilter.productGuid;
+            });
+        });
+    }
+
     if (!AspNetCoreCookies) {
         data.length = 4;
     }
@@ -66,7 +80,7 @@ const dataFilter = (items, filter, AspNetCoreCookies) => {
 
 const ProductInfo = (props) => {
     //console.dir(props);
-    const { state: { AspNetCoreCookies = "", items = [], filter = [], favorite = [] }, urlControlAction = {}, stateChangeResult, getAllProductsFavorite } = props;
+    const { state: { AspNetCoreCookies = "", items = [], filter = [], favorite = [], favoriteSelect = false }, urlControlAction = {}, stateChangeResult, getAllProductsFavorite } = props;
 
     const cardStickyAction = ({ date = "", id = "", markingGoods = "", name = "", price = "", priceWithoutDiscount = "", url = "", }) => {
         return `<a href="${url}" target="_blank">${name}(${markingGoods}) - ${price}руб. - ${priceWithoutDiscount}руб. (${date})</a>`;
@@ -102,11 +116,11 @@ const ProductInfo = (props) => {
     return (
         <div className="row">
             <div className="col s12">
-                <table className="col s12 striped highlight" data-src={name}>
+                <table className="col s12 striped highlight">
                     <thead id="tableTop">
                         <tr>
                             {
-                                Array.from(items[0] || {}).map((el, i) => {
+                                Object.keys(items[0]).map((el, i) => {
                                     if (el.toLowerCase() === "url") {
                                         return (<th key={i}>UPDATE</th>);
                                     } else if (el.toLowerCase() === "guid") {
@@ -122,7 +136,7 @@ const ProductInfo = (props) => {
                     </thead>
                     <tbody>
                         {
-                            dataFilter(items, filter, AspNetCoreCookies).map((item, index) => {
+                            dataFilter(items, filter, AspNetCoreCookies, favorite, favoriteSelect).map((item, index) => {
                                 return (
                                     <tr key={item.id ? item.id : index}>
                                         {

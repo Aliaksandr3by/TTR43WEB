@@ -8,13 +8,54 @@ namespace TTR43WEB.Models.Gipermall
 {
     public static class ProductsExtension
     {
+
+        public static ProductEntityLite ToProductEntityLite(this ProductEntityLite productEntityLite, ProductEntity productEntity)
+        {
+            if (productEntityLite == null)
+            {
+                throw new ArgumentNullException(nameof(productEntityLite));
+            }
+
+            ProductEntityLite _productEntityLite = new ProductEntityLite
+            {
+                Id = productEntity.Id,
+                Date = productEntity.Date,
+                Guid = productEntity.Guid,
+                Url = productEntity.Url,
+                Name = productEntity.Name,
+                MarkingGoods = productEntity.MarkingGoods,
+                Price = productEntity.Price,
+                PriceWithoutDiscount = productEntity.PriceWithoutDiscount,
+            };
+            return _productEntityLite;
+        }
+        public static ProductEntityLite ToProductEntityLite(this ProductEntityLite productEntityLite, Products productEntity)
+        {
+            if (productEntityLite == null)
+            {
+                throw new ArgumentNullException(nameof(productEntityLite));
+            }
+
+            ProductEntityLite _productEntityLite = new ProductEntityLite
+            {
+                Id = productEntity.Id,
+                Date = productEntity.Date,
+                Guid = productEntity.Guid,
+                Url = productEntity.UrlNavigation.UrlProduct,
+                Name = productEntity.NameNavigation.NameProduct,
+                MarkingGoods = productEntity.MarkingGoods,
+                Price = productEntity.Price,
+                PriceWithoutDiscount = productEntity.PriceWithoutDiscount,
+            };
+            return _productEntityLite;
+        }
         public static Products ToProducts(this Products products, ProductEntity product, ProductContext context)
         {
             if (products == null)
             {
                 throw new ArgumentNullException(nameof(products));
             }
- 
+
             var _products = new Products();
 
             //[Date]

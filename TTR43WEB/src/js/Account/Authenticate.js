@@ -247,6 +247,7 @@ class Authenticate extends Component {
                                     errorUser={errorUserLogin}
                                     userData={this.state}
                                     handleChange={this.handleChange.bind(this)}
+                                    handleStateResultObject={this.handleStateResultObject}
                                     onSignIn={this.onSignIn.bind(this)}
                                     onSignInKeyEnter={this.onSignInKeyEnter.bind(this)}
                                 />

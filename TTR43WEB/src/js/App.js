@@ -34,7 +34,8 @@ class App extends Component {
             error: null,
             isLoaded: false,
             items: [],
-            favorite: [], //window.localStorage.getItem("favorite") ? JSON.parse(window.localStorage.getItem("favorite")) : [],
+            favorite: [],
+            favoriteSelect: false,
             filter: this.getItemLocalStorage("filter"),
             pageSize: Number(window.localStorage.getItem("pageSize")) || 10,
             productPage: Number(window.localStorage.getItem("productPage")) || 0,
@@ -54,13 +55,13 @@ class App extends Component {
         M.FormSelect.init(document.querySelectorAll("select"), {});
         M.Sidenav.init(document.querySelectorAll(".sidenav"), {});
 
-        if (this.state.AspNetCoreCookies) await this.getAllProductsFavorite();
+        await this.getAllProductsFavorite();
         await this.handlePageOptions(this.state);
     }
 
     //непосредственно перед удалением его с экрана 
     async componentWillUnmount() {
-
+        await this.getAllProductsFavorite();
     }
 
     //предикат, способный отменить обновление;
@@ -81,28 +82,31 @@ class App extends Component {
      * @memberof App
      */
     getAllProductsFavorite = async () => {
-        try {
-            const response = await fetch(`${this.props.urlControlAction.urlControlActionGetAllProductsFavorite}`, {
-                method: "POST", // *GET, POST, PUT, DELETE, etc.
-                mode: "cors", // no-cors, cors, *same-origin
-                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: "same-origin", // include, *same-origin, omit
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                redirect: "follow", // manual, *follow, error
-                referrer: "no-referrer", // no-referrer, *client
-            });
+        if (this.state.AspNetCoreCookies) {
+            try {
+                const response = await fetch(`${this.props.urlControlAction.urlControlActionGetAllProductsFavorite}`, {
+                    method: "POST", // *GET, POST, PUT, DELETE, etc.
+                    mode: "cors", // no-cors, cors, *same-origin
+                    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                    credentials: "same-origin", // include, *same-origin, omit
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    redirect: "follow", // manual, *follow, error
+                    referrer: "no-referrer", // no-referrer, *client
+                });
 
-            const result = await response.json();
+                const result = await response.json();
 
-            this.stateChangeResult(result, "favorite");
+                this.setState({
+                    "favorite": result
+                });
 
-            window.localStorage.setItem("favorite", JSON.stringify(result));
+                return result;
 
-            return result;
-        } catch (error) {
-            console.error(error);
+            } catch (error) {
+                console.error(error);
+            }
         }
     }
 
@@ -145,9 +149,25 @@ class App extends Component {
         });
     }
 
+    /**
+     * Обновляет поле состояния
+     *
+     * @memberof App
+     */
     handleStateResultObject = async (object) => {
         await this.setState((state, props) => {
             return { ...state, ...object };
+        });
+    }
+
+    /**
+     * Заменяет поле состояния полностью
+     *
+     * @memberof App
+     */
+    handleState = (object, name) => {
+        this.setState((state, props) => {
+            return { [name]: object };
         });
     }
 
@@ -183,6 +203,7 @@ class App extends Component {
                         stateChangeResult={this.stateChangeResult.bind(this)}
                         handlePageOptions={this.handlePageOptions.bind(this)}
                         getAllProductsFavorite={this.getAllProductsFavorite.bind(this)}
+                        handleState={this.handleState.bind(this)}
                     />
                 </main>
                 <footer className="row" id="footer" role="status">

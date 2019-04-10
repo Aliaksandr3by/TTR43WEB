@@ -4,7 +4,6 @@ import React, { Component } from "react";
 import M from "materialize-css";
 
 const ButtonFavorite = ({ urlControlAction, favorite, itemGuid = 0, itemId = 0, itemURL = "", markingGoods, stateChangeResult, getAllProductsFavorite }) => {
-
     
     const setStatus = (favorite, guid) => {
         return favorite.find((eFilter, iFilter) => {
@@ -38,7 +37,7 @@ const ButtonFavorite = ({ urlControlAction, favorite, itemGuid = 0, itemId = 0, 
             });
 
             const result = await response.json();
-            console.log(result);
+
             await getAllProductsFavorite();
 
         } catch (error) {
