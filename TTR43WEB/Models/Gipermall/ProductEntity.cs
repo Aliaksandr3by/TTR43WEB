@@ -12,10 +12,12 @@ namespace TTR43WEB.Models.Gipermall
     //[Table("ProductEntity")]
     public class ProductEntity
     {
+        [HiddenInput(DisplayValue = false)]
+        public int Id { get; set; }
+
         [Key]
         [HiddenInput(DisplayValue = false)]
-        [Display(Name = "Id")]
-        public int Id { get; set; }
+        public Guid Guid { get; set; }
 
         /// <summary>
         /// "Время"

@@ -17,7 +17,6 @@ namespace DatumServer.Datum.Product
 
         public virtual DbSet<BarCode> BarCode { get; set; }
         public virtual DbSet<Dimension> Dimension { get; set; }
-        public virtual DbSet<Favorites> Favorites { get; set; }
         public virtual DbSet<ManufacturingCountry> ManufacturingCountry { get; set; }
         public virtual DbSet<MarkingGoods> MarkingGoods { get; set; }
         public virtual DbSet<Name> Name { get; set; }

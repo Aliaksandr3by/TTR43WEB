@@ -37,17 +37,31 @@ namespace TTR43WEB.Models.Gipermall
         public IQueryable<Trademark> Trademark => context.Trademark;
         public IQueryable<Url> Url => context.Url;
 
-        public Task<int> SaveProduct(ProductEntity product)
+        public async Task<Guid> SaveProduct(ProductEntity product)
         {
-            if (product.MarkingGoods != null && !context.Products.Any<Products>(
-                p => p.MarkingGoodsNavigation.MarkingGoodsProduct == product.MarkingGoods && 
-                p.Price == product.Price && 
-                p.PriceWithoutDiscount == product.PriceWithoutDiscount))
+            try
             {
-                var tmp = (new Products()).ToProducts(product, context);
-                context.Products.Add(tmp);
+                
+
+                if (product.MarkingGoods != null && !context.Products.Any<Products>(
+                    p => p.MarkingGoodsNavigation.MarkingGoodsProduct == product.MarkingGoods &&
+                    p.Price == product.Price &&
+                    p.PriceWithoutDiscount == product.PriceWithoutDiscount))
+                {
+                    Products tmp = (new Products()).ToProducts(product, context);
+                    var result = await context.Products.AddAsync(tmp);
+                    var count = await context.SaveChangesAsync();
+                    return result.Entity.Guid;
+                }
+                else
+                {
+                    return default;
+                }
             }
-            return context.SaveChangesAsync();
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

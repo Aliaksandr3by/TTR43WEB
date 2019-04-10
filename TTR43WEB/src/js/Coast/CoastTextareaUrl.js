@@ -18,7 +18,6 @@ class CoastTextareaUrl extends Component {
             error: null,
             isLoaded: false,
             progress: 0,
-            resultBaseDataAdd: 0,
         };
         this.textAreaUpdater = this.textAreaUpdater.bind(this);
     }
@@ -109,7 +108,7 @@ class CoastTextareaUrl extends Component {
     textURLsToArray = (text, urlFormatter) => {
         return [...(text.split(/\s|,|\s,/))].filter((item, i) => item !== "").map((e, i) => urlFormatter(e.trim()));
     }
-    
+
     convertToFullURLs = (element) => {
         const _element = element.replace(/'|«|»|\\|"/g, ""); //!очищает данные от лишних символов
         const domen = String(_element).match(/^https:\/\/(\w*[\w|-]\w*.by)/i) || [`https://gipermall.by`, `https://e-dostavka.by`];
@@ -119,17 +118,17 @@ class CoastTextareaUrl extends Component {
             return tmp;
         } else if (typeof _element === "string") {
             const sowp = String(_element).match(/item_\d*.html$/i);
-            tmp = sowp[0] ? `${domen[0]}/catalog/${sowp[0]}` : "";
+            if (sowp) tmp = sowp[0] ? `${domen[0]}/catalog/${sowp[0]}` : "";
             return tmp;
         } else {
             return tmp;
         }
     }
 
-    getURLArrayFromText = ({ textarea }, getItem_html, textURLsToArray) => {
+    getURLArrayFromText = ({ textarea }, convertToFullURLs, textURLsToArray) => {
         return Array.isArray(textarea)
             ? [...textarea]
-            : textURLsToArray(textarea, getItem_html);
+            : textURLsToArray(textarea, convertToFullURLs);
     }
 
     cardStickyAction = ({ date = "", id = "", markingGoods = "", name = "", price = "", priceWithoutDiscount = "", url = "", }) => {
@@ -146,27 +145,39 @@ class CoastTextareaUrl extends Component {
             //this.OptionsURIinBase(urlControlActionOptionsURIinBase, iterator);
             for (const iterator of data) {
 
-                const response = await fetch(urlControlAction.urlControlActionGetCoastAsync, {
-                    method: "POST", // *GET, POST, PUT, DELETE, etc.
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ "idGoods": iterator }),
-                });
+                if (iterator) {
+                    
+                    const response = await fetch(urlControlAction.urlControlActionGetCoastAsync, {
+                        method: "POST", // *GET, POST, PUT, DELETE, etc.
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ "idGoods": iterator }),
+                    });
 
-                const json = await response.json();
+                    const json = await response.json();
 
-                this.setState({ progress: await this.getProgress(this.state.progress, data.length) });
+                    this.setState({ progress: await this.getProgress(this.state.progress, data.length) });
 
-                if (json.resultBaseDataAdd) {
-                    this.props.stateChangeResult(json.items, "items");
+                    if (!json.guidIsEmpty && !json.description) {
 
-                    M.toast({ html: this.cardStickyAction(json.items), displayLength: 8000, classes: "rounded" });
+                        this.props.stateChangeResult(json.items, "items");
 
-                    console.log(`${json.items.name}, ${json.items.price} / ${json.items.priceWithoutDiscount} | ${json.items.url}`);
+                        M.toast({ html: this.cardStickyAction(json.items), displayLength: 8000, classes: "rounded" });
 
+                        console.log(`${json.items.name}, ${json.items.price} / ${json.items.priceWithoutDiscount} | ${json.items.url}`);
+
+                    } else if (!json.description) {
+
+                        M.toast({ html: `Товар ${json.items.name} не изменился`, displayLength: 4000, classes: "rounded" });
+
+                    } else {
+
+                        console.error(json.description);
+
+                    }
                 } else {
-                    M.toast({ html: `Товар ${json.items.name} не изменился`, displayLength: 4000, classes: "rounded" });
+                    console.log(`"${iterator}" - ошибка адреса`);
                 }
 
             }

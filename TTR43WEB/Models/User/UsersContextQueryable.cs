@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.DependencyInjection;
-using DatumServer.Datum.User;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using DatumServer.Datum.User;
+using DatumServer.Datum;
 
 namespace TTR43WEB.Models.User
 {
@@ -23,10 +24,7 @@ namespace TTR43WEB.Models.User
 
         public IQueryable<UserAgent> UserAgent => context.UserAgent;
 
-        public EntityEntry<Users> Add(Users user)
-        {
-            return context.Users.Add(user);
-        }
+        public IQueryable<UserFavorite> UserFavorites => context.UserFavorite;
 
         public int SaveChanges()
         {
@@ -38,6 +36,19 @@ namespace TTR43WEB.Models.User
             return context.SaveChangesAsync();
         }
 
+        public EntityEntry<Users> AddUser(Users user)
+        {
+            return context.Users.Add(user);
+        }
 
+        public EntityEntry<UserFavorite> AddUserFavorite(UserFavorite favorite)
+        {
+            return context.UserFavorite.Add(favorite);
+        }
+
+        public EntityEntry<UserAgent> AddUserAgent(UserAgent agent)
+        {
+            return context.UserAgent.Add(agent);
+        }
     }
 }

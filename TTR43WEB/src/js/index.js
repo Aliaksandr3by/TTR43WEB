@@ -20,10 +20,11 @@ document.addEventListener("DOMContentLoaded", () => {
             urlControlActionGetAllItemsUrls: "/Gipermall/AllItemsUrls",
             urlControlActionGetTable: "/Gipermall/Table",
             urlControlActionOptionsURIinBase: "/Gipermall/OptionsURIinBase",
+            urlControlActionGETGipermallItemsProduct: "/Gipermall/ItemsProduct",
+            urlControlActionAddProductToFavorite: "/Gipermall/AddProductToFavorite",
             urlControlActionAccountLogin: "/Account/Login",
             urlControlActionAccountRegister: "/Account/Register",
             urlControlActionAccountLogout: "/Account/Logout",
-            urlControlActionGETGipermallItemsProduct: "/Gipermall/ItemsProduct",
             urlControlActionGETAccountRequestVerificationToken: "/Account/RequestVerificationToken",
         };
         ReactDOM.render(

@@ -10,11 +10,22 @@ namespace TTR43WEB.Models.User
 {
     public interface IUsersContextQueryable
     {
-        IQueryable<Users> Users { get; }
-        EntityEntry<Users> Add(Users user);
+        EntityEntry<Users> AddUser(Users user); 
+
+        EntityEntry<UserFavorite> AddUserFavorite(UserFavorite user);
+
+        EntityEntry<UserAgent> AddUserAgent(UserAgent user);
+
         UserContext GetUserContext();
+
         int SaveChanges();
+
         Task<int> SaveChangesAsync();
+
+        IQueryable<Users> Users { get; }
+
         IQueryable<UserAgent> UserAgent { get; }
+
+        IQueryable<UserFavorite> UserFavorites { get; }
     }
 }

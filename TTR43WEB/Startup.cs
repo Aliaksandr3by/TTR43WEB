@@ -86,7 +86,7 @@ namespace TTR43WEB
 
             //DefaultFilesOptions options = new DefaultFilesOptions();
             //options.DefaultFileNames.Clear();
-            //options.DefaultFileNames.Add("index.html");
+            //options.DefaultFileNames.AddUser("index.html");
             //app.UseDefaultFiles(options);
 
             app.UseStaticFiles (new StaticFileOptions
@@ -139,6 +139,7 @@ namespace TTR43WEB
                 routes.MapRoute (name: null, template: "{controller=Gipermall}/{action=OptionsURIinBase}");
                 routes.MapRoute (name: "tableUrl", template: "{controller=Gipermall}/{action=AllItemsUrls}/{id?}");
                 routes.MapRoute (name: "getCoastAsync", template: "{controller=Gipermall}/{action=GetCoastAsync}/{id?}");
+                routes.MapRoute (name: "addProductToFavorite", template: "{controller=Gipermall}/{action=AddProductToFavorite}/{id?}");
 
                 routes.MapRoute (name: "Login", template: "{controller=Account}/{action=Login}");
                 routes.MapRoute (name: "Register", template: "{controller=Account}/{action=Register}");

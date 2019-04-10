@@ -16,6 +16,7 @@ namespace DatumServer.Datum.User
         }
 
         public virtual DbSet<UserAgent> UserAgent { get; set; }
+        public virtual DbSet<UserFavorite> UserFavorite { get; set; }
         public virtual DbSet<Users> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -36,6 +37,30 @@ namespace DatumServer.Datum.User
                     .HasName("PK__UserAgen__FC710A6CC4C40273");
 
                 entity.Property(e => e.DateAutorizate).HasColumnType("datetime");
+
+                entity.HasOne(d => d.GuidUserNavigation)
+                    .WithMany(p => p.UserAgent)
+                    .HasForeignKey(d => d.GuidUser)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_UserAgent_Users1");
+            });
+
+            modelBuilder.Entity<UserFavorite>(entity =>
+            {
+                entity.HasKey(e => e.Guid)
+                    .HasName("PK__UserFavo__A2B5777C439EC73F");
+
+                entity.Property(e => e.Guid).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.DateTimeAdd).HasColumnType("datetime");
+
+                entity.Property(e => e.DateTimeRemove).HasColumnType("datetime");
+
+                entity.HasOne(d => d.UserGu)
+                    .WithMany(p => p.UserFavorite)
+                    .HasForeignKey(d => d.UserGuid)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_UserGuid_Users");
             });
 
             modelBuilder.Entity<Users>(entity =>

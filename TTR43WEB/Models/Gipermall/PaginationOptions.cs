@@ -51,6 +51,7 @@ namespace TTR43WEB.Models.Gipermall
                     .Take(take)
                     .Select(e => new ProductEntityLite
                     {
+                        Guid = e.Guid,
                         Id = e.Id,
                         Date = e.Date,
                         Url = e.UrlNavigation?.UrlProduct,

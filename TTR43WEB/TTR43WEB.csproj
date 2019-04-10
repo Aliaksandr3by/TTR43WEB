@@ -20,9 +20,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="src\js\Components\**" />
     <Compile Remove="wwwroot\image\**" />
+    <Content Remove="src\js\Components\**" />
     <Content Remove="wwwroot\image\**" />
+    <EmbeddedResource Remove="src\js\Components\**" />
     <EmbeddedResource Remove="wwwroot\image\**" />
+    <None Remove="src\js\Components\**" />
     <None Remove="wwwroot\image\**" />
   </ItemGroup>
 
@@ -60,7 +64,6 @@
   <ItemGroup>
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="src\fonts\" />
-    <Folder Include="src\js\Components\" />
     <Folder Include="ViewModel\" />
   </ItemGroup>
 

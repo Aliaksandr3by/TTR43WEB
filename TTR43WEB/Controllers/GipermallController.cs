@@ -89,18 +89,17 @@ namespace TTR43WEB.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         [ContentTypeAddJson]
         [AccessControlAllowAll]
-        public async Task<IActionResult> GetCoastAsync([FromBody]DataSend idGoods)
+        public async Task<IActionResult> AddProductToFavorite([FromBody]DataSend idGoods)
         {
-            try
+            try //!не реализован
             {
                 GetProductFromSite getDataFromGipermall = new GetProductFromSite(idGoods.IdGoods);
 
                 var item = await getDataFromGipermall.GetFullDescriptionResult();
 
-                int resultBaseDataAdd = await gipermollTableData.SaveProduct(item);
+                var resultBaseDataAdd = await gipermollTableData.SaveProduct(item);
 
                 var result = new
                 {
@@ -125,6 +124,49 @@ namespace TTR43WEB.Controllers
                 {
                     description = new { error = ex.Message },
                     resultBaseDataAdd = 0,
+                };
+
+                return Json(result);
+            }
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ContentTypeAddJson]
+        [AccessControlAllowAll]
+        public async Task<IActionResult> GetCoastAsync([FromBody]DataSend idGoods)
+        {
+            try
+            {
+                GetProductFromSite getDataFromGipermall = new GetProductFromSite(idGoods.IdGoods);
+
+                ProductEntity productEntity = await getDataFromGipermall.GetFullDescriptionResult();
+                Guid Guid = await gipermollTableData.SaveProduct(productEntity);
+                bool flag = Guid.Empty == Guid; 
+
+                var result = new
+                {
+                    items = new
+                    {
+                        productEntity.Id,
+                        productEntity.Guid,
+                        productEntity.Url,
+                        productEntity.Name,
+                        productEntity.MarkingGoods,
+                        productEntity.Date,
+                        productEntity.Price,
+                        productEntity.PriceWithoutDiscount,
+                    },
+                    guidIsEmpty = flag,
+                };
+
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                var result = new
+                {
+                    description = new { error = ex.Message },
                 };
 
                 return Json(result);

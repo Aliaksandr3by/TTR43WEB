@@ -135,7 +135,7 @@ namespace TTR43WEB.Controllers
                         LastName = model.LastName,
                     };
 
-                    var tmp = db.Add(tmpUser);
+                    var tmp = db.AddUser(tmpUser);
 
                     int count = db.SaveChanges();
 
