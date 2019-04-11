@@ -16,6 +16,7 @@ using DatumServer.Datum.User;
 using TTR43WEB.Models.User;
 using TTR43WEB.Universal;
 using static Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary;
+using TTR43WEB.Models.Gipermall;
 
 namespace TTR43WEB.Controllers
 {
@@ -46,6 +47,7 @@ namespace TTR43WEB.Controllers
                 var result = new
                 {
                     isAuthenticated = HttpContext.User.Identity.IsAuthenticated,
+                    Login = HttpContext.User.Identity.Name,
                 };
 
                 return this.Json(result);
@@ -93,6 +95,7 @@ namespace TTR43WEB.Controllers
                         FirstName = user.FirstName,
                         LastName = user.LastName,
                         Email = user.Email,
+                        Login = user.Login,
                         Guid = user.Guid,
                         TelephoneNumber = user.TelephoneNumber,
                     };
@@ -130,7 +133,7 @@ namespace TTR43WEB.Controllers
 
                 if (user == null)
                 {
-                    var tmpUser = new Users
+                    Users tmpUser = new Users
                     {
                         Login = model.Login,
                         Email = model.Email,
@@ -147,14 +150,11 @@ namespace TTR43WEB.Controllers
 
                     int count = db.SaveChanges();
 
-                    var id = await Authenticate(tmpUser); // аутентификация
-
-                    user = await db.Users.FirstOrDefaultAsync(u => u.Login == id.Name);
+                    var id = await Authenticate(tmpUser);
 
                     return Json(new
                     {
-                        user,
-                        userName = id.Name,
+                        User = new UserLite().ToUserLite(tmp.Entity),
                         count,
                     });
                 }

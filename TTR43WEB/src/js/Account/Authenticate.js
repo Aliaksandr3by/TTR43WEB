@@ -12,6 +12,7 @@ class Authenticate extends Component {
     static propTypes = {
         urlControlAction: PropTypes.object.isRequired,
         handleStateResultObject: PropTypes.func.isRequired,
+        getAllProductsFavorite: PropTypes.func.isRequired,
         cookies: instanceOf(Cookies).isRequired,
         AspNetCoreCookies: PropTypes.string,
         user: PropTypes.object,
@@ -29,6 +30,7 @@ class Authenticate extends Component {
         };
         this.urlControlAction = this.props.urlControlAction;
         this.handleStateResultObject = this.props.handleStateResultObject;
+        this.getAllProductsFavorite = this.props.getAllProductsFavorite;
     }
 
     async componentDidMount() {
@@ -62,13 +64,8 @@ class Authenticate extends Component {
             ///----------------
 
             const userData = new FormData();
-            userData.append("__RequestVerificationToken", __RequestVerificationToken);
-            const regObject = this.state.userRegister;
-            for (const key in regObject) {
-                if (regObject.hasOwnProperty(key)) {
-                    userData.append(key, regObject[key]);
-                }
-            }
+            userData.set("__RequestVerificationToken", __RequestVerificationToken);
+            Object.entries(this.state.userRegister).map(([key, value]) => userData.set(key, value));
 
             const response = await fetch(this.urlControlAction.urlControlActionAccountRegister, {
                 method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -82,18 +79,29 @@ class Authenticate extends Component {
                 referrer: "no-referrer", // no-referrer, *client
                 body: userData, // body data type must match "Content-Type" header
             });
+
             const json = await response.json();
             const { errorUserRegister, count } = json;
+
             if (!errorUserRegister && count > 0) {
 
                 try {
                     const { user: { dateTimeRegistration, email, firstName, guid, lastName, login, password, passwordConfirm, role, telephoneNumber } = {} } = json;
+
                     const coreCookies = { "AspNetCoreCookies": this.props.cookies.get(".AspNetCore.Cookies") || false };
+
                     const result = { ...json, ...coreCookies };
+
                     this.handleStateResultObject(result);
+
+                    this.getAllProductsFavorite();
+
                     window.localStorage.setItem("Login", login);
+
                 } catch (error) {
+
                     console.error(error);
+
                 }
 
             } else {
@@ -149,14 +157,19 @@ class Authenticate extends Component {
             if (!errorUserLogin) {
 
                 const coreCookies = { "AspNetCoreCookies": this.props.cookies.get(".AspNetCore.Cookies") || false };
+
                 const result = { ...json, ...coreCookies };
+
                 this.handleStateResultObject(result);
+
+                this.getAllProductsFavorite();
+
                 window.localStorage.setItem("Login", Login);
 
             } else {
 
                 this.setState(json);
-                
+
             }
 
         } catch (error) {
@@ -172,7 +185,7 @@ class Authenticate extends Component {
             const response = await fetch(this.urlControlAction.urlControlActionAccountLogout, { method: "POST" });
             if (await response.json()) {
                 const coreCookies = this.props.cookies.get(".AspNetCore.Cookies") || "";
-                this.handleStateResultObject({ "AspNetCoreCookies": coreCookies });
+                this.handleStateResultObject({ "AspNetCoreCookies": coreCookies, favorite: [] });
             }
         } catch (error) {
             this.setState({
@@ -271,16 +284,6 @@ class Authenticate extends Component {
                 </div>
             );
         }
-    }
-
-    errorResult = (errorUser = []) => {
-        return (<ul>
-            {
-                errorUser
-                    ? errorUser.map((e, i) => <li key={i}>{`${i} ${e}`}</li>)
-                    : <li key={0}></li>
-            }
-        </ul>);
     }
 }
 

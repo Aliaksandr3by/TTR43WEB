@@ -186,6 +186,7 @@ class App extends Component {
                         urlControlAction={urlControlAction}
                         AspNetCoreCookies={AspNetCoreCookies}
                         handleStateResultObject={this.handleStateResultObject.bind(this)}
+                        getAllProductsFavorite={this.getAllProductsFavorite.bind(this)}
                         cookies={this.props.cookies}
                         user={user}
                     />

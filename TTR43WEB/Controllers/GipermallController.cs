@@ -48,7 +48,9 @@ namespace TTR43WEB.Controllers
             try
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(ElementURI.ElementURI);
+
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
                 var statusCode = (int)response.StatusCode;
 
                 var result = Json(new
@@ -101,25 +103,19 @@ namespace TTR43WEB.Controllers
         {
             try
             {
-                if (HttpContext.User.Identity.IsAuthenticated)
-                {
-                    var userGuid = _usersContextQueryable.Users.FirstOrDefault(e => e.Login == HttpContext.User.Identity.Name).Guid;
+                var userGuid = _usersContextQueryable.Users.FirstOrDefault(e => e.Login == HttpContext.User.Identity.Name).Guid;
 
-                    var favorite = _usersContextQueryable.UserFavorites.Select(e => new UserFavorite
+                var favorite = _usersContextQueryable.UserFavorites
+                    .Select(e => new UserFavorite
                     {
                         Guid = e.Guid,
                         UserGuid = e.UserGuid,
                         ProductGuid = e.ProductGuid,
                         DateTimeAdd = e.DateTimeAdd,
-                    }).Where(e => e.UserGuid == userGuid);
+                    })
+                    .Where(e => e.UserGuid == userGuid);
 
-                    return Json(favorite);
-                }
-
-                return Json(new
-                {
-                    errorFavorites = "Пользователь не аутентифицирован",
-                });
+                return Json(favorite);
             }
             catch (Exception ex)
             {
@@ -137,43 +133,36 @@ namespace TTR43WEB.Controllers
         {
             try
             {
-                if (HttpContext.User.Identity.IsAuthenticated)
+                var userGuid = _usersContextQueryable.Users.FirstOrDefault(e => e.Login == HttpContext.User.Identity.Name).Guid;
+
+                UserFavorite userFavorite = _usersContextQueryable.UserFavorites.FirstOrDefault(e => e.UserGuid == userGuid && e.ProductGuid == productEntityLite.Guid);
+
+                UserFavorite result = default;
+
+                if (userFavorite != null)
                 {
-                    var userGuid = _usersContextQueryable.Users.FirstOrDefault(e => e.Login == HttpContext.User.Identity.Name).Guid;
-
-                    UserFavorite userFavorite = _usersContextQueryable.UserFavorites.FirstOrDefault(e => e.UserGuid == userGuid && e.ProductGuid == productEntityLite.Guid);
-
-                    UserFavorite result = default;
-
-                    if (userFavorite != null)
-                    {
-                        result = _usersContextQueryable.RemoveUserFavorite(userFavorite).Entity;
-                    }
-                    else
-                    {
-                        userFavorite = new UserFavorite
-                        {
-                            UserGuid = userGuid,
-                            ProductGuid = productEntityLite.Guid,
-                            DateTimeAdd = DateTime.Now,
-                        };
-                        result = _usersContextQueryable.AddUserFavorite(userFavorite).Entity;
-                    }
-
-                    var count = await _usersContextQueryable.SaveChangesAsync();
-
-                    return Json(new
-                    {
-                        favorite = new
-                        {
-                            productGuid = result.ProductGuid,
-                        },
-                    });
+                    result = _usersContextQueryable.RemoveUserFavorite(userFavorite).Entity;
                 }
+                else
+                {
+                    userFavorite = new UserFavorite
+                    {
+                        UserGuid = userGuid,
+                        ProductGuid = productEntityLite.Guid,
+                        DateTimeAdd = DateTime.Now,
+                    };
+
+                    result = _usersContextQueryable.AddUserFavorite(userFavorite).Entity;
+                }
+
+                var count = await _usersContextQueryable.SaveChangesAsync();
 
                 return Json(new
                 {
-                    errorFavorites = "Пользователь не аутентифицирован",
+                    favorite = new
+                    {
+                        productGuid = result.ProductGuid,
+                    },
                 });
 
             }

@@ -3,11 +3,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DatumServer.Datum.Product;
+using DatumServer.Datum.User;
+using TTR43WEB.Models.User;
 
 namespace TTR43WEB.Models.Gipermall
 {
     public static class ProductsExtension
     {
+        public static UserLite ToUserLite(this UserLite userEntityLite, Users userEntity)
+        {
+            if (userEntityLite == null)
+            {
+                throw new ArgumentNullException(nameof(userEntityLite));
+            }
+
+            UserLite _entityLite = new UserLite
+            {
+                Login = userEntity.Login,
+                Email = userEntity.Email,
+                TelephoneNumber = userEntity.TelephoneNumber,
+                DateTimeRegistration = userEntity.DateTimeRegistration,
+                Role = userEntity.Role,
+                FirstName = userEntity.FirstName,
+                LastName = userEntity.LastName,
+            };
+            return _entityLite;
+        }
 
         public static ProductEntityLite ToProductEntityLite(this ProductEntityLite productEntityLite, ProductEntity productEntity)
         {
@@ -29,6 +50,7 @@ namespace TTR43WEB.Models.Gipermall
             };
             return _productEntityLite;
         }
+
         public static ProductEntityLite ToProductEntityLite(this ProductEntityLite productEntityLite, Products productEntity)
         {
             if (productEntityLite == null)
@@ -49,6 +71,7 @@ namespace TTR43WEB.Models.Gipermall
             };
             return _productEntityLite;
         }
+
         public static Products ToProducts(this Products products, ProductEntity product, ProductContext context)
         {
             if (products == null)
