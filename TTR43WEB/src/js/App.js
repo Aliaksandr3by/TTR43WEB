@@ -165,9 +165,9 @@ class App extends Component {
      *
      * @memberof App
      */
-    handleState = (object, name) => {
+    handleStateProperty = (property, name) => {
         this.setState((state, props) => {
-            return { [name]: object };
+            return { [name]: property };
         });
     }
 
@@ -185,8 +185,8 @@ class App extends Component {
                     <Authenticate
                         urlControlAction={urlControlAction}
                         AspNetCoreCookies={AspNetCoreCookies}
-                        handleStateResultObject={this.handleStateResultObject.bind(this)}
-                        getAllProductsFavorite={this.getAllProductsFavorite.bind(this)}
+                        handleStateResultObject={this.handleStateResultObject}
+                        getAllProductsFavorite={this.getAllProductsFavorite}
                         cookies={this.props.cookies}
                         user={user}
                     />
@@ -194,17 +194,17 @@ class App extends Component {
                 <main className="row" id="main" role="main">
                     <CoastTextareaUrl
                         urlControlAction={urlControlAction}
-                        stateChangeResult={this.stateChangeResult.bind(this)}
+                        stateChangeResult={this.stateChangeResult}
                         AspNetCoreCookies={AspNetCoreCookies}
                     />
                     <MainTable
                         state={this.state}
                         props={this.props}
-                        handleStateResultObject={this.handleStateResultObject.bind(this)}
-                        stateChangeResult={this.stateChangeResult.bind(this)}
-                        handlePageOptions={this.handlePageOptions.bind(this)}
-                        getAllProductsFavorite={this.getAllProductsFavorite.bind(this)}
-                        handleState={this.handleState.bind(this)}
+                        handleStateResultObject={this.handleStateResultObject}
+                        stateChangeResult={this.stateChangeResult}
+                        handlePageOptions={this.handlePageOptions}
+                        getAllProductsFavorite={this.getAllProductsFavorite}
+                        handleStateProperty={this.handleStateProperty}
                     />
                 </main>
                 <footer className="row" id="footer" role="status">

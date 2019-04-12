@@ -3,19 +3,20 @@ import React, { Component } from "react";
 import M from "materialize-css";
 
 const handleInputChange = (event, handleState) => {
-    handleState(event.target.checked ? true : false, "favoriteSelect");
+    const flag = event.target.checked ? true : false;
+    handleState(flag, "favoriteSelect");
 };
 
 const FavoriteSelect = props => {
 
-    const { state: { favoriteSelect, AspNetCoreCookies }, handleState } = props;
+    const { state: { favoriteSelect, AspNetCoreCookies }, handleStateProperty } = props;
 
     if (AspNetCoreCookies) {
         return (
             <div >
                 <p>
                     <label>
-                        <input className="filled-in" type="checkbox" checked={favoriteSelect} onChange={e => handleInputChange(e, handleState)} />
+                        <input className="filled-in" type="checkbox" checked={favoriteSelect} onChange={e => handleInputChange(e, handleStateProperty)} />
                         <span>Избранное</span>
                     </label>
                 </p>

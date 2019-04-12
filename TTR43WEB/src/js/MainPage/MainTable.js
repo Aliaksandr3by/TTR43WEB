@@ -12,7 +12,7 @@ import AddItemsOnTable from "./Components/AddItemsOnTable";
 import FavoriteSelect from "./Components/FavoriteSelect";
 
 
-const MainTable = ({ state, props, handleStateResultObject, stateChangeResult, handlePageOptions, getAllProductsFavorite, handleState }) => {
+const MainTable = ({ state, props, handleStateResultObject, stateChangeResult, handlePageOptions, getAllProductsFavorite, handleStateProperty }) => {
 
     const { isLoaded, error, items, filter } = state;
     const { urlControlAction = {} } = props;
@@ -27,7 +27,7 @@ const MainTable = ({ state, props, handleStateResultObject, stateChangeResult, h
                     filter={filter}
                 />
                 <FavoriteSelect
-                    handleState={handleState}
+                    handleStateProperty={handleStateProperty}
                     state={state}
                 />
                 <ProductInfo
