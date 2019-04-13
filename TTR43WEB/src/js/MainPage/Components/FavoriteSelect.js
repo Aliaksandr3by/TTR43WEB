@@ -2,9 +2,9 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import M from "materialize-css";
 
-const handleInputChange = (event, handleState) => {
+const handleInputChange = (event, handleStateProperty) => {
     const flag = event.target.checked ? true : false;
-    handleState(flag, "favoriteSelect");
+    handleStateProperty(flag, "favoriteSelect");
 };
 
 const FavoriteSelect = props => {

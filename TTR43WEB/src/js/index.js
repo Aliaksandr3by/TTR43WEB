@@ -1,5 +1,3 @@
-/*global urlControlAction*/
-
 import React from "react";
 import ReactDOM from "react-dom";
 
@@ -23,6 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
             urlControlActionGETGipermallItemsProduct: "/Gipermall/ItemsProduct",
             urlControlActionAddProductToFavorite: "/Gipermall/AddProductToFavorite",
             urlControlActionGetAllProductsFavorite: "/Gipermall/GetAllProductsFavorite",
+            urlControlActionUpdateAllFavorites: "/Gipermall/UpdateAllFavorites",
             urlControlActionAccountLogin: "/Account/Login",
             urlControlActionAccountRegister: "/Account/Register",
             urlControlActionAccountLogout: "/Account/Logout",

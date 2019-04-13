@@ -6,8 +6,10 @@ class CoastTextareaUrl extends Component {
 
     static propTypes = {
         stateChangeResult: PropTypes.func.isRequired,
+        handleStateProperty: PropTypes.func.isRequired,
+        handleStateResultObject: PropTypes.func.isRequired,
         urlControlAction: PropTypes.object.isRequired,
-        AspNetCoreCookies: PropTypes.string,
+        state: PropTypes.object.isRequired,
     };
 
     constructor(props) {
@@ -30,6 +32,14 @@ class CoastTextareaUrl extends Component {
     async componentDidUpdate() {
         M.textareaAutoResize(document.getElementById("textareaURLstorige"));
         this.dataOperatorLocalS("dataTmp", this.state.textarea);
+    }
+    
+    handleStateResultArray = (array, name) => {
+        this.setState((state, props) => {
+            return {
+                [name]: [...state[name], array]
+            };
+        });
     }
 
     getProgress = async (progress, length) => progress += 100 / length;
@@ -82,7 +92,7 @@ class CoastTextareaUrl extends Component {
     async updateAllItemsOnServer() {
         try {
             const { urlControlAction } = this.props;
-            const response = await fetch(urlControlAction.urlControlActionGetAllItemsUrls, {
+            const response = await fetch(urlControlAction.urlControlActionUpdateAllFavorites, {
                 method: "POST", // *GET, POST, PUT, DELETE, etc.
                 headers: {
                     "Content-Type": "application/json",
@@ -135,10 +145,42 @@ class CoastTextareaUrl extends Component {
         return `<a href="${url}" target="_blank">${name}(${markingGoods}) - ${price}руб. - ${priceWithoutDiscount}руб. (${date})</a>`;
     };
 
-    async sendURLsToServer(e, formatteddURLToArray, { urlControlAction }) {
+    /**
+     * 
+     * @param {Метод запрашивает у сарвера обновить избранное} e 
+     * @param {*} favorite 
+     * @param {*} urlControlAction 
+     */
+    async updateFavoritsOnServer(e, favorite = [], urlControlAction, handleStateResultObject) {
         try {
+            const guidProducts = favorite.map((eF, iF) => eF.guid);
 
-            const data = formatteddURLToArray || [];
+            const response = await fetch(urlControlAction.urlControlActionUpdateAllFavorites, {
+                method: "POST", // *GET, POST, PUT, DELETE, etc.
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(guidProducts),
+            });
+
+            const json = await response.json();
+
+            console.log(json);
+
+            if (json.productEntity) {
+                console.log(json.productEntity);
+                await handleStateResultObject(json);
+                this.setState({"textarea": json.productEntity.map((e) => e.url)});
+            }
+
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async sendURLsToServer(e, data, { urlControlAction }) {
+        try {
 
             this.setState({ progress: 0 });
 
@@ -146,7 +188,7 @@ class CoastTextareaUrl extends Component {
             for (const iterator of data) {
 
                 if (iterator) {
-                    
+
                     const response = await fetch(urlControlAction.urlControlActionGetCoastAsync, {
                         method: "POST", // *GET, POST, PUT, DELETE, etc.
                         headers: {
@@ -179,19 +221,11 @@ class CoastTextareaUrl extends Component {
                 } else {
                     console.log(`"${iterator}" - ошибка адреса`);
                 }
-
             }
+            this.setState({ progress: 0 });
         } catch (error) {
             console.error(error);
         }
-    }
-
-    handleStateResultArray = (array, name) => {
-        this.setState((state, props) => {
-            return {
-                [name]: [...state[name], array]
-            };
-        });
     }
 
     randomInteger = (min = 0, max = 5000) => Math.abs(Math.round(min - 0.5 + Math.random() * (max - min + 1)));
@@ -212,7 +246,11 @@ class CoastTextareaUrl extends Component {
     }
 
     render() {
-        const { AspNetCoreCookies } = this.props;
+        const { AspNetCoreCookies = "", favorite } = this.props.state;
+        const { urlControlAction = {}, handleStateResultObject = null } = this.props;
+
+        const data = this.getURLArrayFromText(this.state, this.convertToFullURLs, this.textURLsToArray) || [];
+
         return (
             <div className="row">
                 <div>
@@ -230,47 +268,54 @@ class CoastTextareaUrl extends Component {
                         </div>
                     </div>
                     <div className="col s12">
-                        <div className="col s3">
-                            {
-                                AspNetCoreCookies
-                                    ? (
-                                        <button
-                                            onClick={(e) => this.updateAllItemsOnServer(e)}
-                                            className="btn W100 waves-effect waves-light"
-                                            type="button"
-                                            name="action">Обновить все данные в базе<i className="material-icons left">cloud</i>
-                                        </button>
-                                    )
-                                    : null
-                            }
+                        <button
+                            onClick={(e) => this.sendURLsToServer(e, data, this.props)}
+                            className="btn W100 waves-effect waves-light"
+                            type="button"
+                            style={{
+                                backgroundImage: `radial-gradient(red ${this.state.progress}%, yellow ${this.state.progress + 45}%, green ${100 - this.state.progress}%)`,
+                            }}
+                            name="action">Отправить<i className="material-icons right">send</i>
+                        </button>
+                    </div>
+                    <div className="col s12">
+                        <div className={`progress`} id="progressBar">
+                            <div className="determinate" style={{ width: this.state.progress + "%" }}></div>
                         </div>
-                        <div className="col s3">
-                            {
-                                AspNetCoreCookies
-                                    ? (
-                                        <button
-                                            onClick={(e) => this.createDataTable(e)}
-                                            className="btn W100 waves-effect waves-light"
-                                            type="button"
-                                            name="action">Создать случайные ссылки<i className="material-icons left">create</i>
-                                        </button>
-                                    )
-                                    : null
-                            }
-                        </div>
-                        <div className="col s3">
-                            <button
-                                onClick={(e) => this.sendURLsToServer(e, this.getURLArrayFromText(this.state, this.convertToFullURLs, this.textURLsToArray), this.props)}
-                                className="btn W100 waves-effect waves-light"
-                                type="button"
-                                name="action">Отправить<i className="material-icons right">send</i>
-                            </button>
-                        </div>
-                        <div className="col s3">
-                            <div className={`progress`} id="progressBar">
-                                <div className="determinate" style={{ width: this.state.progress + "%" }}></div>
-                            </div>
-                        </div>
+                    </div>
+                    <div className="row">
+                        {
+                            AspNetCoreCookies
+                                ? (
+                                    <React.Fragment>
+                                        <div className="col s3">
+                                            <button
+                                                onClick={(e) => this.updateAllItemsOnServer(e)}
+                                                className="btn waves-effect waves-light"
+                                                type="button"
+                                                name="action">Обновить все данные в базе<i className="material-icons left">cloud</i>
+                                            </button>
+                                        </div>
+                                        <div className="col s3">
+                                            <button
+                                                onClick={(e) => this.createDataTable(e)}
+                                                className="btn waves-effect waves-light"
+                                                type="button"
+                                                name="action">Создать случайные ссылки<i className="material-icons left">create</i>
+                                            </button>
+                                        </div>
+                                        <div className="col s3">
+                                            <button
+                                                onClick={(e) => this.updateFavoritsOnServer(e, favorite, urlControlAction, handleStateResultObject)}
+                                                className="btn waves-effect waves-light left"
+                                                type="button"
+                                                name="action">Обновить избранное<i className="material-icons left">cached</i>
+                                            </button>
+                                        </div>
+                                    </React.Fragment>
+                                )
+                                : null
+                        }
                     </div>
                 </div>
             </div>

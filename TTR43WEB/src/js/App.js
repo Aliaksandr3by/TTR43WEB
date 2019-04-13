@@ -153,11 +153,13 @@ class App extends Component {
      * Обновляет поле состояния
      *
      * @memberof App
+     * @param object объект добавляемый в состояние
      */
     handleStateResultObject = async (object) => {
         await this.setState((state, props) => {
             return { ...state, ...object };
         });
+        console.log(this.state);
     }
 
     /**
@@ -173,7 +175,7 @@ class App extends Component {
 
     render() {
 
-        const { AspNetCoreCookies = "", user = {} } = this.state;
+        const { AspNetCoreCookies = "", user = {}, favoriteSelect } = this.state;
         const { urlControlAction = {} } = this.props;
 
         return (
@@ -194,8 +196,11 @@ class App extends Component {
                 <main className="row" id="main" role="main">
                     <CoastTextareaUrl
                         urlControlAction={urlControlAction}
+                        handleStateResultObject={this.handleStateResultObject}
                         stateChangeResult={this.stateChangeResult}
                         AspNetCoreCookies={AspNetCoreCookies}
+                        state={this.state}
+                        handleStateProperty={this.handleStateProperty}
                     />
                     <MainTable
                         state={this.state}

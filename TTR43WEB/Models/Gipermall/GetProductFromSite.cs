@@ -1,20 +1,31 @@
-﻿using AngleSharp;
-using AngleSharp.Dom;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using TTR43WEB.Models.Gipermall;
+using AngleSharp;
+using AngleSharp.Dom;
 using DatumServer.Datum.Product;
+using TTR43WEB.Models.Gipermall;
 
 namespace TTR43WEB.Models.Gipermall
 {
     public class GetProductFromSite
     {
         readonly private ProductEntity _productNew;
-        private readonly string _url;
+        private string _url;
+
+        public string Url
+        {
+            get => _url;
+            set => _url = value;
+        }
+
+        public GetProductFromSite()
+        {
+            this._productNew = new ProductEntity();
+        }
 
         public GetProductFromSite(string url)
         {
@@ -71,8 +82,8 @@ namespace TTR43WEB.Models.Gipermall
                 Regex regex = new Regex(rex, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
                 MatchCollection matches = regex.Matches(tmp);
                 decimal result = decimal.Parse(
-                        s: matches.FirstOrDefault().Value.Replace("р", string.Empty).Replace("к.", string.Empty),
-                        provider: CultureInfo.InvariantCulture);
+                    s: matches.FirstOrDefault().Value.Replace("р", string.Empty).Replace("к.", string.Empty),
+                    provider : CultureInfo.InvariantCulture);
                 return result;
             }
             catch (Exception)
@@ -122,6 +133,12 @@ namespace TTR43WEB.Models.Gipermall
             }
         }
 
+        public async Task<ProductEntity> GetFullDescriptionResult(string url)
+        {
+            _url = url;
+            return await GetFullDescriptionResult();
+        }
+
         public async Task<ProductEntity> GetFullDescriptionResult()
         {
             try
@@ -168,9 +185,9 @@ namespace TTR43WEB.Models.Gipermall
             {
                 if (keyValuePairs.ContainsKey(key))
                 {
-                    return keyValuePairs.ContainsKey(key)
-                        ? fn(keyValuePairs[key])
-                        : default;
+                    return keyValuePairs.ContainsKey(key) ?
+                        fn(keyValuePairs[key]) :
+                        default;
                 }
                 else
                 {

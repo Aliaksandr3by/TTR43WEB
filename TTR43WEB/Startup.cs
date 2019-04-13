@@ -141,6 +141,7 @@ namespace TTR43WEB
                 routes.MapRoute (name: "getCoastAsync", template: "{controller=Gipermall}/{action=GetCoastAsync}/{id?}");
                 routes.MapRoute (name: "addProductToFavorite", template: "{controller=Gipermall}/{action=AddProductToFavorite}/{id?}"); 
                 routes.MapRoute (name: "getAllProductsFavorite", template: "{controller=Gipermall}/{action=GetAllProductsFavorite}/{id?}");
+                routes.MapRoute (name: "updateAllFavorites", template: "{controller=Gipermall}/{action=UpdateAllFavorites}/{id?}");
 
                 routes.MapRoute (name: "Login", template: "{controller=Account}/{action=Login}");
                 routes.MapRoute (name: "Register", template: "{controller=Account}/{action=Register}");

@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using TTR43WEB.Filters;
-using Newtonsoft.Json.Linq;
 using System.Net;
-using Microsoft.AspNetCore.Authorization;
-using TTR43WEB.Models.Gipermall;
+using System.Threading.Tasks;
 using DatumServer.Datum.Product;
-using TTR43WEB.Models.User;
 using DatumServer.Datum.User;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
+using TTR43WEB.Filters;
+using TTR43WEB.Models.Gipermall;
+using TTR43WEB.Models.User;
 
 namespace TTR43WEB.Controllers
 {
@@ -43,20 +43,20 @@ namespace TTR43WEB.Controllers
         [HttpOptions]
         [ContentTypeAddJson]
         [Allow]
-        public IActionResult OptionsURIinBase([FromBody]ElementURIData ElementURI)
+        public IActionResult OptionsURIinBase([FromBody] ElementURIData ElementURI)
         {
             try
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(ElementURI.ElementURI);
+                HttpWebRequest request = (HttpWebRequest) WebRequest.Create(ElementURI.ElementURI);
 
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                HttpWebResponse response = (HttpWebResponse) request.GetResponse();
 
-                var statusCode = (int)response.StatusCode;
+                var statusCode = (int) response.StatusCode;
 
                 var result = Json(new
                 {
                     statusCode = statusCode,
-                    ElementURI.ElementURI,
+                        ElementURI.ElementURI,
                 });
 
                 return result;
@@ -96,6 +96,59 @@ namespace TTR43WEB.Controllers
             return Json(items);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="guidProducts"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ContentTypeAddJson]
+        public async Task<IActionResult> UpdateAllFavorites([FromBody] Guid[] guidProducts)
+        {
+            try
+            {
+                var collection = AllProductsFavorite(_usersContextQueryable);
+
+                List<ProductEntity> productEntity = new List<ProductEntity>();
+
+                foreach (UserFavorite item in collection)
+                {
+                    var tmp = await new GetProductFromSite().GetFullDescriptionResult(item.Url);
+                    tmp.Guid = await _productsContextQueryable.SaveProduct(tmp);
+                    productEntity.Add(tmp);
+                }
+
+                return Json(new
+                {
+                    productEntity,
+                });
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    errorFavorites = ex.Message,
+                });
+            }
+        }
+
+        IQueryable<UserFavorite> AllProductsFavorite(IUsersContextQueryable usersContextQueryable)
+        {
+            var userGuid = usersContextQueryable.Users.FirstOrDefault(e => e.Login == HttpContext.User.Identity.Name).Guid;
+
+            return usersContextQueryable.UserFavorites
+                .Select(e => new UserFavorite
+                {
+                    Guid = e.Guid,
+                        UserGuid = e.UserGuid,
+                        ProductGuid = e.ProductGuid,
+                        DateTimeAdd = e.DateTimeAdd,
+                        Url = e.Url,
+                })
+                .Where(e => e.UserGuid == userGuid);
+        }
+
         [HttpPost]
         [ContentTypeAddJson]
         [AccessControlAllowAll]
@@ -103,18 +156,7 @@ namespace TTR43WEB.Controllers
         {
             try
             {
-                var userGuid = _usersContextQueryable.Users.FirstOrDefault(e => e.Login == HttpContext.User.Identity.Name).Guid;
-
-                var favorite = _usersContextQueryable.UserFavorites
-                    .Select(e => new UserFavorite
-                    {
-                        Guid = e.Guid,
-                        UserGuid = e.UserGuid,
-                        ProductGuid = e.ProductGuid,
-                        DateTimeAdd = e.DateTimeAdd,
-                    })
-                    .Where(e => e.UserGuid == userGuid);
-
+                var favorite = AllProductsFavorite(_usersContextQueryable);
                 return Json(favorite);
             }
             catch (Exception ex)
@@ -126,10 +168,15 @@ namespace TTR43WEB.Controllers
             }
         }
 
+        /// <summary>
+        /// Метод добавляет продукт в избранное
+        /// </summary>
+        /// <param name="productEntityLite"></param>
+        /// <returns></returns>
         [HttpPost]
         [ContentTypeAddJson]
         [AccessControlAllowAll]
-        public async Task<IActionResult> AddProductToFavorite([FromBody]ProductEntityLite productEntityLite)
+        public async Task<IActionResult> AddProductToFavorite([FromBody] ProductEntityLite productEntityLite)
         {
             try
             {
@@ -150,6 +197,7 @@ namespace TTR43WEB.Controllers
                         UserGuid = userGuid,
                         ProductGuid = productEntityLite.Guid,
                         DateTimeAdd = DateTime.Now,
+                        Url = productEntityLite.Url,
                     };
 
                     result = _usersContextQueryable.AddUserFavorite(userFavorite).Entity;
@@ -175,11 +223,16 @@ namespace TTR43WEB.Controllers
             }
         }
 
+        /// <summary>
+        /// Модод получает данные с сайта по URL и добавляет их в базу данных
+        /// </summary>
+        /// <param name="idGoods"></param>
+        /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
         [ContentTypeAddJson]
         [AccessControlAllowAll]
-        public async Task<IActionResult> GetCoastAsync([FromBody]DataSend idGoods)
+        public async Task<IActionResult> GetCoastAsync([FromBody] DataSend idGoods)
         {
             try
             {
@@ -209,7 +262,6 @@ namespace TTR43WEB.Controllers
                 return Json(result);
             }
         }
-
 
         [HttpPost]
         [ContentTypeAddJson]

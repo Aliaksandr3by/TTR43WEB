@@ -36,6 +36,7 @@ const MainTable = ({ state, props, handleStateResultObject, stateChangeResult, h
                     handleStateResultObject={handleStateResultObject}
                     stateChangeResult={stateChangeResult}
                     getAllProductsFavorite={getAllProductsFavorite}
+                    handleStateProperty={handleStateProperty}
                 />
                 <PageSizeSelector
                     handlePageOptions={handlePageOptions}

@@ -38,6 +38,11 @@ const ButtonFavorite = ({ urlControlAction, favorite, itemGuid = 0, itemId = 0, 
 
             const result = await response.json();
 
+            if (result.errorFavorites) {
+                console.error(result.errorFavorites);
+                M.toast({html: `${result.errorFavorites}`});
+            }
+
             await getAllProductsFavorite();
 
         } catch (error) {

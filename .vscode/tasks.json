@@ -13,10 +13,32 @@
                 "kind": "build",
                 "isDefault": true
             },
-            "problemMatcher": "$msCompile"
+            "problemMatcher": "$tsc"
         },
         {
             "label": "publish",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "${workspaceFolder}/TTR43WEB.sln"
+            ],
+            "problemMatcher": "$tsc"
+        },
+        {
+            "label": "watch",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "watch",
+                "--project",
+                "TTR43WEB",
+                "run",
+            ],
+            "problemMatcher": "$tsc"
+        },
+        {
+            "label": "publish win10-x64",
             "command": "dotnet",
             "type": "process",
             "args": [
@@ -31,15 +53,7 @@
                 "-o",
                 "C:\\TTR43WEB"
             ],
-            "presentation": {
-                "reveal": "always",
-                "panel": "new"
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "problemMatcher": "$msCompile"
+            "problemMatcher": "$tsc"
         }
     ]
 }

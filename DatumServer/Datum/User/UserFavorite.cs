@@ -9,6 +9,7 @@ namespace DatumServer.Datum.User
         public Guid UserGuid { get; set; }
         public Guid ProductGuid { get; set; }
         public DateTime DateTimeAdd { get; set; }
+        public string Url { get; set; }
 
         public virtual Users UserGu { get; set; }
     }

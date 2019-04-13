@@ -9,5 +9,22 @@
     "javascript.referencesCodeLens.enabled": true,
     "csharpfixformat.style.braces.onSameLine": false,
     "editor.minimap.enabled": false,
-    "files.autoSave": "afterDelay"
+    "files.autoSave": "afterDelay",
+    "versionlens.showVersionLensesAtStartup": false,
+    // "javascript.suggest.names": false,
+    // "javascript.validate.enable": false,
+    // "typescript.validate.enable": false,
+    // "css.validate": false,
+    // "less.validate": false,
+    // "scss.validate": false,
+    "editor.fontFamily": "Fira Code",
+    // "editor.fontLigatures": true,
+    "files.associations": {
+        "*.css": "postcss",
+        ".postcssrc": "json",
+        ".stylelintrc": "json"
+    },
+    "code-runner.defaultLanguage": "javascript",
+    "csharpfixformat.style.spaces.beforeIndexerBracket": false,
+    "csharpfixformat.style.spaces.beforeParenthesis": false,
 }

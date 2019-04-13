@@ -29,7 +29,7 @@ namespace DatumServer.Datum.User
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasAnnotation("ProductVersion", "2.2.3-servicing-35854");
+            modelBuilder.HasAnnotation("ProductVersion", "2.2.4-servicing-10062");
 
             modelBuilder.Entity<UserAgent>(entity =>
             {
@@ -53,6 +53,8 @@ namespace DatumServer.Datum.User
                 entity.Property(e => e.Guid).HasDefaultValueSql("(newid())");
 
                 entity.Property(e => e.DateTimeAdd).HasColumnType("datetime");
+
+                entity.Property(e => e.Url).IsRequired();
 
                 entity.HasOne(d => d.UserGu)
                     .WithMany(p => p.UserFavorite)

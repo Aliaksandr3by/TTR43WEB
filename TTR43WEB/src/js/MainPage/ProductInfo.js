@@ -45,7 +45,7 @@ const _moneyConverter = (cost) => {
     }
 };
 
-const dataFilter = (items, filter, AspNetCoreCookies, favorite = [], favoriteSelect = false) => {
+const dataFilter = (items, filter, AspNetCoreCookies, favorite = [], favoriteSelect = false, handleStateProperty) => {
 
     let data = items;
 
@@ -80,7 +80,7 @@ const dataFilter = (items, filter, AspNetCoreCookies, favorite = [], favoriteSel
 
 const ProductInfo = (props) => {
     //console.dir(props);
-    const { state: { AspNetCoreCookies = "", items = [], filter = [], favorite = [], favoriteSelect = false }, urlControlAction = {}, stateChangeResult, getAllProductsFavorite } = props;
+    const { state: { AspNetCoreCookies = "", items = [], filter = [], favorite = [], favoriteSelect = false }, urlControlAction = {}, stateChangeResult, getAllProductsFavorite, handleStateProperty } = props;
 
     const cardStickyAction = ({ date = "", id = "", markingGoods = "", name = "", price = "", priceWithoutDiscount = "", url = "", }) => {
         return `<a href="${url}" target="_blank">${name}(${markingGoods}) - ${price}руб. - ${priceWithoutDiscount}руб. (${date})</a>`;
@@ -136,7 +136,7 @@ const ProductInfo = (props) => {
                     </thead>
                     <tbody>
                         {
-                            dataFilter(items, filter, AspNetCoreCookies, favorite, favoriteSelect).map((item, index) => {
+                            dataFilter(items, filter, AspNetCoreCookies, favorite, favoriteSelect, handleStateProperty).map((item, index) => {
                                 return (
                                     <tr key={item.id ? item.id : index}>
                                         {
