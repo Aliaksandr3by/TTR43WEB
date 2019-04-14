@@ -159,7 +159,7 @@ class App extends Component {
         await this.setState((state, props) => {
             return { ...state, ...object };
         });
-        console.log(this.state);
+        //console.log(this.state);
     }
 
     /**

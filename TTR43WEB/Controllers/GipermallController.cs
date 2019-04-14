@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Newtonsoft.Json.Linq;
 using TTR43WEB.Filters;
 using TTR43WEB.Models.Gipermall;
@@ -114,7 +115,9 @@ namespace TTR43WEB.Controllers
                 foreach (UserFavorite item in collection)
                 {
                     var tmp = await new GetProductFromSite().GetFullDescriptionResult(item.Url);
-                    tmp.Guid = await _productsContextQueryable.SaveProduct(tmp);
+                    var product = _productsContextQueryable.AddProduct(tmp);
+                    tmp.Guid = product.Entity.Guid;
+                    await _productsContextQueryable.SaveProduct();
                     productEntity.Add(tmp);
                 }
 
@@ -168,6 +171,53 @@ namespace TTR43WEB.Controllers
             }
         }
 
+        async Task<String> ProductToFavoriteAdd(IUsersContextQueryable _usersContextQueryable, ProductEntityLite productEntityLite, bool onlyAdd = false)
+        {
+            try
+            {
+                ProductEntityLite _productEntityLite = productEntityLite;
+
+                var userGuid = _usersContextQueryable.Users.FirstOrDefault(e => e.Login == HttpContext.User.Identity.Name).Guid;
+
+                UserFavorite userFavorite = _usersContextQueryable
+                    .UserFavorites
+                    .FirstOrDefault(e => e.UserGuid == userGuid && e.ProductGuid == _productEntityLite.Guid);
+
+                if (userFavorite != null)
+                {
+                    if (!onlyAdd)
+                    {
+                        var favoriteRemove = _usersContextQueryable.RemoveUserFavorite(userFavorite);
+
+                        var count = await _usersContextQueryable.SaveChangesAsync();
+
+                        return "remove";
+                    }
+                    return "has already";
+                }
+                else
+                {
+                    userFavorite = new UserFavorite
+                    {
+                        UserGuid = userGuid,
+                        ProductGuid = _productEntityLite.Guid,
+                        DateTimeAdd = DateTime.Now,
+                        Url = _productEntityLite.Url,
+                    };
+
+                    var favoriteAdd = _usersContextQueryable.AddUserFavorite(userFavorite);
+
+                    var count = await _usersContextQueryable.SaveChangesAsync();
+
+                    return "add";
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         /// <summary>
         /// Метод добавляет продукт в избранное
         /// </summary>
@@ -180,39 +230,12 @@ namespace TTR43WEB.Controllers
         {
             try
             {
-                var userGuid = _usersContextQueryable.Users.FirstOrDefault(e => e.Login == HttpContext.User.Identity.Name).Guid;
-
-                UserFavorite userFavorite = _usersContextQueryable.UserFavorites.FirstOrDefault(e => e.UserGuid == userGuid && e.ProductGuid == productEntityLite.Guid);
-
-                UserFavorite result = default;
-
-                if (userFavorite != null)
-                {
-                    result = _usersContextQueryable.RemoveUserFavorite(userFavorite).Entity;
-                }
-                else
-                {
-                    userFavorite = new UserFavorite
-                    {
-                        UserGuid = userGuid,
-                        ProductGuid = productEntityLite.Guid,
-                        DateTimeAdd = DateTime.Now,
-                        Url = productEntityLite.Url,
-                    };
-
-                    result = _usersContextQueryable.AddUserFavorite(userFavorite).Entity;
-                }
-
-                var count = await _usersContextQueryable.SaveChangesAsync();
+                var State = await ProductToFavoriteAdd(_usersContextQueryable, productEntityLite);
 
                 return Json(new
                 {
-                    favorite = new
-                    {
-                        productGuid = result.ProductGuid,
-                    },
+                    State,
                 });
-
             }
             catch (Exception ex)
             {
@@ -232,34 +255,62 @@ namespace TTR43WEB.Controllers
         [AllowAnonymous]
         [ContentTypeAddJson]
         [AccessControlAllowAll]
-        public async Task<IActionResult> GetCoastAsync([FromBody] DataSend idGoods)
+        public async Task<IActionResult> GetCoastAsync([FromBody] DataSend dataSend)
         {
             try
             {
-                GetProductFromSite getDataFromGipermall = new GetProductFromSite(idGoods.IdGoods);
-
+                // Получает данные
+                GetProductFromSite getDataFromGipermall = new GetProductFromSite(dataSend.IdGoods);
                 ProductEntity productEntity = await getDataFromGipermall.GetFullDescriptionResult();
 
-                productEntity.Guid = await _productsContextQueryable.SaveProduct(productEntity);
+                // если отсутствует Marking Goods, что-то не так
+                if (productEntity.MarkingGoods == null)
+                {
+                    return Json(new
+                    {
+                        description = new { error = $"MarkingGoods: {productEntity.MarkingGoods}" },
+                    });
+                }
 
+                // преобразовать в упрощенную версию
                 ProductEntityLite productEntityLite = new ProductEntityLite().ToProductEntityLite(productEntity);
 
-                var result = new
+                // ищет данные в базе
+                var findAddingProduct = _productsContextQueryable.Products.FirstOrDefault<Products>(
+                    p => p.MarkingGoodsNavigation.MarkingGoodsProduct == productEntity.MarkingGoods &&
+                    p.Price == productEntity.Price &&
+                    p.PriceWithoutDiscount == productEntity.PriceWithoutDiscount);
+
+                //если данные отсутствуют то сохраняет
+                if (findAddingProduct == null)
+                {
+                    var product = _productsContextQueryable.AddProduct(productEntity);
+                    await _productsContextQueryable.SaveProduct();
+                    productEntityLite.Guid = product.Entity.Guid; // добавляем гуид
+                }
+                else
+                {
+                    productEntityLite.Guid = findAddingProduct.Guid; // добавляем гуид, нужен для избранного если товар уже есть
+                }
+
+                // если стоит галочка в избранное то добавляем
+                if (dataSend.FavoriteSelect)
+                {
+                    var State = await ProductToFavoriteAdd(_usersContextQueryable, productEntityLite, true);
+                }
+
+                return Json(new
                 {
                     items = productEntityLite,
-                    guidIsEmpty = Guid.Empty == productEntityLite.Guid,
-                };
-
-                return Json(result);
+                    isPresent = (findAddingProduct != null),
+                });
             }
             catch (Exception ex)
             {
-                var result = new
+                return Json(new
                 {
                     description = new { error = ex.Message },
-                };
-
-                return Json(result);
+                });
             }
         }
 

@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DatumServer.Datum.Product;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace TTR43WEB.Models.Gipermall
 {
     public interface IProductsContextQueryable
     {
         IQueryable<Products> Products { get; }
-        Task<Guid> SaveProduct(ProductEntity product);
+        EntityEntry<Products> AddProduct(ProductEntity product);
+        Task<int> SaveProduct();
     }
 }

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import M from "materialize-css";
 
-const ButtonFavorite = ({ urlControlAction, favorite, itemGuid = 0, itemId = 0, itemURL = "", markingGoods, stateChangeResult, getAllProductsFavorite }) => {
+const ButtonFavorite = ({ urlControlAction, favorite, item, itemGuid = 0, itemId = 0, itemURL = "", markingGoods, stateChangeResult, getAllProductsFavorite }) => {
     
     const setStatus = (favorite, guid) => {
         return favorite.find((eFilter, iFilter) => {
@@ -15,14 +15,8 @@ const ButtonFavorite = ({ urlControlAction, favorite, itemGuid = 0, itemId = 0, 
 
     const addItemsToFavorite = async (e) => {
         try {
-            
-            const data = {
-                "Id": itemId,
-                "Guid": itemGuid,
-                "Url": itemURL,
-                "MarkingGoods": markingGoods,
-                "Status": Boolean(status),
-            };
+            const data = item;
+
             const response = await fetch(`${urlControlAction.urlControlActionAddProductToFavorite}`, {
                 method: "POST", // *GET, POST, PUT, DELETE, etc.
                 mode: "cors", // no-cors, cors, *same-origin
@@ -39,9 +33,15 @@ const ButtonFavorite = ({ urlControlAction, favorite, itemGuid = 0, itemId = 0, 
             const result = await response.json();
 
             if (result.errorFavorites) {
+
                 console.error(result.errorFavorites);
                 M.toast({html: `${result.errorFavorites}`});
-            }
+
+            } else if(result.state){
+
+                M.toast({html: `"${item.name}" ${result.state}`});
+
+            } 
 
             await getAllProductsFavorite();
 

@@ -158,6 +158,7 @@ const ProductInfo = (props) => {
                                                                     getAllProductsFavorite={getAllProductsFavorite}
                                                                     urlControlAction={urlControlAction}
                                                                     favorite={favorite}
+                                                                    item={item}
                                                                     itemGuid={item[el]}
                                                                     itemId={item.id}
                                                                     itemURL={item.url}

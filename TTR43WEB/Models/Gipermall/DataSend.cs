@@ -11,5 +11,6 @@ namespace TTR43WEB.Models.Gipermall
         /// URL товара
         /// </summary>
         public string IdGoods { get; set; }
+        public bool FavoriteSelect { get; set; }
     }
 }

@@ -20,6 +20,7 @@ class CoastTextareaUrl extends Component {
             error: null,
             isLoaded: false,
             progress: 0,
+            updateFavotite: false,
         };
         this.textAreaUpdater = this.textAreaUpdater.bind(this);
     }
@@ -33,7 +34,7 @@ class CoastTextareaUrl extends Component {
         M.textareaAutoResize(document.getElementById("textareaURLstorige"));
         this.dataOperatorLocalS("dataTmp", this.state.textarea);
     }
-    
+
     handleStateResultArray = (array, name) => {
         this.setState((state, props) => {
             return {
@@ -146,13 +147,16 @@ class CoastTextareaUrl extends Component {
     };
 
     /**
-     * 
-     * @param {Метод запрашивает у сарвера обновить избранное} e 
+     *  Метод запрашивает у сервера обновить все избранное
+     * @param {*} e 
      * @param {*} favorite 
      * @param {*} urlControlAction 
      */
     async updateFavoritsOnServer(e, favorite = [], urlControlAction, handleStateResultObject) {
         try {
+
+            this.setState({"updateFavotite": true});
+
             const guidProducts = favorite.map((eF, iF) => eF.guid);
 
             const response = await fetch(urlControlAction.urlControlActionUpdateAllFavorites, {
@@ -170,12 +174,13 @@ class CoastTextareaUrl extends Component {
             if (json.productEntity) {
                 console.log(json.productEntity);
                 await handleStateResultObject(json);
-                this.setState({"textarea": json.productEntity.map((e) => e.url)});
+                this.setState({ "textarea": json.productEntity.map((e) => e.url) });
+                this.setState({"updateFavotite": false});
             }
-
 
         } catch (error) {
             console.error(error);
+            this.setState({"updateFavotite": false});
         }
     }
 
@@ -194,14 +199,17 @@ class CoastTextareaUrl extends Component {
                         headers: {
                             "Content-Type": "application/json",
                         },
-                        body: JSON.stringify({ "idGoods": iterator }),
+                        body: JSON.stringify({
+                            "IdGoods": iterator,
+                            "FavoriteSelect": this.props.state.favoriteSelect,
+                        }),
                     });
 
                     const json = await response.json();
 
                     this.setState({ progress: await this.getProgress(this.state.progress, data.length) });
 
-                    if (!json.guidIsEmpty && !json.description) {
+                    if (!json.isPresent && !json.description) {
 
                         this.props.stateChangeResult(json.items, "items");
 
@@ -209,7 +217,7 @@ class CoastTextareaUrl extends Component {
 
                         console.log(`${json.items.name}, ${json.items.price} / ${json.items.priceWithoutDiscount} | ${json.items.url}`);
 
-                    } else if (!json.description) {
+                    } else if (json.isPresent && !json.description) {
 
                         M.toast({ html: `Товар ${json.items.name} не изменился`, displayLength: 4000, classes: "rounded" });
 
@@ -248,6 +256,7 @@ class CoastTextareaUrl extends Component {
     render() {
         const { AspNetCoreCookies = "", favorite } = this.props.state;
         const { urlControlAction = {}, handleStateResultObject = null } = this.props;
+        const { updateFavotite } = this.state;
 
         const data = this.getURLArrayFromText(this.state, this.convertToFullURLs, this.textURLsToArray) || [];
 
@@ -305,12 +314,28 @@ class CoastTextareaUrl extends Component {
                                             </button>
                                         </div>
                                         <div className="col s3">
-                                            <button
-                                                onClick={(e) => this.updateFavoritsOnServer(e, favorite, urlControlAction, handleStateResultObject)}
-                                                className="btn waves-effect waves-light left"
-                                                type="button"
-                                                name="action">Обновить избранное<i className="material-icons left">cached</i>
-                                            </button>
+                                            {
+                                                updateFavotite
+                                                    ? (
+                                                        <div className="preloader-wrapper active">
+                                                            <div className="spinner-layer spinner-red-only">
+                                                                <div className="circle-clipper left">
+                                                                    <div className="circle"></div>
+                                                                </div><div className="gap-patch">
+                                                                    <div className="circle"></div>
+                                                                </div><div className="circle-clipper right">
+                                                                    <div className="circle"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>)
+                                                    : (
+                                                        <button
+                                                            onClick={(e) => this.updateFavoritsOnServer(e, favorite, urlControlAction, handleStateResultObject)}
+                                                            className="btn waves-effect waves-light left"
+                                                            type="button"
+                                                            name="action">Обновить избранное<i className="material-icons left">cached</i>
+                                                        </button>)
+                                            }
                                         </div>
                                     </React.Fragment>
                                 )

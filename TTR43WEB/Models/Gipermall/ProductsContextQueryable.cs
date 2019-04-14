@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DatumServer.Datum.Product;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.DependencyInjection;
-using DatumServer.Datum.Product;
 
 namespace TTR43WEB.Models.Gipermall
 {
@@ -26,8 +27,7 @@ namespace TTR43WEB.Models.Gipermall
             .Include(e => e.NameNavigation)
             .Include(e => e.MarkingGoodsNavigation)
             .Include(e => e.TrademarkNavigation)
-            .Include(e => e.UrlNavigation)
-            ;
+            .Include(e => e.UrlNavigation);
 
         public IQueryable<BarCode> BarCode => context.BarCode;
         public IQueryable<Dimension> Dimension => context.Dimension;
@@ -37,26 +37,24 @@ namespace TTR43WEB.Models.Gipermall
         public IQueryable<Trademark> Trademark => context.Trademark;
         public IQueryable<Url> Url => context.Url;
 
-        public async Task<Guid> SaveProduct(ProductEntity product)
+        public EntityEntry<Products> AddProduct(ProductEntity product)
         {
             try
             {
-                
+                Products tmp = (new Products()).ToProducts(product, context);
+                return context.Products.Add(tmp);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
-                if (product.MarkingGoods != null && !context.Products.Any<Products>(
-                    p => p.MarkingGoodsNavigation.MarkingGoodsProduct == product.MarkingGoods &&
-                    p.Price == product.Price &&
-                    p.PriceWithoutDiscount == product.PriceWithoutDiscount))
-                {
-                    Products tmp = (new Products()).ToProducts(product, context);
-                    var result = await context.Products.AddAsync(tmp);
-                    var count = await context.SaveChangesAsync();
-                    return result.Entity.Guid;
-                }
-                else
-                {
-                    return default;
-                }
+        public async Task<int> SaveProduct()
+        {
+            try
+            {
+                return await context.SaveChangesAsync();
             }
             catch (Exception)
             {
