@@ -20,15 +20,15 @@ const MainTable = ({ state, props, handleStateResultObject, stateChangeResult, h
     if (isLoaded && items.length > 0) {
         return (
             <React.Fragment>
+                <FavoriteSelect
+                    handleStateProperty={handleStateProperty}
+                    state={state}
+                />
                 <FastFilteringByName
                     handleStateResultObject={handleStateResultObject}
                     textplaceholder={"Название для быстрого поиска"}
                     texttitle={"Возвращает полное совпадение"}
                     filter={filter}
-                />
-                <FavoriteSelect
-                    handleStateProperty={handleStateProperty}
-                    state={state}
                 />
                 <ProductInfo
                     urlControlAction={urlControlAction}

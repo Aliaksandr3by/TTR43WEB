@@ -82,8 +82,10 @@ const ProductInfo = (props) => {
     //console.dir(props);
     const { state: { AspNetCoreCookies = "", items = [], filter = [], favorite = [], favoriteSelect = false }, urlControlAction = {}, stateChangeResult, getAllProductsFavorite, handleStateProperty } = props;
 
-    const cardStickyAction = ({ date = "", id = "", markingGoods = "", name = "", price = "", priceWithoutDiscount = "", url = "", }) => {
-        return `<a href="${url}" target="_blank">${name}(${markingGoods}) - ${price}руб. - ${priceWithoutDiscount}руб. (${date})</a>`;
+    const cardStickyAction = ({ date = "", markingGoods = "", name = "", price = "", priceWithoutDiscount = "", url = "", }) => {
+        const coin = (el) => el !== null ? `${el} руб.` : `отсутствует`;
+        const children = `${name}(${markingGoods}) - ${coin(price)} / ${coin(priceWithoutDiscount)} (${_dateConverter(date)})`;
+        return `<a href="${url}" target="_blank">${children}</a>`;
     };
 
     /**
@@ -142,17 +144,17 @@ const ProductInfo = (props) => {
                                         {
                                             Object.keys(item).map((el, i) => {
                                                 if (el.toLowerCase() === "id") {
-                                                    return (<th key={i} name={`ID${item.id}`}>
+                                                    return (<th key={item["id"] + el} name={`ID${item.id}`}>
                                                         <a href="#!">{item[el]}</a>
                                                     </th>);
                                                 } else if (el.toLowerCase() === "name") {
-                                                    return (<td key={i}>
+                                                    return (<td key={item["id"] + el}>
                                                         <a target="_blank" rel="noopener noreferrer" href={item["url"]}>{item[el]}</a>
                                                     </td>);
                                                 } else if (el.toLowerCase() === "guid") {
                                                     return (
                                                         AspNetCoreCookies
-                                                            ? (<td key={i}>
+                                                            ? (<td key={item["id"] + el}>
                                                                 <ButtonFavorite
                                                                     stateChangeResult={stateChangeResult}
                                                                     getAllProductsFavorite={getAllProductsFavorite}
@@ -167,28 +169,26 @@ const ProductInfo = (props) => {
                                                             : null
                                                     );
                                                 } else if (el.toLowerCase() === "date") {
-                                                    return (<td key={i}>
+                                                    return (<td key={item["id"] + el}>
                                                         {_dateConverter(item[el])}
                                                     </td>);
                                                 } else if (el.toLowerCase() === "price") {
-                                                    return (<td key={i} title={item[el]}>
+                                                    return (<td key={item["id"] + el} title={item[el]}>
                                                         {_moneyConverter(item[el])}
                                                     </td>);
                                                 } else if (el.toLowerCase() === "pricewithoutdiscount") {
-                                                    return (<td key={i} title={item[el]}>
+                                                    return (<td key={item["id"] + el} title={item[el]}>
                                                         {_moneyConverter(item[el])}
                                                     </td>);
                                                 } else if (el.toLowerCase() === "url") {
-                                                    return (<td key={i} >
+                                                    return (<td key={item["id"] + el} >
                                                         <a className="btn-floating btn-small waves-effect waves-light red">
-                                                            <i className="material-icons"
-                                                                onClick={e => dataUpdate(e)}
-                                                                data-update-url={item[el]}>update</i>
+                                                            <i className="material-icons" onClick={e => dataUpdate(e)} data-update-url={item[el]}>update</i>
                                                         </a>
                                                     </td>);
                                                 } else {
                                                     return (
-                                                        <td key={i}>
+                                                        <td key={item["id"] + el}>
                                                             {item[el]}
                                                         </td>
                                                     );
