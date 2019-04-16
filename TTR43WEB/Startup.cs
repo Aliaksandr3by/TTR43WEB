@@ -141,8 +141,6 @@ namespace TTR43WEB
 
                 routes.MapRoute (name: "ItemsProductAdd", template: "{controller=Gipermall}/{action=ItemsProduct}");
 
-                routes.MapRoute (name: null, template: "{controller=Gipermall}/{action=OptionsURIinBase}");
-
                 routes.MapRoute (name: "tableUrl", template: "{controller=Gipermall}/{action=AllItemsUrls}/{id?}");
 
                 routes.MapRoute (name: "getCoastAsync", template: "{controller=Gipermall}/{action=GetCoastAsync}/{id?}");

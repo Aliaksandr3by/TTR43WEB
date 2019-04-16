@@ -70,13 +70,25 @@ namespace TTR43WEB.Models.Gipermall
                     (addItems > 0 ? addItems : _pageSize), _totalItems
                 }).Min();
 
-                var items = productItems
-                    .OrderByDescending(sort)
-                    .Skip(skip)
-                    .Take(take)
-                    .Select(e => new ProductEntityLite().ToProductEntityLite(e));
+                IQueryable<ProductEntityLite> items = default;
 
-                if (favoriteSelect) items = items.Where((number, index) => userFavorite.Any(e => e.ProductGuid == number.Guid));
+                if (favoriteSelect)
+                {
+                    items = productItems
+                        .OrderByDescending(sort)
+                        .Select(e => new ProductEntityLite().ToProductEntityLite(e))
+                        .Where((number, index) => userFavorite.Any(e => e.ProductGuid == number.Guid))
+                        .AsQueryable();
+                }
+                else
+                {
+                    items = productItems
+                        .OrderByDescending(sort)
+                        .Skip(skip)
+                        .Take(take)
+                        .Select(e => new ProductEntityLite().ToProductEntityLite(e))
+                        .AsQueryable();
+                }
 
                 if (addItems <= 0)
                 {
@@ -86,7 +98,8 @@ namespace TTR43WEB.Models.Gipermall
                     productPage = _productPage,
                     pageSize = _pageSize,
                     totalPages = _totalPages,
-                    totalItems = _totalItems
+                    totalItems = _totalItems,
+                    favoriteSelect = favoriteSelect,
                     };
                 }
                 else

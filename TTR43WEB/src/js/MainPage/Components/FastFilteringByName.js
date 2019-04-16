@@ -1,13 +1,14 @@
 
 import PropTypes from "prop-types";
-import React, { Component } from "react";
-import M from "materialize-css";
+import React from "react";
 
 /**
  * Метод служит для фильтрации данных в главной таблице (без обращения к контроллеру (только то, что на экране))
  * @param {*} param0 
  */
-const fastFilteringByName = ({ handleStateResultObject, textplaceholder = "", texttitle = "", filter = [] }) => {
+const fastFilteringByName = ({ handleStateResultObject, textplaceholder = "", texttitle = "", state = {} }) => {
+
+    const { filter = [] } = state;
 
     /**
      * Метод служит для сохранения текста поиска
@@ -41,7 +42,7 @@ fastFilteringByName.propTypes = {
     handleStateResultObject: PropTypes.func.isRequired,
     textplaceholder: PropTypes.string.isRequired,
     texttitle: PropTypes.string.isRequired,
-    filter: PropTypes.array.isRequired,
+    state: PropTypes.object.isRequired,
 };
 
 export default fastFilteringByName;

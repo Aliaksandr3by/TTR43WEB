@@ -333,6 +333,7 @@ class CoastTextareaUrl extends Component {
                                                             onClick={(e) => this.updateFavoritsOnServer(e, favorite, urlControlAction, handleStateResultObject)}
                                                             className="btn waves-effect waves-light left"
                                                             type="button"
+                                                            title={"Обновить избранное"}
                                                             name="action">Обновить избранное<i className="material-icons left">cached</i>
                                                         </button>)
                                             }

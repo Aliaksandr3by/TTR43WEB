@@ -110,10 +110,10 @@ class App extends Component {
         }
     }
 
-    handlePageOptions = async ({ pageSize = this.state.pageSize, productPage = this.state.productPage }) => {
+    handlePageOptions = async ({ pageSize = this.state.pageSize, productPage = this.state.productPage, favoriteSelect = this.state.favoriteSelect }) => {
         const { urlControlAction = {} } = this.props;
         try {
-            const response = await fetch(`${urlControlAction.urlControlActionGETGipermallItemsProduct}/Page${productPage}/Size${pageSize}/${this.state.favoriteSelect}`, {
+            const response = await fetch(`${urlControlAction.urlControlActionGetItemsProduct}/Page${productPage}/Size${pageSize}/${favoriteSelect}`, {
                 method: "GET", // *GET, POST, PUT, DELETE, etc.
             });
 
@@ -125,6 +125,7 @@ class App extends Component {
 
             window.localStorage.setItem("productPage", json.productPage);
             window.localStorage.setItem("pageSize", json.pageSize);
+            window.localStorage.setItem("favoriteSelect", favoriteSelect);
 
             return json;
         } catch (error) {
@@ -203,8 +204,8 @@ class App extends Component {
                         handleStateProperty={this.handleStateProperty}
                     />
                     <MainTable
+                        urlControlAction={urlControlAction}
                         state={this.state}
-                        props={this.props}
                         handleStateResultObject={this.handleStateResultObject}
                         stateChangeResult={this.stateChangeResult}
                         handlePageOptions={this.handlePageOptions}

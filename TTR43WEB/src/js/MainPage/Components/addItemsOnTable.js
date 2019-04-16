@@ -7,7 +7,7 @@ const AddItemsOnTable = ({ urlControlAction = {}, state: { pageSize, productPage
 
     const addItemsOnTable = async (e) => {
         try {
-            const response = await fetch(`${urlControlAction.urlControlActionGETGipermallItemsProduct}`, {
+            const response = await fetch(`${urlControlAction.urlControlActionGetItemsProduct}`, {
                 method: "POST", // *GET, POST, PUT, DELETE, etc.
                 headers: {
                     "Content-Type": "application/json",

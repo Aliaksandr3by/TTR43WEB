@@ -24,12 +24,21 @@ namespace TTR43WEB.Controllers
         private readonly IProductsContextQueryable _productsContextQueryable;
         private readonly IUsersContextQueryable _usersContextQueryable;
 
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="productsContextQueryable">Контекст элементов</param>
+        /// <param name="usersContextQueryable">Контекст пользователя</param>
         public GipermallController(IProductsContextQueryable productsContextQueryable, IUsersContextQueryable usersContextQueryable)
         {
             _productsContextQueryable = productsContextQueryable;
             _usersContextQueryable = usersContextQueryable;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         public IActionResult Index()
         {
@@ -37,42 +46,12 @@ namespace TTR43WEB.Controllers
         }
 
         /// <summary>
-        /// это не работает:(((
+        /// 
         /// </summary>
-        /// <param name="ElementURI"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="productPage"></param>
+        /// <param name="favoriteSelect"></param>
         /// <returns></returns>
-        [HttpOptions]
-        [ContentTypeAddJson]
-        [Allow]
-        public IActionResult OptionsURIinBase([FromBody] ElementURIData ElementURI)
-        {
-            try
-            {
-                HttpWebRequest request = (HttpWebRequest) WebRequest.Create(ElementURI.ElementURI);
-
-                HttpWebResponse response = (HttpWebResponse) request.GetResponse();
-
-                var statusCode = (int) response.StatusCode;
-
-                var result = Json(new
-                {
-                    statusCode = statusCode,
-                        ElementURI.ElementURI,
-                });
-
-                return result;
-            }
-            catch (WebException ex)
-            {
-                var result = Json(new
-                {
-                    ElementURI.ElementURI,
-                });
-
-                return result;
-            }
-        }
-
         [HttpGet]
         [AllowAnonymous]
         [ContentTypeAddJson]
@@ -84,6 +63,11 @@ namespace TTR43WEB.Controllers
             return Json(items);
         }
 
+        /// <summary>
+        /// Метод получает набор элементов исходя из параметров отображения на экране
+        /// </summary>
+        /// <param name="getPageOptions"></param>
+        /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
         [ContentTypeAddJson]
@@ -96,17 +80,17 @@ namespace TTR43WEB.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Метод обновляет все элементы в избранном
         /// </summary>
         /// <param name="guidProducts"></param>
         /// <returns></returns>
         [HttpPost]
         [ContentTypeAddJson]
-        public async Task<IActionResult> UpdateAllFavorites([FromBody] Guid[] guidProducts)
+        public async Task<IActionResult> UpdateFavoritesItems([FromBody] Guid[] guidProducts)
         {
             try
             {
-                var collection = AllProductsFavorite(_usersContextQueryable);
+                var collection = await GetItemsFavorite(_usersContextQueryable);
 
                 List<ProductEntity> productEntity = new List<ProductEntity>();
 
@@ -134,11 +118,16 @@ namespace TTR43WEB.Controllers
             }
         }
 
-        IQueryable<UserFavorite> AllProductsFavorite(IUsersContextQueryable usersContextQueryable)
+        /// <summary>
+        /// Вспомогательный метод служит для получения всех продуктов, избранных конкретным пользователем
+        /// </summary>
+        /// <param name="usersContextQueryable">Контекст IUsersContextQueryable</param>
+        /// <returns type="IQueryable">UserFavorite</returns>
+        public async Task<IQueryable<UserFavorite>> GetItemsFavorite(IUsersContextQueryable usersContextQueryable)
         {
             var userGuid = usersContextQueryable.Users.FirstOrDefault(e => e.Login == HttpContext.User.Identity.Name).Guid;
 
-            return usersContextQueryable.UserFavorites
+            var items = usersContextQueryable.UserFavorites
                 .Select(e => new UserFavorite
                 {
                     Guid = e.Guid,
@@ -148,8 +137,14 @@ namespace TTR43WEB.Controllers
                         Url = e.Url,
                 })
                 .Where(e => e.UserGuid == userGuid);
+
+            return await Task.Run(() => items);
         }
 
+        /// <summary>
+        /// Метод получает все элементы из избранного из базы данных
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         [ContentTypeAddJson]
         [AccessControlAllowAll]
@@ -157,7 +152,7 @@ namespace TTR43WEB.Controllers
         {
             try
             {
-                var favorite = AllProductsFavorite(_usersContextQueryable);
+                var favorite = await GetItemsFavorite(_usersContextQueryable);
                 return Json(favorite);
             }
             catch (Exception ex)
@@ -169,6 +164,13 @@ namespace TTR43WEB.Controllers
             }
         }
 
+        /// <summary>
+        /// Вспомогательный метод для добавления элемента в избранное
+        /// </summary>
+        /// <param name="_usersContextQueryable"></param>
+        /// <param name="productEntityLite"></param>
+        /// <param name="onlyAdd"></param>
+        /// <returns></returns>
         async Task<String> ProductToFavoriteAdd(IUsersContextQueryable _usersContextQueryable, ProductEntityLite productEntityLite, bool onlyAdd = false)
         {
             try
@@ -312,6 +314,10 @@ namespace TTR43WEB.Controllers
             }
         }
 
+        /// <summary>
+        /// Мотод получает список всех URL из базы
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         [ContentTypeAddJson]
         public IActionResult AllItemsUrls()

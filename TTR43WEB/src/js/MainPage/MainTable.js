@@ -1,7 +1,6 @@
 
 import PropTypes from "prop-types";
-import React, { Component } from "react";
-import M from "materialize-css";
+import React from "react";
 
 import PageSizeSelector from "./Components/PageSizeSelector";
 import PageList from "./Components/PageList";
@@ -12,12 +11,9 @@ import AddItemsOnTable from "./Components/AddItemsOnTable";
 import FavoriteSelect from "./Components/FavoriteSelect";
 
 
-const MainTable = ({ state, props, handleStateResultObject, stateChangeResult, handlePageOptions, getAllProductsFavorite, handleStateProperty }) => {
+const MainTable = ({ urlControlAction, state, handleStateResultObject, stateChangeResult, handlePageOptions, getAllProductsFavorite, handleStateProperty }) => {
 
-    const { isLoaded, error, items, filter } = state;
-    const { urlControlAction = {} } = props;
-
-    const getProductInfo = () => {
+    const getProductInfo = ({ isLoaded, error, items }) => {
         if (isLoaded && items.length > 0) {
             return (
                 <React.Fragment>
@@ -39,21 +35,9 @@ const MainTable = ({ state, props, handleStateResultObject, stateChangeResult, h
             return <div>Error: {error.message}</div>;
         } else if (!isLoaded) {
             return (
-                <React.Fragment>
-                    <div className="preloader-wrapper big active">
-                        <div className="spinner-layer spinner-blue">
-                            <div className="circle-clipper left">
-                                <div className="circle"></div>
-                            </div>
-                            <div className="gap-patch">
-                                <div className="circle"></div>
-                            </div>
-                            <div className="circle-clipper right">
-                                <div className="circle"></div>
-                            </div>
-                        </div>
-                    </div>
-                </React.Fragment>
+                <div className="progress">
+                    <div className="indeterminate"></div>
+                </div>
             );
         }
     };
@@ -62,16 +46,17 @@ const MainTable = ({ state, props, handleStateResultObject, stateChangeResult, h
         <React.Fragment>
             <FavoriteSelect
                 handleStateProperty={handleStateProperty}
+                handlePageOptions={handlePageOptions}
                 state={state}
             />
             <FastFilteringByName
                 handleStateResultObject={handleStateResultObject}
                 textplaceholder={"Название для быстрого поиска"}
                 texttitle={"Возвращает полное совпадение"}
-                filter={filter}
+                state={state}
             />
             {
-                getProductInfo()
+                getProductInfo(state)
             }
             <PageSizeSelector
                 handlePageOptions={handlePageOptions}
@@ -91,7 +76,14 @@ const MainTable = ({ state, props, handleStateResultObject, stateChangeResult, h
 };
 
 MainTable.propTypes = {
-
+    urlControlAction: PropTypes.object,
+    state: PropTypes.object,
+    props: PropTypes.object,
+    handleStateResultObject: PropTypes.func,
+    stateChangeResult: PropTypes.func,
+    handlePageOptions: PropTypes.func,
+    getAllProductsFavorite: PropTypes.func,
+    handleStateProperty: PropTypes.func,
 };
 
 export default MainTable;

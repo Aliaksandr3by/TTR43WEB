@@ -1,22 +1,22 @@
 import PropTypes from "prop-types";
-import React, { Component } from "react";
-import M from "materialize-css";
-
-const handleInputChange = (event, handleStateProperty) => {
-    const flag = event.target.checked ? true : false;
-    handleStateProperty(flag, "favoriteSelect");
-};
+import React from "react";
 
 const FavoriteSelect = props => {
 
-    const { state: { favoriteSelect, AspNetCoreCookies }, handleStateProperty } = props;
+    const { state: { favoriteSelect, AspNetCoreCookies }, handleStateProperty, handlePageOptions } = props;
+
+    const handleInputChange = (event) => {
+        const flag = event.target.checked ? true : false;
+        //handleStateProperty(flag, "favoriteSelect");
+        handlePageOptions({ "favoriteSelect": flag });
+    };
 
     if (AspNetCoreCookies) {
         return (
             <div >
                 <p>
                     <label>
-                        <input className="filled-in" type="checkbox" checked={favoriteSelect} onChange={e => handleInputChange(e, handleStateProperty)} />
+                        <input className="filled-in" type="checkbox" checked={favoriteSelect} onChange={e => handleInputChange(e)} />
                         <span>Избранное</span>
                     </label>
                 </p>
@@ -29,7 +29,8 @@ const FavoriteSelect = props => {
 
 FavoriteSelect.propTypes = {
     state: PropTypes.object,
-    handleState: PropTypes.func,
+    handlePageOptions: PropTypes.func,
+    handleStateProperty: PropTypes.func,
     AspNetCoreCookies: PropTypes.string,
 };
 
