@@ -134,19 +134,34 @@ namespace TTR43WEB
             app.UseMvc (routes =>
             {
                 routes.MapRoute (name: "index", template: "{controller=Gipermall}/{action=Index}");
-                routes.MapRoute (name: "ItemsProduct", template: "{controller=Gipermall}/{action=ItemsProduct}/Page{productPage:int}/Size{pageSize:int}");
+
+                routes.MapRoute (
+                    name: "ItemsProduct", 
+                    template: "{controller=Gipermall}/{action=ItemsProduct}/Page{productPage:int}/Size{pageSize:int}/{favoriteSelect?}");
+
                 routes.MapRoute (name: "ItemsProductAdd", template: "{controller=Gipermall}/{action=ItemsProduct}");
+
                 routes.MapRoute (name: null, template: "{controller=Gipermall}/{action=OptionsURIinBase}");
+
                 routes.MapRoute (name: "tableUrl", template: "{controller=Gipermall}/{action=AllItemsUrls}/{id?}");
+
                 routes.MapRoute (name: "getCoastAsync", template: "{controller=Gipermall}/{action=GetCoastAsync}/{id?}");
+
                 routes.MapRoute (name: "addProductToFavorite", template: "{controller=Gipermall}/{action=AddProductToFavorite}/{id?}"); 
+
                 routes.MapRoute (name: "getAllProductsFavorite", template: "{controller=Gipermall}/{action=GetAllProductsFavorite}/{id?}");
+
                 routes.MapRoute (name: "updateAllFavorites", template: "{controller=Gipermall}/{action=UpdateAllFavorites}/{id?}");
 
+
                 routes.MapRoute (name: "Login", template: "{controller=Account}/{action=Login}");
+
                 routes.MapRoute (name: "Register", template: "{controller=Account}/{action=Register}");
+
                 routes.MapRoute (name: "AccessDenied", template: "{controller=Account}/{action=AccessDenied}");
+
                 routes.MapRoute (name: "__RequestVerificationToken", template: "{controller=Account}/{action=RequestVerificationToken}");
+
 
             });
         }

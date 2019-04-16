@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { Component } from "react";
+import React from "react";
 import M from "materialize-css";
 
 import ButtonFavorite from "./Components/ButtonFavorite";
@@ -64,13 +64,13 @@ const dataFilter = (items, filter, AspNetCoreCookies, favorite = [], favoriteSel
         });
     }
 
-    if (favoriteSelect) {
-        data = [...items].filter((el, i) => {
-            return favorite.find((eFilter, iFilter) => {
-                return el.guid === eFilter.productGuid;
-            });
-        });
-    }
+    // if (favoriteSelect) {
+    //     data = [...items].filter((el, i) => {
+    //         return favorite.find((eFilter, iFilter) => {
+    //             return el.guid === eFilter.productGuid;
+    //         });
+    //     });
+    // }
 
     if (!AspNetCoreCookies) {
         data.length = 4;
@@ -122,7 +122,7 @@ const ProductInfo = (props) => {
                     <thead id="tableTop">
                         <tr>
                             {
-                                Object.keys(items[0]).map((el, i) => {
+                                Object.keys(items.length > 0 ? items[0] : []).map((el, i) => {
                                     if (el.toLowerCase() === "url") {
                                         return (<th key={i}>UPDATE</th>);
                                     } else if (el.toLowerCase() === "guid") {

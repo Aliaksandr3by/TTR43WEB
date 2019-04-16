@@ -11,5 +11,6 @@ namespace TTR43WEB.Models.Gipermall
         public int productPage { get; set; }
         public int addItems { get; set; }
         public int skippedItems { get; set; }
+        public bool favoriteSelect { get; set; } = false;
     }
 }

@@ -58,7 +58,7 @@
             "args": [],
             "cwd": "${workspaceFolder}/TTR43WEB",
             "stopAtEntry": false,
-            "internalConsoleOptions": "openOnSessionStart",
+            "internalConsoleOptions": "neverOpen",
             "launchBrowser": {
                 "enabled": true,
                 "args": "${auto-detect-url}",

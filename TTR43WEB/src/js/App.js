@@ -113,7 +113,7 @@ class App extends Component {
     handlePageOptions = async ({ pageSize = this.state.pageSize, productPage = this.state.productPage }) => {
         const { urlControlAction = {} } = this.props;
         try {
-            const response = await fetch(`${urlControlAction.urlControlActionGETGipermallItemsProduct}/Page${productPage}/Size${pageSize}`, {
+            const response = await fetch(`${urlControlAction.urlControlActionGETGipermallItemsProduct}/Page${productPage}/Size${pageSize}/${this.state.favoriteSelect}`, {
                 method: "GET", // *GET, POST, PUT, DELETE, etc.
             });
 

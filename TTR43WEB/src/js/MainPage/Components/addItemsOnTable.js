@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import React from "react";
 
 
-const AddItemsOnTable = ({ urlControlAction = {}, state: { pageSize, productPage, items } = {}, stateChangeResult }) => {
+const AddItemsOnTable = ({ urlControlAction = {}, state: { pageSize, productPage, items, favoriteSelect } = {}, stateChangeResult }) => {
 
     const addItemsOnTable = async (e) => {
         try {
@@ -17,6 +17,7 @@ const AddItemsOnTable = ({ urlControlAction = {}, state: { pageSize, productPage
                     "productPage": productPage,
                     "addItems": e.target.value,
                     "skippedItems": items.length,
+                    "favoriteSelect": favoriteSelect,
                 }),
             });
 
@@ -42,6 +43,7 @@ AddItemsOnTable.propTypes = {
     urlControlAction: PropTypes.object,
     state: PropTypes.object,
     stateChangeResult: PropTypes.func,
+    favoriteSelect: PropTypes.bool,
 };
 
 export default AddItemsOnTable;

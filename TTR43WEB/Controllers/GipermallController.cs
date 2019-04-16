@@ -76,12 +76,11 @@ namespace TTR43WEB.Controllers
         [HttpGet]
         [AllowAnonymous]
         [ContentTypeAddJson]
-        public async Task<IActionResult> ItemsProduct(int pageSize, int productPage)
+        public async Task<IActionResult> ItemsProduct(int pageSize, int productPage, bool favoriteSelect)
         {
-            var AllProducts = _productsContextQueryable.Products;
             Func<Products, DateTime?> sort = e => e.Date;
-            var tmp = new PaginationOptions(AllProducts);
-            var items = await tmp.GetItemsAsync(sort, pageSize, productPage);
+            var tmp = new PaginationOptions(_productsContextQueryable.Products, _usersContextQueryable.UserFavorites);
+            var items = await tmp.GetItemsAsync(sort: sort, pageSize: pageSize, productPage: productPage, favoriteSelect: (favoriteSelect));
             return Json(items);
         }
 
@@ -90,9 +89,8 @@ namespace TTR43WEB.Controllers
         [ContentTypeAddJson]
         public async Task<IActionResult> ItemsProduct([FromBody] GetPageOptions getPageOptions)
         {
-            var AllProducts = _productsContextQueryable.Products;
             Func<Products, DateTime?> sort = e => e.Date;
-            var tmp = new PaginationOptions(AllProducts);
+            var tmp = new PaginationOptions(_productsContextQueryable.Products, _usersContextQueryable.UserFavorites);
             var items = await tmp.GetItemsAsync(sort, getPageOptions);
             return Json(items);
         }
@@ -302,7 +300,7 @@ namespace TTR43WEB.Controllers
                 return Json(new
                 {
                     items = productEntityLite,
-                    isPresent = (findAddingProduct != null),
+                        isPresent = (findAddingProduct != null),
                 });
             }
             catch (Exception ex)

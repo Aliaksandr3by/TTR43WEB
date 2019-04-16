@@ -3,20 +3,16 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import M from "materialize-css";
 
-const LoadingBar = () => {
+const LoadingBar = ({ children }) => {
     return (
         <div className="row" >
-            <div className="loadingBar">
-                <div className="progress">
-                    <div className="indeterminate"></div>
-                </div>
-            </div>
+            <p>{children}</p>
         </div>
     );
 };
 
 LoadingBar.propTypes = {
-
+    children: PropTypes.string,
 };
 
 export default LoadingBar;

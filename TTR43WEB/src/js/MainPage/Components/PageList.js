@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import M from "materialize-css";
 
-const onSelectPage = (event, newProductPage, totalPages, handleState) => { //номер страницы
+const onSelectPage = (event, newProductPage, totalPages, handlePageOptions) => { //номер страницы
 
     let _productPage = Number(newProductPage);
 
@@ -13,7 +13,7 @@ const onSelectPage = (event, newProductPage, totalPages, handleState) => { //н�
         _productPage = 0;
     }
 
-    handleState({
+    handlePageOptions({
         "productPage": _productPage
     });
 
@@ -22,16 +22,21 @@ const onSelectPage = (event, newProductPage, totalPages, handleState) => { //н�
     document.documentElement.scrollTop = 0;
 };
 
+const active = (productPage, i) => productPage === i ? "active pulse" : "waves-effect";
+/// Метод устанавливает класс disabled для неактивных элементов выбранной страницы
+const disabled = (productPage, i) => productPage === i ? "disabled" : "";
+
+const href = (pageSize, i, productPage, favoriteSelect) =>
+    productPage === i
+        ? `/Gipermall/Index/#/Page${i}/Size${pageSize}/${favoriteSelect}`
+        : `/Gipermall/Index/#/Page${i}/Size${pageSize}/${favoriteSelect}`;
+
 const PageList = props => {
 
-    const { state: { totalPages, productPage, pageSize }, handlePageOptions } = props;
+    const { state: { totalPages, productPage, pageSize, favoriteSelect }, handlePageOptions } = props;
 
     /// Метод устанавливает класс active
-    const active = (productPage, i) => productPage === i ? "active pulse" : "waves-effect";
-    /// Метод устанавливает класс disabled для неактивных элементов выбранной страницы
-    const disabled = (productPage, i) => productPage === i ? "disabled" : "";
 
-    const href = (pageSize, i, productPage) => productPage === i ? `/Gipermall/Index/#/Page${i}/Size${pageSize}` : `/Gipermall/Index/#/Page${i}/Size${pageSize}`;
 
     return (
         <div className="center-align">
@@ -45,13 +50,13 @@ const PageList = props => {
                     [...Array(totalPages)].map((item, i) => {
                         return (
                             <li key={i} className={`${active(productPage, i)} ${disabled(productPage, i)}`}>
-                                <a href={href(pageSize, i, productPage)} onClick={e => onSelectPage(e, i, totalPages, handlePageOptions)}>{i}</a>
+                                <a href={href(pageSize, i, productPage, favoriteSelect)} onClick={e => onSelectPage(e, i, totalPages, handlePageOptions)}>{i}</a>
                             </li>
                         );
                     })
                 }
                 <li className={disabled(productPage, totalPages - 1)}>
-                    <a href={href(pageSize, productPage + 1, productPage)} onClick={e => onSelectPage(e, productPage + 1, totalPages, handlePageOptions)}>
+                    <a href={href(pageSize, productPage + 1, productPage, favoriteSelect)} onClick={e => onSelectPage(e, productPage + 1, totalPages, handlePageOptions)}>
                         <i className="material-icons" >chevron_right</i>
                     </a>
                 </li>
