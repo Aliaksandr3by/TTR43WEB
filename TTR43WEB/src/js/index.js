@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
             urlControlActionGetItemsProduct: "/Gipermall/ItemsProduct",
             urlControlActionAddProductToFavorite: "/Gipermall/AddProductToFavorite",
             urlControlActionGetAllProductsFavorite: "/Gipermall/GetAllProductsFavorite",
-            urlControlActionUpdateAllFavorites: "/Gipermall/UpdateAllFavorites",
+            urlControlActionUpdateFavoritesItems: "/Gipermall/UpdateFavoritesItems",
             urlControlActionAccountLogin: "/Account/Login",
             urlControlActionAccountRegister: "/Account/Register",
             urlControlActionAccountLogout: "/Account/Logout",

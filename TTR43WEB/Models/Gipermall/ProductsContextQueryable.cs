@@ -37,12 +37,12 @@ namespace TTR43WEB.Models.Gipermall
         public IQueryable<Trademark> Trademark => context.Trademark;
         public IQueryable<Url> Url => context.Url;
 
-        public EntityEntry<Products> AddProduct(ProductEntity product)
+        public EntityEntry<Products> AddProduct(ProductEntity product, bool alwaysAdd = true)
         {
             try
             {
                 Products tmp = (new Products()).ToProducts(product, context);
-                return context.Products.Add(tmp);
+                return alwaysAdd ? context.Products.Add(tmp) : null;
             }
             catch (Exception)
             {

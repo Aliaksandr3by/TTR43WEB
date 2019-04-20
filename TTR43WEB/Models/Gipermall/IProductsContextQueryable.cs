@@ -10,7 +10,7 @@ namespace TTR43WEB.Models.Gipermall
     public interface IProductsContextQueryable
     {
         IQueryable<Products> Products { get; }
-        EntityEntry<Products> AddProduct(ProductEntity product);
+        EntityEntry<Products> AddProduct(ProductEntity product, bool alwaysAdd = true);
         Task<int> SaveProduct();
     }
 }

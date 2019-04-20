@@ -92,20 +92,33 @@ namespace TTR43WEB.Controllers
             {
                 var collection = await GetItemsFavorite(_usersContextQueryable);
 
-                List<ProductEntity> productEntity = new List<ProductEntity>();
+                List<ProductEntity> productEntityList = new List<ProductEntity>();
 
                 foreach (UserFavorite item in collection)
                 {
-                    var tmp = await new GetProductFromSite().GetFullDescriptionResult(item.Url);
-                    var product = _productsContextQueryable.AddProduct(tmp);
-                    tmp.Guid = product.Entity.Guid;
-                    await _productsContextQueryable.SaveProduct();
-                    productEntity.Add(tmp);
+                    var productEntity = await new GetProductFromSite().GetFullDescriptionResult(item.Url);
+
+                    var findAddingProduct = _productsContextQueryable.Products.FirstOrDefault<Products>(
+                        p => p.MarkingGoodsNavigation.MarkingGoodsProduct == productEntity.MarkingGoods &&
+                        p.Price == productEntity.Price &&
+                        p.PriceWithoutDiscount == productEntity.PriceWithoutDiscount);
+
+                    var product = _productsContextQueryable.AddProduct(productEntity, findAddingProduct != null);
+
+
+                    if (product != null && product.Entity != null)
+                    {
+                        productEntity.Guid = product.Entity.Guid;
+                        productEntityList.Add(productEntity);
+                    }
                 }
+
+                await _productsContextQueryable.SaveProduct();
+
 
                 return Json(new
                 {
-                    productEntity,
+                    productEntityList,
                 });
 
             }
@@ -179,8 +192,7 @@ namespace TTR43WEB.Controllers
 
                 var userGuid = _usersContextQueryable.Users.FirstOrDefault(e => e.Login == HttpContext.User.Identity.Name).Guid;
 
-                UserFavorite userFavorite = _usersContextQueryable
-                    .UserFavorites
+                UserFavorite userFavorite = _usersContextQueryable.UserFavorites
                     .FirstOrDefault(e => e.UserGuid == userGuid && e.ProductGuid == _productEntityLite.Guid);
 
                 if (userFavorite != null)
@@ -193,7 +205,14 @@ namespace TTR43WEB.Controllers
 
                         return "remove";
                     }
-                    return "has already";
+                    else
+                    {
+                        var favoriteRemove = _usersContextQueryable.UpdateUserFavorite(userFavorite);
+
+                        var count = await _usersContextQueryable.SaveChangesAsync();
+
+                        return "update";
+                    }
                 }
                 else
                 {
@@ -261,6 +280,7 @@ namespace TTR43WEB.Controllers
             {
                 // Получает данные
                 GetProductFromSite getDataFromGipermall = new GetProductFromSite(dataSend.IdGoods);
+                // Формирует сущность товара по данным
                 ProductEntity productEntity = await getDataFromGipermall.GetFullDescriptionResult();
 
                 // если отсутствует Marking Goods, что-то не так
@@ -281,17 +301,11 @@ namespace TTR43WEB.Controllers
                     p.Price == productEntity.Price &&
                     p.PriceWithoutDiscount == productEntity.PriceWithoutDiscount);
 
+                var product = _productsContextQueryable.AddProduct(productEntity, findAddingProduct != null);
+                await _productsContextQueryable.SaveProduct();
+
                 //если данные отсутствуют то сохраняет
-                if (findAddingProduct == null)
-                {
-                    var product = _productsContextQueryable.AddProduct(productEntity);
-                    await _productsContextQueryable.SaveProduct();
-                    productEntityLite.Guid = product.Entity.Guid; // добавляем гуид
-                }
-                else
-                {
-                    productEntityLite.Guid = findAddingProduct.Guid; // добавляем гуид, нужен для избранного если товар уже есть
-                }
+                productEntityLite.Guid = findAddingProduct == null ? product.Entity.Guid : findAddingProduct.Guid;
 
                 // если стоит галочка в избранное то добавляем
                 if (dataSend.FavoriteSelect)

@@ -13,8 +13,8 @@ import FavoriteSelect from "./Components/FavoriteSelect";
 
 const MainTable = ({ urlControlAction, state, handleStateResultObject, stateChangeResult, handlePageOptions, getAllProductsFavorite, handleStateProperty }) => {
 
-    const getProductInfo = ({ isLoaded, error, items }) => {
-        if (isLoaded && items.length > 0) {
+    const getProductInfo = ({ isLoaded, favoriteIsLoaded, error, items }) => {
+        if (isLoaded && favoriteIsLoaded && items.length > 0) {
             return (
                 <React.Fragment>
                     <ProductInfo
@@ -33,7 +33,7 @@ const MainTable = ({ urlControlAction, state, handleStateResultObject, stateChan
             );
         } else if (error) {
             return <div>Error: {error.message}</div>;
-        } else if (!isLoaded) {
+        } else if (!isLoaded || !favoriteIsLoaded) {
             return (
                 <div className="progress">
                     <div className="indeterminate"></div>

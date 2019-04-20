@@ -159,7 +159,7 @@ class CoastTextareaUrl extends Component {
 
             const guidProducts = favorite.map((eF, iF) => eF.guid);
 
-            const response = await fetch(urlControlAction.urlControlActionUpdateAllFavorites, {
+            const response = await fetch(urlControlAction.urlControlActionUpdateFavoritesItems, {
                 method: "POST", // *GET, POST, PUT, DELETE, etc.
                 headers: {
                     "Content-Type": "application/json",
@@ -175,8 +175,8 @@ class CoastTextareaUrl extends Component {
                 console.log(json.productEntity);
                 await handleStateResultObject(json);
                 this.setState({ "textarea": json.productEntity.map((e) => e.url) });
-                this.setState({"updateFavotite": false});
             }
+            this.setState({"updateFavotite": false});
 
         } catch (error) {
             console.error(error);

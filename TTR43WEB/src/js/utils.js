@@ -135,7 +135,7 @@ export const genTable = (data, title = "", className = "striped highlight") => {
 
     const TableRowHeader = (datas) => {
         let tmpString = ``;
-        for (let item in datas) {
+        for (const item in datas) {
             tmpString += `<th>${item.toLocaleLowerCase().replace(new RegExp("_", "g"), " ")}</th>`;
         }
         return tmpString;
@@ -143,7 +143,7 @@ export const genTable = (data, title = "", className = "striped highlight") => {
 
     const TableRowData = (datas, id = "ID") => {
         let tmpString = ``;
-        for (let item in datas) {
+        for (const item in datas) {
             if (item.toUpperCase() !== id) {
                 tmpString += `<td>${String(datas[item]).replace("null", "-")}</td>`;
             } else {

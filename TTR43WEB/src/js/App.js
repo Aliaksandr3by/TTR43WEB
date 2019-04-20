@@ -36,6 +36,7 @@ class App extends Component {
             items: [],
             favorite: [],
             favoriteSelect: false,
+            favoriteIsLoaded: false,
             filter: this.getItemLocalStorage("filter"),
             pageSize: Number(window.localStorage.getItem("pageSize")) || 10,
             productPage: Number(window.localStorage.getItem("productPage")) || 0,
@@ -94,12 +95,15 @@ class App extends Component {
                     },
                     redirect: "follow", // manual, *follow, error
                     referrer: "no-referrer", // no-referrer, *client
+                    body: JSON.stringify({
+                    }),
                 });
 
                 const result = await response.json();
 
                 this.setState({
-                    "favorite": result
+                    "favorite": result,
+                    "favoriteIsLoaded": true,
                 });
 
                 return result;
@@ -112,6 +116,7 @@ class App extends Component {
 
     handlePageOptions = async ({ pageSize = this.state.pageSize, productPage = this.state.productPage, favoriteSelect = this.state.favoriteSelect }) => {
         const { urlControlAction = {} } = this.props;
+        this.setState({ isLoaded: false });
         try {
             const response = await fetch(`${urlControlAction.urlControlActionGetItemsProduct}/Page${productPage}/Size${pageSize}/${favoriteSelect}`, {
                 method: "GET", // *GET, POST, PUT, DELETE, etc.
