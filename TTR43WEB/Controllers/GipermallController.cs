@@ -301,8 +301,8 @@ namespace TTR43WEB.Controllers
                     p.Price == productEntity.Price &&
                     p.PriceWithoutDiscount == productEntity.PriceWithoutDiscount);
 
-                var product = _productsContextQueryable.AddProduct(productEntity, findAddingProduct != null);
-                await _productsContextQueryable.SaveProduct();
+                var product = _productsContextQueryable.AddProduct(productEntity, findAddingProduct == null);
+                if(product != null) await _productsContextQueryable.SaveProduct();
 
                 //если данные отсутствуют то сохраняет
                 productEntityLite.Guid = findAddingProduct == null ? product.Entity.Guid : findAddingProduct.Guid;
