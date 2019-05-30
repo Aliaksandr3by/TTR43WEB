@@ -144,10 +144,10 @@ namespace TTR43WEB.Controllers
                 .Select(e => new UserFavorite
                 {
                     Guid = e.Guid,
-                        UserGuid = e.UserGuid,
-                        ProductGuid = e.ProductGuid,
-                        DateTimeAdd = e.DateTimeAdd,
-                        Url = e.Url,
+                    UserGuid = e.UserGuid,
+                    ProductGuid = e.ProductGuid,
+                    DateTimeAdd = e.DateTimeAdd,
+                    Url = e.Url,
                 })
                 .Where(e => e.UserGuid == userGuid);
 
@@ -295,14 +295,22 @@ namespace TTR43WEB.Controllers
                 // преобразовать в упрощенную версию
                 ProductEntityLite productEntityLite = new ProductEntityLite().ToProductEntityLite(productEntity);
 
-                // ищет данные в базе
-                var findAddingProduct = _productsContextQueryable.Products.FirstOrDefault<Products>(
-                    p => p.MarkingGoodsNavigation.MarkingGoodsProduct == productEntity.MarkingGoods &&
-                    p.Price == productEntity.Price &&
-                    p.PriceWithoutDiscount == productEntity.PriceWithoutDiscount);
+                // ищет данные в базе соответствие с MarkingGoods, выбирает самый новый, потом проверяет цену
+                var findAddingProduct = _productsContextQueryable.Products
+                    .OrderByDescending(p => p.Date)
+                    .Where(p => p.MarkingGoodsNavigation.MarkingGoodsProduct == productEntity.MarkingGoods)
+                    .Select<Products, Products>(p => p)
+                    .FirstOrDefault()
+                    ;
 
-                var product = _productsContextQueryable.AddProduct(productEntity, findAddingProduct == null);
-                if(product != null) await _productsContextQueryable.SaveProduct();
+                bool flag = findAddingProduct != null && findAddingProduct.Price == productEntity.Price && findAddingProduct.PriceWithoutDiscount == productEntity.PriceWithoutDiscount;
+
+                var product = _productsContextQueryable.AddProduct(productEntity, !flag);
+
+                if (product != null)
+                {
+                    await _productsContextQueryable.SaveProduct();
+                }
 
                 //если данные отсутствуют то сохраняет
                 productEntityLite.Guid = findAddingProduct == null ? product.Entity.Guid : findAddingProduct.Guid;
@@ -316,7 +324,7 @@ namespace TTR43WEB.Controllers
                 return Json(new
                 {
                     items = productEntityLite,
-                        isPresent = (findAddingProduct != null),
+                    isPresent = flag,
                 });
             }
             catch (Exception ex)
