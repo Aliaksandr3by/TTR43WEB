@@ -6,6 +6,7 @@ using DatumServer.Datum.Product;
 using DatumServer.Datum.User;
 using TTR43WEB.Models.User;
 
+
 namespace TTR43WEB.Models.Gipermall
 {
     public static class ProductsExtension
@@ -58,6 +59,25 @@ namespace TTR43WEB.Models.Gipermall
                 throw new ArgumentNullException(nameof(productEntityLite));
             }
 
+            decimal? getFullPrice()
+            {
+                decimal fullSize = 1.0M;
+
+                if ((productEntity.Price != null || productEntity.PriceWithoutDiscount != null) && productEntity.Mass != null)
+                {
+                    if (productEntity.Price != null && productEntity.PriceWithoutDiscount != null)
+                    {
+                        return (productEntity.Price > productEntity.PriceWithoutDiscount ? productEntity.PriceWithoutDiscount : productEntity.Price) /
+                            (decimal)productEntity.Mass * fullSize;
+                    }
+
+                    return (productEntity.Price ?? productEntity.PriceWithoutDiscount) / (decimal)productEntity.Mass * fullSize;
+
+                }
+
+                return null;
+            }
+
             ProductEntityLite _productEntityLite = new ProductEntityLite
             {
                 Id = productEntity.Id,
@@ -68,7 +88,10 @@ namespace TTR43WEB.Models.Gipermall
                 MarkingGoods = productEntity.MarkingGoods,
                 Price = productEntity.Price,
                 PriceWithoutDiscount = productEntity.PriceWithoutDiscount,
+                PriceOneMass = productEntity.PriceOneKilogram ?? productEntity.PriceOneLiter,
+                FullEstimatedValue = getFullPrice(),
             };
+
             return _productEntityLite;
         }
 
