@@ -51,31 +51,31 @@ namespace TTR43WEB.Models.Gipermall
             };
             return _productEntityLite;
         }
+        
+        public static decimal? getFullPrice(Products productEntity)
+        {
+            decimal fullSize = 1.0M;
+
+            if ((productEntity.Price != null || productEntity.PriceWithoutDiscount != null) && productEntity.Mass != null)
+            {
+                if (productEntity.Price != null && productEntity.PriceWithoutDiscount != null)
+                {
+                    return (productEntity.Price > productEntity.PriceWithoutDiscount ? productEntity.PriceWithoutDiscount : productEntity.Price) /
+                        (decimal)productEntity.Mass * fullSize;
+                }
+
+                return (productEntity.Price ?? productEntity.PriceWithoutDiscount) / (decimal)productEntity.Mass * fullSize;
+
+            }
+
+            return null;
+        }
 
         public static ProductEntityLite ToProductEntityLite(this ProductEntityLite productEntityLite, Products productEntity)
         {
             if (productEntityLite == null)
             {
                 throw new ArgumentNullException(nameof(productEntityLite));
-            }
-
-            decimal? getFullPrice()
-            {
-                decimal fullSize = 1.0M;
-
-                if ((productEntity.Price != null || productEntity.PriceWithoutDiscount != null) && productEntity.Mass != null)
-                {
-                    if (productEntity.Price != null && productEntity.PriceWithoutDiscount != null)
-                    {
-                        return (productEntity.Price > productEntity.PriceWithoutDiscount ? productEntity.PriceWithoutDiscount : productEntity.Price) /
-                            (decimal)productEntity.Mass * fullSize;
-                    }
-
-                    return (productEntity.Price ?? productEntity.PriceWithoutDiscount) / (decimal)productEntity.Mass * fullSize;
-
-                }
-
-                return null;
             }
 
             ProductEntityLite _productEntityLite = new ProductEntityLite
@@ -89,7 +89,7 @@ namespace TTR43WEB.Models.Gipermall
                 Price = productEntity.Price,
                 PriceWithoutDiscount = productEntity.PriceWithoutDiscount,
                 PriceOneMass = productEntity.PriceOneKilogram ?? productEntity.PriceOneLiter,
-                FullEstimatedValue = getFullPrice(),
+                FullEstimatedValue = getFullPrice(productEntity),
             };
 
             return _productEntityLite;

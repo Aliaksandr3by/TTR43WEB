@@ -151,6 +151,8 @@ namespace TTR43WEB
 
                 routes.MapRoute (name: "updateFavoritesItems", template: "{controller=Gipermall}/{action=UpdateFavoritesItems}/{id?}");
 
+                routes.MapRoute (name: "AllItemsProductOnId", template: "{controller=Gipermall}/{action=AllItemsProductOnId}/{id?}");
+                
 
                 routes.MapRoute (name: "Login", template: "{controller=Account}/{action=Login}");
 

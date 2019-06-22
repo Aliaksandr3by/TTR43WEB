@@ -11,6 +11,21 @@ details {
     display: block;
 }
 
+.block {
+    display: block;
+    background-color: whitesmoke;
+    position: fixed;
+    z-index: 99999999; 
+    overflow: auto;
+    transform: translate3d(1rem, 1rem, 1rem);
+    box-shadow: -1rem -0.2rem 0.4em olive, 1rem 0.2rem 0.4em red;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 30%;
+    bottom: 0;
+}
+
 .selected {
     background-color: #ffa1a1 !important;
     transform: translate3d(1rem, 1rem, 1rem);

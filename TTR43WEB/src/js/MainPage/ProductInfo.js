@@ -3,6 +3,7 @@ import React from "react";
 import M from "materialize-css";
 
 import ButtonFavorite from "./Components/ButtonFavorite";
+import AllProductsFinder from "./Components/AllProductsFinder";
 
 /**
  * Метод преобразовывает названия переменных в названия столбцов таблицы
@@ -10,7 +11,9 @@ import ButtonFavorite from "./Components/ButtonFavorite";
  * @return {String} текст
  */
 const _replacer = (name) => {
+
     return name.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase());
+
 };
 
 /**
@@ -80,7 +83,9 @@ const dataFilter = (items, filter, AspNetCoreCookies, favorite = [], favoriteSel
 
 const ProductInfo = (props) => {
     //console.dir(props);
-    const { state: { AspNetCoreCookies = "", items = [], filter = [], favorite = [], favoriteSelect = false }, urlControlAction = {}, stateChangeResult, getAllProductsFavorite, handleStateProperty } = props;
+    const {
+        state: { AspNetCoreCookies = "", items = [], filter = [], favorite = [], favoriteSelect = false },
+        urlControlAction = {}, stateChangeResult, getAllProductsFavorite, handleStateProperty } = props;
 
     const cardStickyAction = ({ date = "", markingGoods = "", name = "", price = "", priceWithoutDiscount = "", url = "", }) => {
         const coin = (el) => el !== null ? `${el} руб.` : `отсутствует`;
@@ -145,7 +150,11 @@ const ProductInfo = (props) => {
                                             Object.keys(item).map((el, i) => {
                                                 if (el.toLowerCase() === "id") {
                                                     return (<th key={item["id"] + el} name={`ID${item.id}`}>
-                                                        <a href="#!">{item[el]}</a>
+                                                        <AllProductsFinder
+                                                            item={item}
+                                                            el={el}
+                                                            urlControlAction={urlControlAction}
+                                                        />
                                                     </th>);
                                                 } else if (el.toLowerCase() === "name") {
                                                     return (<td key={item["id"] + el}>

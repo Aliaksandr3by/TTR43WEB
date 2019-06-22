@@ -136,7 +136,7 @@ export const genTable = (data, title = "", className = "striped highlight") => {
     const TableRowHeader = (datas) => {
         let tmpString = ``;
         for (const item in datas) {
-            tmpString += `<th>${item.toLocaleLowerCase().replace(new RegExp("_", "g"), " ")}</th>`;
+            tmpString += `<th>${item.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase())}</th>`;
         }
         return tmpString;
     };
@@ -153,10 +153,10 @@ export const genTable = (data, title = "", className = "striped highlight") => {
         return `<tr>${tmpString}</tr>`;
     };
 
-    let www = (el) => {
+    const genTable = (el) => {
         return (
-        `<details>
-            <summary>${title}</summary>
+            `<div>
+            ${title ? "<summary>${title}</summary>" : ""}
             <table class="${className}">
                 <caption>
                     <p>${title.replace(new RegExp("_", "g"), " ")}</p>
@@ -168,7 +168,7 @@ export const genTable = (data, title = "", className = "striped highlight") => {
                     ${el}
                 </tbody>
             </table>
-        </details>`
+        </div>`
         );
     };
 
@@ -178,5 +178,5 @@ export const genTable = (data, title = "", className = "striped highlight") => {
     });
 
 
-    return www(rootLogText);
+    return genTable(rootLogText);
 };

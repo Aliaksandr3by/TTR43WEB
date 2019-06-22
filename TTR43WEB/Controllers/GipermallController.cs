@@ -63,6 +63,31 @@ namespace TTR43WEB.Controllers
             return Json(items);
         }
 
+        [HttpPost]
+        [ContentTypeAddJson]
+        public async Task<IActionResult> AllItemsProductOnId([FromBody] ProductEntityLite productEntityLit)
+        {
+            var items = _productsContextQueryable.Products
+                                .Select(e => new 
+                                {
+                                    e.MarkingGoods,
+                                    e.UrlNavigation.UrlProduct,
+                                    e.NameNavigation.NameProduct,
+                                    e.Date,
+                                    e.Mass,
+                                    e.Price,
+                                    e.PriceWithoutDiscount,
+                                    PriceOne = e.PriceOneKilogram ?? e.PriceOneLiter,
+                                    FullEstimatedValue = ProductsExtension.getFullPrice(e),
+                                    e.DimensionNavigation.DimensionProduct,
+                                })
+                                .Where(e => e.MarkingGoods == productEntityLit.MarkingGoods)
+                                .OrderByDescending(e=>e.Date);
+
+            return Json(await Task.Run(() => items));
+        }
+
+
         /// <summary>
         /// Метод получает набор элементов исходя из параметров отображения на экране
         /// </summary>
