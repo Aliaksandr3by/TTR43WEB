@@ -135,8 +135,11 @@ export const genTable = (data, title = "", className = "striped highlight") => {
 
     const TableRowHeader = (datas) => {
         let tmpString = ``;
+
         for (const item in datas) {
-            tmpString += `<th>${item.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase())}</th>`;
+            if (item !== "guid") {
+                tmpString += `<th>${item.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase())}</th>`;
+            }
         }
         return tmpString;
     };
@@ -144,10 +147,13 @@ export const genTable = (data, title = "", className = "striped highlight") => {
     const TableRowData = (datas, id = "ID") => {
         let tmpString = ``;
         for (const item in datas) {
-            if (item.toUpperCase() !== id) {
-                tmpString += `<td>${String(datas[item]).replace("null", "-")}</td>`;
-            } else {
-                tmpString += `<th>${datas.id}</th>`;
+            if (item !== "guid") {
+                if (item.toUpperCase() !== "id") {
+                    tmpString += `<td>${String(datas[item]).replace("null", "-")}</td>`;
+                }
+                else {
+                    tmpString += `<th>${datas.id}</th>`;
+                }
             }
         }
         return `<tr>${tmpString}</tr>`;

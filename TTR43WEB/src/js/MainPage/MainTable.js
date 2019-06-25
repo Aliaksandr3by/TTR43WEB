@@ -5,6 +5,7 @@ import React from "react";
 import PageSizeSelector from "./Components/PageSizeSelector";
 import PageList from "./Components/PageList";
 import FastFilteringByName from "./Components/FastFilteringByName";
+import DeepSearch from "./Components/DeepSearch";
 import ProductInfo from "./ProductInfo";
 import LoadingBar from "./Components/LoadingBar";
 import AddItemsOnTable from "./Components/AddItemsOnTable";
@@ -52,6 +53,13 @@ const MainTable = ({ urlControlAction, state, handleStateResultObject, stateChan
             <FastFilteringByName
                 handleStateResultObject={handleStateResultObject}
                 textplaceholder={"Название для быстрого поиска"}
+                texttitle={"Возвращает полное совпадение"}
+                state={state}
+            />
+            <DeepSearch
+                urlControlAction={urlControlAction}
+                handleStateResultObject={handleStateResultObject}
+                textplaceholder={"Название для глубокого поиска"}
                 texttitle={"Возвращает полное совпадение"}
                 state={state}
             />

@@ -37,7 +37,8 @@ class App extends Component {
             favorite: [],
             favoriteSelect: false,
             favoriteIsLoaded: false,
-            filter: this.getItemLocalStorage("filter"),
+            filter: this.getItemLocalStorage("filter", []),
+            deepSearch: this.getItemLocalStorage("deepSearch", ""),
             pageSize: Number(window.localStorage.getItem("pageSize")) || 10,
             productPage: Number(window.localStorage.getItem("productPage")) || 0,
             totalItems: 0,
@@ -49,7 +50,7 @@ class App extends Component {
         })();
     }
 
-    getItemLocalStorage = (name = "") => window.localStorage.getItem(name) ? JSON.parse(window.localStorage.getItem(name)) : [];
+    getItemLocalStorage = (name = "", data) => window.localStorage.getItem(name) ? JSON.parse(window.localStorage.getItem(name)) : data;
 
     //взывается сразу же после отображения компонента на экране приведут к запуску жизненного цикла обновления и к повторному отображению компонента на экране
     async componentDidMount() {

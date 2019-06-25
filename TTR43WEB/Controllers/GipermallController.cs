@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using DatumServer.Datum.Product;
 using DatumServer.Datum.User;
@@ -63,12 +64,84 @@ namespace TTR43WEB.Controllers
             return Json(items);
         }
 
+        /// <summary>
+        /// Метод ищет в базе все продукты по MarkingGoods
+        /// </summary>
+        /// <param name="productEntityLit"></param>
+        /// <returns></returns>
         [HttpPost]
         [ContentTypeAddJson]
         public async Task<IActionResult> AllItemsProductOnId([FromBody] ProductEntityLite productEntityLit)
         {
+            try
+            {
+                Func<ProductEntityLite, bool> func = null;
+
+                if (productEntityLit.MarkingGoods != null)
+                {
+                    func = e => e.MarkingGoods == productEntityLit.MarkingGoods;
+                }
+                else if (productEntityLit.Name != null)
+                {
+                    func = e =>
+                    {
+                        String[] collection = productEntityLit.Name.ToLower().Split(' ');
+                        bool flag = true;
+                        foreach (var item in collection)
+                        {
+                            flag = e.Name.ToLower().Contains(item);
+                            if (flag == false)
+                            {
+                                return false;
+                            }
+                        }
+                        return flag;
+                    };
+                }
+                else
+                {
+                    throw new Exception("не предусмотрен");
+                }
+
+                var items = _productsContextQueryable.Products
+                                    .Select(e => new ProductEntityLite
+                                    {
+                                        //Id = e.Id,
+                                        MarkingGoods = e.MarkingGoods,
+                                        //Guid = e.Guid,
+                                        Url = e.UrlNavigation.UrlProduct,
+                                        Name = e.NameNavigation.NameProduct,
+                                        Date = e.Date,
+                                        Mass = e.Mass,
+                                        Price = e.Price,
+                                        PriceWithoutDiscount = e.PriceWithoutDiscount,
+                                        PriceOneMass = e.PriceOneKilogram ?? e.PriceOneLiter,
+                                        FullEstimatedValue = ProductsExtension.getFullPrice(e),
+                                        DimensionProduct = e.DimensionNavigation.DimensionProduct,
+                                    })
+                                    .Where(func)
+                                    .OrderByDescending(e => e.Date);
+
+                return Json(await Task.Run(() => items));
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
+        /// <summary>
+        /// Метод ищет в базе все продукты по Названию
+        /// </summary>
+        /// <param name="productEntityLit"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ContentTypeAddJson]
+        public async Task<IActionResult> GetAllGoodsByName([FromBody] ProductEntityLite productEntityLit)
+        {
             var items = _productsContextQueryable.Products
-                                .Select(e => new 
+                                .Select(e => new
                                 {
                                     e.MarkingGoods,
                                     e.UrlNavigation.UrlProduct,
@@ -81,12 +154,11 @@ namespace TTR43WEB.Controllers
                                     FullEstimatedValue = ProductsExtension.getFullPrice(e),
                                     e.DimensionNavigation.DimensionProduct,
                                 })
-                                .Where(e => e.MarkingGoods == productEntityLit.MarkingGoods)
-                                .OrderByDescending(e=>e.Date);
+                                .Where(e => e.NameProduct == productEntityLit.Name)
+                                .OrderByDescending(e => e.Date);
 
             return Json(await Task.Run(() => items));
         }
-
 
         /// <summary>
         /// Метод получает набор элементов исходя из параметров отображения на экране
