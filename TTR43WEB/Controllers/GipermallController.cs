@@ -106,16 +106,16 @@ namespace TTR43WEB.Controllers
                 var items = _productsContextQueryable.Products
                                     .Select(e => new ProductEntityLite
                                     {
-                                        //Id = e.Id,
+                                        Id = e.Id,
                                         MarkingGoods = e.MarkingGoods,
-                                        //Guid = e.Guid,
+                                        Guid = e.Guid,
                                         Url = e.UrlNavigation.UrlProduct,
                                         Name = e.NameNavigation.NameProduct,
-                                        Date = e.Date,
                                         Mass = e.Mass,
                                         Price = e.Price,
                                         PriceWithoutDiscount = e.PriceWithoutDiscount,
                                         PriceOneMass = e.PriceOneKilogram ?? e.PriceOneLiter,
+                                        Date = e.Date,
                                         FullEstimatedValue = ProductsExtension.getFullPrice(e),
                                         DimensionProduct = e.DimensionNavigation.DimensionProduct,
                                     })
