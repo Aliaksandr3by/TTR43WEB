@@ -26,6 +26,9 @@ const DeepSearch = ({ urlControlAction, handleStateResultObject, textplaceholder
 
         try {
 
+            const tmp = document.getElementById("rootTitle");
+            tmp.innerHTML = `<p>WAIT</p>`;
+
             const response = await fetch(urlControlAction.urlControlActionAllItemsProductOnId, {
                 method: "POST",
                 headers: {
@@ -38,7 +41,7 @@ const DeepSearch = ({ urlControlAction, handleStateResultObject, textplaceholder
 
             const json = await response.json();
 
-            const tmp = document.getElementById("rootTitle");
+            
 
             tmp.innerHTML = genTable(json, "", "centered striped");
             tmp.classList.add("block");

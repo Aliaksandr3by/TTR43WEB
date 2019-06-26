@@ -155,6 +155,15 @@ const ProductInfo = (props) => {
                                                             el={el}
                                                             urlControlAction={urlControlAction}
                                                         />
+                                                        <div
+                                                            className="hide"
+                                                            id={"rootTitle"}
+                                                            onDoubleClick={(e) => {
+                                                                const tmp = document.getElementById("rootTitle");
+                                                                tmp.classList.toggle("hide");
+                                                                // e.target.closest("div").classList.toggle("hide");
+                                                            }}
+                                                        ></div>
                                                     </th>);
                                                 } else if (el.toLowerCase() === "name") {
                                                     return (<td key={item["id"] + el}>

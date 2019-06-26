@@ -155,7 +155,7 @@ class CoastTextareaUrl extends Component {
     async updateFavoritsOnServer(e, favorite = [], urlControlAction, handleStateResultObject) {
         try {
 
-            this.setState({"updateFavotite": true});
+            this.setState({ "updateFavotite": true });
 
             const guidProducts = favorite.map((eF, iF) => eF.guid);
 
@@ -176,11 +176,11 @@ class CoastTextareaUrl extends Component {
                 await handleStateResultObject(json);
                 this.setState({ "textarea": json.productEntity.map((e) => e.url) });
             }
-            this.setState({"updateFavotite": false});
+            this.setState({ "updateFavotite": false });
 
         } catch (error) {
             console.error(error);
-            this.setState({"updateFavotite": false});
+            this.setState({ "updateFavotite": false });
         }
     }
 
@@ -274,6 +274,39 @@ class CoastTextareaUrl extends Component {
                                 value={this.state.textarea}
                             />
                             <label className="active" htmlFor="textareaURLstorige">{"Адрес товара"}</label>
+                            <details>
+                                <summary>JS код (для консоли) для получения ссылок</summary>
+                                <pre onClick={e => {
+                                    navigator.clipboard.writeText(e.target.textContent)
+                                        .then()
+                                        .catch((error) => {
+                                            console.error("Async: Could not copy text: ", error.message);
+                                        });
+                                }}>
+                                    {`
+(() => {
+    try {
+        const tmp = Array.from(document.querySelectorAll("a.to_favorite.fa.fa-heart")).map(e => e.getAttribute("data-product-id"));
+        const div = document.getElementsByTagName("body")[0].appendChild(document.createElement("div"));
+        const tmpURL = [];
+        tmp.map(e => {
+            const a = document.createElement("p");
+            const tmp = \`https://\${document.domain}/catalog/item_\${e.replace(/,/g, "")}.html\`;
+            a.textContent = tmp;
+            div.appendChild(a);
+            tmpURL.push(tmp);
+        });
+
+        const data = tmpURL.join("; ");
+        console.dir(data);
+
+    } catch (error) {
+        console.error(error);
+    }
+})();
+`}
+                                </pre>
+                            </details>
                         </div>
                     </div>
                     <div className="col s12">

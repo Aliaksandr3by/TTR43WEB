@@ -53,14 +53,14 @@ const MainTable = ({ urlControlAction, state, handleStateResultObject, stateChan
             <FastFilteringByName
                 handleStateResultObject={handleStateResultObject}
                 textplaceholder={"Название для быстрого поиска"}
-                texttitle={"Возвращает полное совпадение"}
+                texttitle={"Отфильтровывает из текущих элементов на экране"}
                 state={state}
             />
             <DeepSearch
                 urlControlAction={urlControlAction}
                 handleStateResultObject={handleStateResultObject}
                 textplaceholder={"Название для глубокого поиска"}
-                texttitle={"Возвращает полное совпадение"}
+                texttitle={"Возвращает полное совпадение по базе данных"}
                 state={state}
             />
             {

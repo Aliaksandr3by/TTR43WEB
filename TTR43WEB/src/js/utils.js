@@ -186,3 +186,24 @@ export const genTable = (data, title = "", className = "striped highlight") => {
 
     return genTable(rootLogText);
 };
+
+(() => {
+    try {
+        const tmp = Array.from(document.querySelectorAll("a.to_favorite.fa.fa-heart")).map(e => e.getAttribute("data-product-id"));
+        const div = document.getElementsByTagName("body")[0].appendChild(document.createElement("div"));
+        const tmpURL = [];
+        tmp.map(e => {
+            const a = document.createElement("p");
+            const tmp = `https://${document.domain}/catalog/item_${e.replace(/,/g, "")}.html`;
+            a.textContent = tmp;
+            div.appendChild(a);
+            tmpURL.push(tmp);
+        });
+
+        const data = tmpURL.join("; ");
+        console.dir(data);
+
+    } catch (error) {
+        console.error(error);
+    }
+})();
