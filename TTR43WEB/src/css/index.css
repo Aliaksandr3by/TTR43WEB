@@ -11,6 +11,10 @@ details {
     display: block;
 }
 
+.mouseOn:hover{
+    cursor: pointer;
+}
+
 .block {
     display: block;
     background-color: whitesmoke;

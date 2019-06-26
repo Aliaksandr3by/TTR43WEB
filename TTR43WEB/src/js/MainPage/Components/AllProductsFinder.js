@@ -62,8 +62,8 @@ class AllProductsFinder extends Component {
         //console.log(item, el, urlControlAction);
 
         return <React.Fragment>
-            <div
-                onMouseEnter={(e) => this.allItemsProductOnId(e, urlControlAction, item)}
+            <div className={"mouseOn"}
+                onClick={(e) => this.allItemsProductOnId(e, urlControlAction, item)}
                 data-marking-goods={item.markingGoods}>
                 {item[el]}
 

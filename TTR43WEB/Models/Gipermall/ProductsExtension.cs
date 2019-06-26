@@ -58,17 +58,13 @@ namespace TTR43WEB.Models.Gipermall
 
             if ((productEntity.Price != null || productEntity.PriceWithoutDiscount != null) && productEntity.Mass != null)
             {
-                if (productEntity.Price != null && productEntity.PriceWithoutDiscount != null)
-                {
-                    return (productEntity.Price > productEntity.PriceWithoutDiscount ? productEntity.PriceWithoutDiscount : productEntity.Price) /
-                        (decimal)productEntity.Mass * fullSize;
-                }
-
-                return (productEntity.Price ?? productEntity.PriceWithoutDiscount) / (decimal)productEntity.Mass * fullSize;
-
+                var tmp = (productEntity.Price ?? productEntity.PriceWithoutDiscount) / (decimal)productEntity.Mass * fullSize;
+                return Math.Round(tmp ?? 0, 3);
             }
-
-            return null;
+            else
+            {
+                return productEntity.PriceOneKilogram ?? productEntity.PriceOneLiter;
+            }
         }
 
         public static ProductEntityLite ToProductEntityLite(this ProductEntityLite productEntityLite, Products productEntity)
