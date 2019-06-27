@@ -58,10 +58,17 @@ namespace TTR43WEB.Controllers
         [ContentTypeAddJson]
         public async Task<IActionResult> ItemsProduct(int pageSize, int productPage, bool favoriteSelect)
         {
-            Func<Products, DateTime?> sort = e => e.Date;
-            var tmp = new PaginationOptions(_productsContextQueryable.Products, _usersContextQueryable.UserFavorites);
-            var items = await tmp.GetItemsAsync(sort: sort, pageSize: pageSize, productPage: productPage, favoriteSelect: (favoriteSelect));
-            return Json(items);
+            try
+            {
+                Func<Products, DateTime?> sort = e => e.Date;
+                var tmp = new PaginationOptions(_productsContextQueryable.Products, _usersContextQueryable.UserFavorites);
+                var items = await tmp.GetItemsAsync(sort: sort, pageSize: pageSize, productPage: productPage, favoriteSelect: (favoriteSelect));
+                return Json(items);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>

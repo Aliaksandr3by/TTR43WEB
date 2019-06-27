@@ -79,13 +79,15 @@ namespace TTR43WEB.Models.Gipermall
                 Id = productEntity.Id,
                 Date = productEntity.Date,
                 Guid = productEntity.Guid,
-                Url = productEntity.UrlNavigation.UrlProduct,
-                Name = productEntity.NameNavigation.NameProduct,
+                Url = productEntity.UrlNavigation?.UrlProduct,
+                Name = productEntity.NameNavigation?.NameProduct,
                 MarkingGoods = productEntity.MarkingGoods,
                 Price = productEntity.Price,
                 PriceWithoutDiscount = productEntity.PriceWithoutDiscount,
                 PriceOneMass = productEntity.PriceOneKilogram ?? productEntity.PriceOneLiter,
                 FullEstimatedValue = getFullPrice(productEntity),
+                Mass = productEntity.Mass,
+                DimensionProduct = productEntity.DimensionNavigation?.DimensionProduct,
             };
 
             return _productEntityLite;
