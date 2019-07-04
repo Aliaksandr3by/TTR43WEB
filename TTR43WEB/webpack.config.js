@@ -91,9 +91,7 @@ module.exports = (env, argv) => {
                                 plugins: function () { // post css plugins, can be exported to postcss.config.js
                                     return [
                                         require("precss"),
-                                        require("autoprefixer")({
-                                            browsers: "last 2 versions, > 1%"
-                                        }),
+                                        require("autoprefixer"),
                                         require("css-mqpacker"),
                                         require("cssnano")({
                                             preset: "default",
