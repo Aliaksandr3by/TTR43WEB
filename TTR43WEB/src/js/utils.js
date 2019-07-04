@@ -133,30 +133,51 @@ export const getBrowserType = () => {
 
 export const genTable = (data, title = "", className = "striped highlight") => {
 
+    const dateConverter = (date) => {
+        try {
+            const newDate = (new Date(date)).toLocaleString("RU-be");
+            console.log(newDate);
+            return newDate;
+        } catch (error) {
+            return date || Date.now;
+        }
+    };
+
     const TableRowHeader = (datas) => {
         let tmpString = ``;
 
         for (const item in datas) {
-            if (item !== "guid") {
-                tmpString += `<th>${item.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase())}</th>`;
+            if (item !== "guid" && item !== "url") {
+                tmpString += `<th data-key=${item}>${item.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase())}</th>`;
             }
         }
         return tmpString;
     };
 
     const TableRowData = (datas, id = "ID") => {
-        let tmpString = ``;
-        for (const item in datas) {
-            if (item !== "guid") {
-                if (item.toUpperCase() !== "id") {
-                    tmpString += `<td>${String(datas[item]).replace("null", "-")}</td>`;
-                }
-                else {
-                    tmpString += `<th>${datas.id}</th>`;
+        try {
+            let tmpString = ``;
+            console.dir(datas);
+            for (const item in datas) {
+                if (item !== "guid" && item !== "url") {
+                    if (item.toLowerCase() === "date") {
+                        tmpString += `<td>${dateConverter(datas[item])}</td>`;
+                    }
+                    else if (item.toLowerCase() === "id") {
+                        tmpString += `<th>${datas.id}</th>`;
+                    }
+                    else if (item.toLowerCase() === "name") {
+                        tmpString += `<td><a target="_blank" href="${datas.url}">${String(datas[item])}</a></td>`;
+                    }
+                    else {
+                        tmpString += `<td>${String(datas[item]).replace("null", "-")}</td>`;
+                    }
                 }
             }
+            return `<tr>${tmpString}</tr>`;
+        } catch (error) {
+            console.error(error);
         }
-        return `<tr>${tmpString}</tr>`;
     };
 
     const genTable = (el) => {
@@ -206,4 +227,4 @@ export const genTable = (data, title = "", className = "striped highlight") => {
     } catch (error) {
         console.error(error);
     }
-})();
+});

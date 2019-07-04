@@ -18,6 +18,7 @@
     // "less.validate": false,
     // "scss.validate": false,
     "editor.fontFamily": "Fira Code",
+    "editor.fontSize": 14,
     // "editor.fontLigatures": true,
     "files.associations": {
         "*.css": "postcss",
@@ -27,30 +28,4 @@
     "code-runner.defaultLanguage": "javascript",
     "csharpfixformat.style.spaces.beforeIndexerBracket": false,
     "csharpfixformat.style.spaces.beforeParenthesis": false,
-    "sqltools.connections": [
-        {
-            "askForPassword": false,
-            "connectionTimeout": 30,
-            "database": "Product",
-            "dialect": "MSSQL",
-            "domain": null,
-            "name": "MSSQLSERVER2017",
-            "password": "guest",
-            "port": 1433,
-            "server": "DESKTOP-OBC9S1R\\MSSQLSERVER2017",
-            "username": "guest"
-        },
-        {
-            "askForPassword": false,
-            "connectionTimeout": 30,
-            "database": "User",
-            "dialect": "MSSQL",
-            "domain": null,
-            "name": "MSSQLSERVER2017",
-            "password": "guest",
-            "port": 1433,
-            "server": "DESKTOP-OBC9S1R\\MSSQLSERVER2017",
-            "username": "guest"
-        }
-    ],
 }

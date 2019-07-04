@@ -23,13 +23,10 @@ const _replacer = (name) => {
  */
 const _dateConverter = (date) => {
     try {
-        const dateC = Date.parse(date);
-        const newDate = (new Date(dateC)).toLocaleString("RU-be");
-        //console.log(newDate);
+        const newDate = (new Date(date)).toLocaleString("RU-be");
         return newDate;
     } catch (error) {
-        //console.log(date);
-        return date;
+        return date || Date.now;
     }
 };
 

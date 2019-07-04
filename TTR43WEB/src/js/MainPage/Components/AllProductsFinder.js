@@ -43,9 +43,9 @@ class AllProductsFinder extends Component {
 
             const json = await response.json();
 
-            this.setState({
-                ["title"]: genTable(json),
-            });
+            // this.setState({
+            //     ["title"]: genTable(json),
+            // });
 
 
             tmp.innerHTML = genTable(json, "", "centered striped");
