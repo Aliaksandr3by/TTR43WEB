@@ -6,7 +6,6 @@ using DatumServer.Datum.Product;
 using DatumServer.Datum.User;
 using TTR43WEB.Models.User;
 
-
 namespace TTR43WEB.Models.Gipermall
 {
     public static class ProductsExtension
@@ -48,22 +47,37 @@ namespace TTR43WEB.Models.Gipermall
                 MarkingGoods = productEntity.MarkingGoods,
                 Price = productEntity.Price,
                 PriceWithoutDiscount = productEntity.PriceWithoutDiscount,
+                PriceOneMass = productEntity.PriceOneKilogram ?? productEntity.PriceOneLiter,
+                FullEstimatedValue = getFullPrice(productEntity),
+                Mass = productEntity.Mass,
+                DimensionProduct = productEntity.Dimension,
             };
             return _productEntityLite;
         }
-        
+
+        public static decimal? getFullPrice(ProductEntity productEntity)
+        {
+            return getFullPriceDet(productEntity.Price, productEntity.PriceWithoutDiscount, productEntity.Mass, productEntity.PriceOneKilogram, productEntity.PriceOneLiter);
+
+        }
+
         public static decimal? getFullPrice(Products productEntity)
+        {
+            return getFullPriceDet(productEntity.Price, productEntity.PriceWithoutDiscount, productEntity.Mass, productEntity.PriceOneKilogram, productEntity.PriceOneLiter);
+        }
+
+        private static decimal? getFullPriceDet(decimal? Price, decimal? PriceWithoutDiscount, double? Mass, decimal? PriceOneKilogram, decimal? PriceOneLiter)
         {
             decimal fullSize = 1.0M;
 
-            if ((productEntity.Price != null || productEntity.PriceWithoutDiscount != null) && productEntity.Mass != null)
+            if ((Price != null || PriceWithoutDiscount != null) && Mass != null)
             {
-                var tmp = (productEntity.Price ?? productEntity.PriceWithoutDiscount) / (decimal)productEntity.Mass * fullSize;
+                var tmp = (Price ?? PriceWithoutDiscount) / (decimal) Mass * fullSize;
                 return Math.Round(tmp ?? 0, 3);
             }
             else
             {
-                return productEntity.PriceOneKilogram ?? productEntity.PriceOneLiter;
+                return PriceOneKilogram ?? PriceOneLiter;
             }
         }
 

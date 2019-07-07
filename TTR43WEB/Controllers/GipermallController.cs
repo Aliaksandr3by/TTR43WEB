@@ -111,23 +111,23 @@ namespace TTR43WEB.Controllers
                 }
 
                 var items = _productsContextQueryable.Products
-                                    .Select(e => new ProductEntityLite
-                                    {
-                                        Id = e.Id,
-                                        MarkingGoods = e.MarkingGoods,
-                                        Guid = e.Guid,
-                                        Url = e.UrlNavigation.UrlProduct,
-                                        Name = e.NameNavigation.NameProduct,
-                                        Mass = e.Mass,
-                                        Price = e.Price,
-                                        PriceWithoutDiscount = e.PriceWithoutDiscount,
-                                        PriceOneMass = e.PriceOneKilogram ?? e.PriceOneLiter,
-                                        Date = e.Date,
-                                        FullEstimatedValue = ProductsExtension.getFullPrice(e),
-                                        DimensionProduct = e.DimensionNavigation.DimensionProduct,
-                                    })
-                                    .Where(func)
-                                    .OrderByDescending(e => e.Date);
+                    .Select(e => new ProductEntityLite
+                    {
+                        Id = e.Id,
+                            MarkingGoods = e.MarkingGoods,
+                            Guid = e.Guid,
+                            Url = e.UrlNavigation.UrlProduct,
+                            Name = e.NameNavigation.NameProduct,
+                            Mass = e.Mass,
+                            Price = e.Price,
+                            PriceWithoutDiscount = e.PriceWithoutDiscount,
+                            PriceOneMass = e.PriceOneKilogram ?? e.PriceOneLiter,
+                            Date = e.Date,
+                            FullEstimatedValue = ProductsExtension.getFullPrice(e),
+                            DimensionProduct = e.DimensionNavigation.DimensionProduct,
+                    })
+                    .Where(func)
+                    .OrderByDescending(e => e.Date);
 
                 return Json(await Task.Run(() => items));
             }
@@ -136,7 +136,6 @@ namespace TTR43WEB.Controllers
                 throw;
             }
         }
-
 
         /// <summary>
         /// Метод ищет в базе все продукты по Названию
@@ -148,21 +147,21 @@ namespace TTR43WEB.Controllers
         public async Task<IActionResult> GetAllGoodsByName([FromBody] ProductEntityLite productEntityLit)
         {
             var items = _productsContextQueryable.Products
-                                .Select(e => new
-                                {
-                                    e.MarkingGoods,
-                                    e.UrlNavigation.UrlProduct,
-                                    e.NameNavigation.NameProduct,
-                                    e.Date,
-                                    e.Mass,
-                                    e.Price,
-                                    e.PriceWithoutDiscount,
-                                    PriceOne = e.PriceOneKilogram ?? e.PriceOneLiter,
-                                    FullEstimatedValue = ProductsExtension.getFullPrice(e),
-                                    e.DimensionNavigation.DimensionProduct,
-                                })
-                                .Where(e => e.NameProduct == productEntityLit.Name)
-                                .OrderByDescending(e => e.Date);
+                .Select(e => new
+                {
+                    e.MarkingGoods,
+                        e.UrlNavigation.UrlProduct,
+                        e.NameNavigation.NameProduct,
+                        e.Date,
+                        e.Mass,
+                        e.Price,
+                        e.PriceWithoutDiscount,
+                        PriceOne = e.PriceOneKilogram ?? e.PriceOneLiter,
+                        FullEstimatedValue = ProductsExtension.getFullPrice(e),
+                        e.DimensionNavigation.DimensionProduct,
+                })
+                .Where(e => e.NameProduct == productEntityLit.Name)
+                .OrderByDescending(e => e.Date);
 
             return Json(await Task.Run(() => items));
         }
@@ -209,7 +208,6 @@ namespace TTR43WEB.Controllers
 
                     var product = _productsContextQueryable.AddProduct(productEntity, findAddingProduct != null);
 
-
                     if (product != null && product.Entity != null)
                     {
                         productEntity.Guid = product.Entity.Guid;
@@ -218,7 +216,6 @@ namespace TTR43WEB.Controllers
                 }
 
                 await _productsContextQueryable.SaveProduct();
-
 
                 return Json(new
                 {
@@ -248,10 +245,10 @@ namespace TTR43WEB.Controllers
                 .Select(e => new UserFavorite
                 {
                     Guid = e.Guid,
-                    UserGuid = e.UserGuid,
-                    ProductGuid = e.ProductGuid,
-                    DateTimeAdd = e.DateTimeAdd,
-                    Url = e.Url,
+                        UserGuid = e.UserGuid,
+                        ProductGuid = e.ProductGuid,
+                        DateTimeAdd = e.DateTimeAdd,
+                        Url = e.Url,
                 })
                 .Where(e => e.UserGuid == userGuid);
 
@@ -404,10 +401,11 @@ namespace TTR43WEB.Controllers
                     .OrderByDescending(p => p.Date)
                     .Where(p => p.MarkingGoodsNavigation.MarkingGoodsProduct == productEntity.MarkingGoods)
                     .Select<Products, Products>(p => p)
-                    .FirstOrDefault()
-                    ;
+                    .FirstOrDefault();
 
-                bool flag = findAddingProduct != null && findAddingProduct.Price == productEntity.Price && findAddingProduct.PriceWithoutDiscount == productEntity.PriceWithoutDiscount;
+                bool flag = findAddingProduct != null &&
+                    findAddingProduct.Price == productEntity.Price &&
+                    findAddingProduct.PriceWithoutDiscount == productEntity.PriceWithoutDiscount;
 
                 var product = _productsContextQueryable.AddProduct(productEntity, !flag);
 
@@ -428,7 +426,7 @@ namespace TTR43WEB.Controllers
                 return Json(new
                 {
                     items = productEntityLite,
-                    isPresent = flag,
+                        isPresent = flag,
                 });
             }
             catch (Exception ex)
