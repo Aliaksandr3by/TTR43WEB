@@ -44,10 +44,10 @@ namespace TTR43WEB
 
             services.AddDataProtection ().SetDefaultKeyLifetime (TimeSpan.FromDays (14));;
 
-            services.AddDbContext<ProductContext> (options => options.UseSqlServer (Configuration["ConnectionStrings:ConnectionProduct"]));
+            services.AddDbContext<ProductContext> (options => options.UseSqlServer (Configuration["ConnectionStrings2:ConnectionProduct"]));
             services.AddScoped<IProductsContextQueryable, ProductsContextQueryable> ();
 
-            services.AddDbContext<UserContext> (options => options.UseSqlServer (Configuration["ConnectionStrings:ConnectionUser"]));
+            services.AddDbContext<UserContext> (options => options.UseSqlServer (Configuration["ConnectionStrings2:ConnectionUser"]));
             services.AddScoped<IUsersContextQueryable, UsersContextQueryable> ();
 
             // Inside your ConfigureServices method
