@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DatumServer.Datum.Product
+namespace TTR43WEB.Models.Product
 {
     public partial class ProductEntityLite
     {

@@ -2,15 +2,15 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace DatumServer.Datum.User
+namespace DatumServer.Datum.userttr43
 {
-    public partial class UserContext : DbContext
+    public partial class userttr43Context : DbContext
     {
-        public UserContext()
+        public userttr43Context()
         {
         }
 
-        public UserContext(DbContextOptions<UserContext> options)
+        public userttr43Context(DbContextOptions<userttr43Context> options)
             : base(options)
         {
         }

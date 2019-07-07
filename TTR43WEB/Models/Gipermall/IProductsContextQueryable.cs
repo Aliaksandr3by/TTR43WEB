@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DatumServer.Datum.Product;
+using DatumServer.Datum.productttr43;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace TTR43WEB.Models.Gipermall

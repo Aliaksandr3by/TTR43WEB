@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AngleSharp;
 using AngleSharp.Dom;
-using DatumServer.Datum.Product;
+using DatumServer.Datum.productttr43;
 using TTR43WEB.Models.Gipermall;
 
 namespace TTR43WEB.Models.Gipermall

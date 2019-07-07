@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using DatumServer.Datum.User;
+using DatumServer.Datum.userttr43;
 using TTR43WEB.Models.User;
 using TTR43WEB.Universal;
 using static Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary;

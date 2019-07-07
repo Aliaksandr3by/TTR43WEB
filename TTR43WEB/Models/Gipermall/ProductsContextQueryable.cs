@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DatumServer.Datum.Product;
+using DatumServer.Datum.productttr43;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Design;
@@ -16,9 +16,9 @@ namespace TTR43WEB.Models.Gipermall
     /// </summary>
     public class ProductsContextQueryable : IProductsContextQueryable
     {
-        private readonly ProductContext context;
+        private readonly productttr43Context context;
 
-        public ProductsContextQueryable(ProductContext ctx) => context = ctx;
+        public ProductsContextQueryable(productttr43Context ctx) => context = ctx;
 
         public IQueryable<Products> Products => context.Products
             .Include(e => e.BarCodeNavigation)

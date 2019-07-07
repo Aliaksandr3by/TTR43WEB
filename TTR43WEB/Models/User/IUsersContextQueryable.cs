@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DatumServer.Datum.Product;
-using DatumServer.Datum.User;
+using DatumServer.Datum.productttr43;
+using DatumServer.Datum.userttr43;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using TTR43WEB.Models.User;
+using TTR43WEB.Models.Product;
+
 
 namespace TTR43WEB.Models.User
 {
@@ -18,7 +21,7 @@ namespace TTR43WEB.Models.User
 
         EntityEntry<UserAgent> AddUserAgent(UserAgent user);
 
-        UserContext GetUserContext();
+        userttr43Context GetUserContext();
 
         int SaveChanges();
 

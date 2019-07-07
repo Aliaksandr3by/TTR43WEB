@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DatumServer.Datum.Product;
-using DatumServer.Datum.User;
+using DatumServer.Datum.productttr43;
+using DatumServer.Datum.userttr43;
+using TTR43WEB.Models.Product;
 
 namespace TTR43WEB.Models.Gipermall
 {

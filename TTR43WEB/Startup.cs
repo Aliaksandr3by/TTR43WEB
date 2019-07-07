@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using DatumServer.Datum.Product;
-using DatumServer.Datum.User;
+using DatumServer.Datum.productttr43;
+using DatumServer.Datum.userttr43;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
@@ -44,10 +44,10 @@ namespace TTR43WEB
 
             services.AddDataProtection ().SetDefaultKeyLifetime (TimeSpan.FromDays (14));;
 
-            services.AddDbContext<ProductContext> (options => options.UseSqlServer (Configuration["ConnectionStrings2:ConnectionProduct"]));
+            services.AddDbContext<productttr43Context> (options => options.UseSqlServer (Configuration["ConnectionStrings:ConnectionProduct"]));
             services.AddScoped<IProductsContextQueryable, ProductsContextQueryable> ();
 
-            services.AddDbContext<UserContext> (options => options.UseSqlServer (Configuration["ConnectionStrings2:ConnectionUser"]));
+            services.AddDbContext<userttr43Context> (options => options.UseSqlServer (Configuration["ConnectionStrings:ConnectionUser"]));
             services.AddScoped<IUsersContextQueryable, UsersContextQueryable> ();
 
             // Inside your ConfigureServices method

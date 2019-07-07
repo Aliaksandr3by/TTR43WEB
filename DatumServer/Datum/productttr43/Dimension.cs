@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DatumServer.Datum.Product
+namespace DatumServer.Datum.productttr43
 {
     public partial class Dimension
     {

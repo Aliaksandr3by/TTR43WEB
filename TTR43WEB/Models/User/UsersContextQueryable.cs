@@ -7,18 +7,18 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using DatumServer.Datum.User;
+using DatumServer.Datum.userttr43;
 using DatumServer.Datum;
 
 namespace TTR43WEB.Models.User
 {
     public class UsersContextQueryable : IUsersContextQueryable
     {
-        private readonly UserContext context;
+        private readonly userttr43Context context;
 
-        public UserContext GetUserContext() => this.context;
+        public userttr43Context GetUserContext() => this.context;
 
-        public UsersContextQueryable(UserContext ctx) => context = ctx;
+        public UsersContextQueryable(userttr43Context ctx) => context = ctx;
 
         public IQueryable<Users> Users => context.Users;
 

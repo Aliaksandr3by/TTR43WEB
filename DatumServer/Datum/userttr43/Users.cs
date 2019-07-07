@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DatumServer.Datum.User
+namespace DatumServer.Datum.userttr43
 {
     public partial class Users
     {

@@ -1,9 +1,9 @@
 ﻿Построение классов по базе данных
-Scaffold-DbContext -Force name="ConnectionProduct" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Datum/Product
-Scaffold-DbContext -Force name="ConnectionUser" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Datum/User
+Scaffold-DbContext -Force name="ConnectionProduct" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Datum/productttr43
+Scaffold-DbContext -Force name="ConnectionUser" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Datum/userttr43
 
-dotnet ef dbcontext scaffold name="ConnectionProduct" Microsoft.EntityFrameworkCore.SqlServer -s TTR43WEB -p DatumServer -o Datum/Product -f
-dotnet ef dbcontext scaffold name="ConnectionUser" Microsoft.EntityFrameworkCore.SqlServer -s TTR43WEB -p DatumServer -o Datum/User -f
+dotnet ef dbcontext scaffold name="ConnectionProduct" Microsoft.EntityFrameworkCore.SqlServer -s TTR43WEB -p DatumServer -o Datum/productttr43 -f
+dotnet ef dbcontext scaffold name="ConnectionUser" Microsoft.EntityFrameworkCore.SqlServer -s TTR43WEB -p DatumServer -o Datum/userttr43 -f
 
 Добавления миграции
 Add-Migration MyFirstMigration -Context ContextGipermall
@@ -20,3 +20,8 @@ Install-Package Microsoft.EntityFrameworkCore.Design -Version 2.2.3 -ProjectName
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.2.3">
 
 https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/powershell
+
+  "ConnectionStrings": {
+    "ConnectionProduct": "Data Source=DESKTOP-OBC9S1R\\MSSQLSERVER2017;Initial Catalog=Product;User ID=guest;Password=guest;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False",
+    "ConnectionUser": "Data Source=DESKTOP-OBC9S1R\\MSSQLSERVER2017;Initial Catalog=User;User ID=guest;Password=guest;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"
+  },

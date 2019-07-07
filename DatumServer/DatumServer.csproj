@@ -5,6 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Datum\Product\**" />
+    <Compile Remove="Datum\User\**" />
+    <EmbeddedResource Remove="Datum\Product\**" />
+    <EmbeddedResource Remove="Datum\User\**" />
+    <None Remove="Datum\Product\**" />
+    <None Remove="Datum\User\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.2.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.4" />

@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DatumServer.Datum.Product
+namespace DatumServer.Datum.productttr43
 {
-    public partial class MarkingGoods
+    public partial class Trademark
     {
-        public MarkingGoods()
+        public Trademark()
         {
             Products = new HashSet<Products>();
         }
 
         public int Id { get; set; }
-        public int MarkingGoodsProduct { get; set; }
+        public string TrademarkProduct { get; set; }
 
         public virtual ICollection<Products> Products { get; set; }
     }

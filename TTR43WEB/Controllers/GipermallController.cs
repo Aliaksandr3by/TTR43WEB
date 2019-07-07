@@ -5,8 +5,8 @@ using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using DatumServer.Datum.Product;
-using DatumServer.Datum.User;
+using DatumServer.Datum.productttr43;
+using DatumServer.Datum.userttr43;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -16,6 +16,7 @@ using Newtonsoft.Json.Linq;
 using TTR43WEB.Filters;
 using TTR43WEB.Models.Gipermall;
 using TTR43WEB.Models.User;
+using TTR43WEB.Models.Product;
 
 namespace TTR43WEB.Controllers
 {

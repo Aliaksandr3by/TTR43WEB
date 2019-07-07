@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DatumServer.Datum.Product;
-using DatumServer.Datum.User;
+using DatumServer.Datum.productttr43;
+using DatumServer.Datum.userttr43;
+using TTR43WEB.Models.Product;
 using TTR43WEB.Models.User;
 
 namespace TTR43WEB.Models.Gipermall
@@ -107,7 +108,7 @@ namespace TTR43WEB.Models.Gipermall
             return _productEntityLite;
         }
 
-        public static Products ToProducts(this Products products, ProductEntity product, ProductContext context)
+        public static Products ToProducts(this Products products, ProductEntity product, productttr43Context context)
         {
             if (products == null)
             {
