@@ -1,3 +1,6 @@
 ﻿/dist
 /node_modules
 /wwwroot/public
+
+TTR43WEB/appsettings.Development.json
+TTR43WEB/appsettings.json
