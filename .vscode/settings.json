@@ -18,7 +18,7 @@
     // "less.validate": false,
     // "scss.validate": false,
     "editor.fontFamily": "Fira Code",
-    "editor.fontSize": 14,
+    "editor.fontSize": 13,
     // "editor.fontLigatures": true,
     "files.associations": {
         "*.css": "postcss",

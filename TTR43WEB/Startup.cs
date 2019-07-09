@@ -42,12 +42,12 @@ namespace TTR43WEB
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddDataProtection ().SetDefaultKeyLifetime (TimeSpan.FromDays (14));;
+            services.AddDataProtection ().SetDefaultKeyLifetime (TimeSpan.FromDays (14));
 
-            services.AddDbContext<productttr43Context> (options => options.UseSqlServer (Configuration["ConnectionStrings:ConnectionProduct"]));
+            services.AddDbContext<productttr43Context> (options => options.UseSqlServer (Configuration[$"ConnectionStrings:ConnectionProduct"]));
             services.AddScoped<IProductsContextQueryable, ProductsContextQueryable> ();
 
-            services.AddDbContext<userttr43Context> (options => options.UseSqlServer (Configuration["ConnectionStrings:ConnectionUser"]));
+            services.AddDbContext<userttr43Context> (options => options.UseSqlServer (Configuration[$"ConnectionStrings:ConnectionUser"]));
             services.AddScoped<IUsersContextQueryable, UsersContextQueryable> ();
 
             // Inside your ConfigureServices method

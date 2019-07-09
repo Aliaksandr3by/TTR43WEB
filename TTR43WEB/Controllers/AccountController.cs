@@ -79,40 +79,47 @@ namespace TTR43WEB.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login([FromForm]LoginModel _model)
         {
-            LoginModel model = _model;
-
-            if (ModelState.IsValid)
+            try
             {
-                Users user = await db.Users.FirstOrDefaultAsync(
-                    (u) => (u.Login == model.Login || u.Email == model.Login || u.TelephoneNumber == _model.Login) && u.Password == model.Password);
+                LoginModel model = _model;
 
-                if (user != null)
+                if (ModelState.IsValid)
                 {
-                    var id = await Authenticate(user); // аутентификация
+                    Users user = await db.Users.FirstOrDefaultAsync(
+                        (u) => (u.Login == model.Login || u.Email == model.Login || u.TelephoneNumber == _model.Login) && u.Password == model.Password);
 
-                    UserLite userLite = new UserLite
+                    if (user != null)
                     {
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
-                        Email = user.Email,
-                        Login = user.Login,
-                        Guid = user.Guid,
-                        TelephoneNumber = user.TelephoneNumber,
-                    };
+                        var id = await Authenticate(user); // аутентификация
 
-                    return Json(new
-                    {
-                        user = userLite,
-                    });
+                        UserLite userLite = new UserLite
+                        {
+                            FirstName = user.FirstName,
+                            LastName = user.LastName,
+                            Email = user.Email,
+                            Login = user.Login,
+                            Guid = user.Guid,
+                            TelephoneNumber = user.TelephoneNumber,
+                        };
+
+                        return Json(new
+                        {
+                            user = userLite,
+                        });
+                    }
+
+                    ModelState.AddModelError("", "Не найден логин и(или) пароль");
                 }
 
-                ModelState.AddModelError("", "Не найден логин и(или) пароль");
+                return this.Json(new
+                {
+                    errorUserLogin = ErrorMaker(this.ViewData.ModelState.Values),
+                });
             }
-
-            return this.Json(new
+            catch (System.Exception)
             {
-                errorUserLogin = ErrorMaker(this.ViewData.ModelState.Values),
-            });
+                throw;
+            }
         }
 
         [HttpGet]
@@ -129,7 +136,7 @@ namespace TTR43WEB.Controllers
         {
             if (ModelState.IsValid)
             {
-                Users user = await db.Users.FirstOrDefaultAsync( u => u.Login == model.Login || u.TelephoneNumber == model.TelephoneNumber);
+                Users user = await db.Users.FirstOrDefaultAsync(u => u.Login == model.Login || u.TelephoneNumber == model.TelephoneNumber);
 
                 if (user == null)
                 {
@@ -218,9 +225,9 @@ namespace TTR43WEB.Controllers
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(id),
                 new AuthenticationProperties
-                    {
-                        //ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10)
-                    }
+                {
+                    //ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10)
+                }
                 );
             return id;
         }
