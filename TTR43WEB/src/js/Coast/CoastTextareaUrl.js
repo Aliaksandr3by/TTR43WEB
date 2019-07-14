@@ -4,6 +4,20 @@ import M from "materialize-css";
 
 class CoastTextareaUrl extends Component {
 
+        /**
+     * Метод форматирует дату полученную с сервера в региональный формат
+     * @param {String} date - текст
+     * @return {Date} - Date
+     */
+    _dateConverter = (date) => {
+        try {
+            const newDate = (new Date(date)).toLocaleString("RU-be");
+            return newDate;
+        } catch (error) {
+            return date || Date.now;
+        }
+    };
+
     static propTypes = {
         stateChangeResult: PropTypes.func.isRequired,
         handleStateProperty: PropTypes.func.isRequired,
@@ -142,8 +156,17 @@ class CoastTextareaUrl extends Component {
             : textURLsToArray(textarea, convertToFullURLs);
     }
 
-    cardStickyAction = ({ date = "", id = "", markingGoods = "", name = "", price = "", priceWithoutDiscount = "", url = "", }) => {
-        return `<a href="${url}" target="_blank">${name}(${markingGoods}) - ${price}руб. - ${priceWithoutDiscount}руб. (${date})</a>`;
+    cardStickyAction = (q1 = {}, q2 = {}, q3 = {}) => {
+        try {
+            const { date = "", id = "", markingGoods = "", name = "", price = "", priceWithoutDiscount = "", url = "", } = q1;
+            const { fullEstimatedValue: priceMin = 0 } = q2 || {};
+            const { fullEstimatedValue: priceMax = 0 } = q3 || {};
+
+            return `<a href="${url}" target="_blank">${name}(№${markingGoods})-${price}р. <b>[мин:${priceMin}р-мак:${priceMax}р]</b> - ${priceWithoutDiscount}р. (${this._dateConverter(date)})</a>`;
+
+        } catch (error) {
+            return `<a href="" target="_blank">${error}</a>`;
+        }
     };
 
     /**
@@ -207,19 +230,24 @@ class CoastTextareaUrl extends Component {
 
                     const json = await response.json();
 
+                    console.log(json);
+
                     this.setState({ progress: await this.getProgress(this.state.progress, data.length) });
 
                     if (!json.isPresent && !json.description) {
 
                         this.props.stateChangeResult(json.items, "items");
 
-                        M.toast({ html: this.cardStickyAction(json.items), displayLength: 8000, classes: "rounded" });
+                        M.toast({ html: this.cardStickyAction(json.items, json.itemsMinCost, json.itemsMaxCost), displayLength: 8000, classes: "rounded" });
 
                         console.log(`${json.items.name}, ${json.items.price} / ${json.items.priceWithoutDiscount} | ${json.items.url}`);
 
                     } else if (json.isPresent && !json.description) {
 
-                        M.toast({ html: `Товар ${json.items.name} не изменился`, displayLength: 4000, classes: "rounded" });
+                        const { price: priceMin = 0 } = json.itemsMinCost;
+                        const { price: priceMax = 0 } = json.itemsMaxCost;
+
+                        M.toast({ html: `Товар ${json.items.name} не изменился [мин:${priceMin}р-мак:${priceMax}р]`, displayLength: 4000, classes: "rounded" });
 
                     } else {
 

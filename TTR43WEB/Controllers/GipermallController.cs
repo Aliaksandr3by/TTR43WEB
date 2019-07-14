@@ -15,8 +15,8 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Newtonsoft.Json.Linq;
 using TTR43WEB.Filters;
 using TTR43WEB.Models.Gipermall;
-using TTR43WEB.Models.User;
 using TTR43WEB.Models.Product;
+using TTR43WEB.Models.User;
 
 namespace TTR43WEB.Controllers
 {
@@ -115,17 +115,17 @@ namespace TTR43WEB.Controllers
                     .Select(e => new ProductEntityLite
                     {
                         Id = e.Id,
-                            MarkingGoods = e.MarkingGoods,
-                            Guid = e.Guid,
-                            Url = e.UrlNavigation.UrlProduct,
-                            Name = e.NameNavigation.NameProduct,
-                            Mass = e.Mass,
-                            Price = e.Price,
-                            PriceWithoutDiscount = e.PriceWithoutDiscount,
-                            PriceOneMass = e.PriceOneKilogram ?? e.PriceOneLiter,
-                            Date = e.Date,
-                            FullEstimatedValue = ProductsExtension.getFullPrice(e),
-                            DimensionProduct = e.DimensionNavigation.DimensionProduct,
+                        MarkingGoods = e.MarkingGoods,
+                        Guid = e.Guid,
+                        Url = e.UrlNavigation.UrlProduct,
+                        Name = e.NameNavigation.NameProduct,
+                        Mass = e.Mass,
+                        Price = e.Price,
+                        PriceWithoutDiscount = e.PriceWithoutDiscount,
+                        PriceOneMass = e.PriceOneKilogram ?? e.PriceOneLiter,
+                        Date = e.Date,
+                        FullEstimatedValue = ProductsExtension.getFullPrice(e),
+                        DimensionProduct = e.DimensionNavigation.DimensionProduct,
                     })
                     .Where(func)
                     .OrderByDescending(e => e.Date);
@@ -151,15 +151,15 @@ namespace TTR43WEB.Controllers
                 .Select(e => new
                 {
                     e.MarkingGoods,
-                        e.UrlNavigation.UrlProduct,
-                        e.NameNavigation.NameProduct,
-                        e.Date,
-                        e.Mass,
-                        e.Price,
-                        e.PriceWithoutDiscount,
-                        PriceOne = e.PriceOneKilogram ?? e.PriceOneLiter,
-                        FullEstimatedValue = ProductsExtension.getFullPrice(e),
-                        e.DimensionNavigation.DimensionProduct,
+                    e.UrlNavigation.UrlProduct,
+                    e.NameNavigation.NameProduct,
+                    e.Date,
+                    e.Mass,
+                    e.Price,
+                    e.PriceWithoutDiscount,
+                    PriceOne = e.PriceOneKilogram ?? e.PriceOneLiter,
+                    FullEstimatedValue = ProductsExtension.getFullPrice(e),
+                    e.DimensionNavigation.DimensionProduct,
                 })
                 .Where(e => e.NameProduct == productEntityLit.Name)
                 .OrderByDescending(e => e.Date);
@@ -246,10 +246,10 @@ namespace TTR43WEB.Controllers
                 .Select(e => new UserFavorite
                 {
                     Guid = e.Guid,
-                        UserGuid = e.UserGuid,
-                        ProductGuid = e.ProductGuid,
-                        DateTimeAdd = e.DateTimeAdd,
-                        Url = e.Url,
+                    UserGuid = e.UserGuid,
+                    ProductGuid = e.ProductGuid,
+                    DateTimeAdd = e.DateTimeAdd,
+                    Url = e.Url,
                 })
                 .Where(e => e.UserGuid == userGuid);
 
@@ -398,11 +398,27 @@ namespace TTR43WEB.Controllers
                 ProductEntityLite productEntityLite = new ProductEntityLite().ToProductEntityLite(productEntity);
 
                 // ищет данные в базе соответствие с MarkingGoods, выбирает самый новый, потом проверяет цену
-                var findAddingProduct = _productsContextQueryable.Products
+                var findAddingProductTmp = _productsContextQueryable.Products
                     .OrderByDescending(p => p.Date)
                     .Where(p => p.MarkingGoodsNavigation.MarkingGoodsProduct == productEntity.MarkingGoods)
-                    .Select<Products, Products>(p => p)
+                    .Select(p => p);
+
+                var findAddingProduct = findAddingProductTmp
                     .FirstOrDefault();
+
+                Products findAddingProductMaxCost = findAddingProductTmp
+                    .OrderByDescending(p => p.Price)
+                    .Where(p => p.Price != null || p.PriceWithoutDiscount != null)
+                    .FirstOrDefault();
+
+                var max = (new ProductEntityLite()).ToProductEntityLite(findAddingProductMaxCost);
+
+                Products findAddingProductMinCost = findAddingProductTmp
+                    .OrderByDescending(p => p.Price)
+                    .Where(p => p.Price != null || p.PriceWithoutDiscount != null)
+                    .LastOrDefault();
+
+                var min = (new ProductEntityLite()).ToProductEntityLite(findAddingProductMinCost);
 
                 bool flag = findAddingProduct != null &&
                     findAddingProduct.Price == productEntity.Price &&
@@ -424,10 +440,14 @@ namespace TTR43WEB.Controllers
                     var State = await ProductToFavoriteAdd(_usersContextQueryable, productEntityLite, true);
                 }
 
+
+
                 return Json(new
                 {
                     items = productEntityLite,
-                        isPresent = flag,
+                    isPresent = flag,
+                    itemsMaxCost = max,
+                    itemsMinCost = min,
                 });
             }
             catch (Exception ex)

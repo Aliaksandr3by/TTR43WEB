@@ -84,10 +84,24 @@ const ProductInfo = (props) => {
         state: { AspNetCoreCookies = "", items = [], filter = [], favorite = [], favoriteSelect = false },
         urlControlAction = {}, stateChangeResult, getAllProductsFavorite, handleStateProperty } = props;
 
-    const cardStickyAction = ({ date = "", markingGoods = "", name = "", price = "", priceWithoutDiscount = "", url = "", }) => {
-        const coin = (el) => el !== null ? `${el} руб.` : `отсутствует`;
-        const children = `${name}(${markingGoods}) - ${coin(price)} / ${coin(priceWithoutDiscount)} (${_dateConverter(date)})`;
-        return `<a href="${url}" target="_blank">${children}</a>`;
+    // метод вызывает сообщение о добавляемом товаре
+    const cardStickyAction = (q1 = {}, q2 = {}, q3 = {}) => {
+
+        try {
+            const { date = "", markingGoods = "", name = "", price = "", priceWithoutDiscount = "", url = "", } = q1;
+            const { fullEstimatedValue: priceMin = 0 } = q2 || {};
+            const { fullEstimatedValue: priceMax = 0 } = q3 || {};
+
+            console.log(q1, q2, q3);
+
+            const coin = (el) => (el !== null || el !== "null") ? `${el} руб. ` : ` отсутствует `;
+
+            const children = `${name}(${markingGoods}) - ${coin(price)} [мин:${priceMin}р-мак:${priceMax}р] / ${coin(priceWithoutDiscount)} (${_dateConverter(date)})`;
+
+            return `<a href="${url}" target="_blank">${children}</a>`;
+        } catch (error) {
+            return `<a href="" target="_blank">${error}</a>`;
+        }
     };
 
     /**
@@ -105,10 +119,12 @@ const ProductInfo = (props) => {
                     "idGoods": e.target.getAttribute("data-update-url"),
                 }),
             });
+
             const json = await response.json();
+
             M.toast(
                 {
-                    html: String(cardStickyAction(json.items)),
+                    html: String(cardStickyAction(json.items, json.itemsMinCost, json.itemsMaxCost)),
                     classes: "rounded"
                 }
             );

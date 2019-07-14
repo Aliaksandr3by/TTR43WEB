@@ -17,8 +17,8 @@
     // "css.validate": false,
     // "less.validate": false,
     // "scss.validate": false,
-    "editor.fontFamily": "Fira Code",
-    "editor.fontSize": 13,
+    "editor.fontFamily": "Consolas, 'Courier New', monospace",
+    "editor.fontSize": 14,
     // "editor.fontLigatures": true,
     "files.associations": {
         "*.css": "postcss",
@@ -28,4 +28,5 @@
     "code-runner.defaultLanguage": "javascript",
     "csharpfixformat.style.spaces.beforeIndexerBracket": false,
     "csharpfixformat.style.spaces.beforeParenthesis": false,
+
 }

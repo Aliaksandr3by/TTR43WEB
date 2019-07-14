@@ -84,9 +84,9 @@ namespace TTR43WEB.Models.Gipermall
 
         public static ProductEntityLite ToProductEntityLite(this ProductEntityLite productEntityLite, Products productEntity)
         {
-            if (productEntityLite == null)
+            if (productEntityLite == null || productEntity == null)
             {
-                throw new ArgumentNullException(nameof(productEntityLite));
+                return null;
             }
 
             ProductEntityLite _productEntityLite = new ProductEntityLite
