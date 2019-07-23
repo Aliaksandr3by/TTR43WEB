@@ -170,9 +170,11 @@ const ProductInfo = (props) => {
                                                         />
                                                         <div className="hide" id={"rootTitle"}
                                                             onDoubleClick={(e) => {
-                                                                const tmp = document.getElementById("rootTitle");
-                                                                tmp.classList.toggle("hide");
-                                                                // e.target.closest("div").classList.toggle("hide");
+                                                                const result = e.currentTarget.compareDocumentPosition(e.target);
+                                                                const flag = result.toString(2) & "010000".toString(2);
+                                                                if (flag) {
+                                                                    e.currentTarget.classList.toggle("hide");
+                                                                }
                                                             }}
                                                         ></div>
                                                     </th>);
