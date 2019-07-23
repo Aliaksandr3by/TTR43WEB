@@ -30,15 +30,13 @@ const MainTable = ({ urlControlAction, state, handleStateResultObject, stateChan
             );
         } else if (items.length === 0) {
             return (
-                <LoadingBar>Нет элементов</LoadingBar>
+                <LoadingBar>Загрузка</LoadingBar>
             );
         } else if (error) {
             return <div>Error: {error.message}</div>;
         } else if (!isLoaded || !favoriteIsLoaded) {
             return (
-                <div className="progress">
-                    <div className="indeterminate"></div>
-                </div>
+                <LoadingBar>Загрузка избранного</LoadingBar>
             );
         }
     };

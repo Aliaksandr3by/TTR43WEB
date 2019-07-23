@@ -29,7 +29,9 @@ class AllProductsFinder extends Component {
         try {
 
             const tmp = document.getElementById("rootTitle");
-            tmp.innerHTML = `<p>WAIT</p>`;
+            tmp.innerHTML = `<div class="progress"><div class="indeterminate"></div></div>`;
+            tmp.classList.add("block");
+            tmp.classList.remove("hide");
 
             const response = await fetch(urlControlAction.urlControlActionAllItemsProductOnId, {
                 method: "POST",
@@ -43,14 +45,7 @@ class AllProductsFinder extends Component {
 
             const json = await response.json();
 
-            // this.setState({
-            //     ["title"]: genTable(json),
-            // });
-
-
             tmp.innerHTML = genTable(json, "", "centered striped");
-            tmp.classList.add("block");
-            tmp.classList.remove("hide");
 
         } catch (error) {
             console.error(error);

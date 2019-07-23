@@ -73,7 +73,7 @@ namespace TTR43WEB.Controllers
         }
 
         /// <summary>
-        /// Метод ищет в базе все продукты по MarkingGoods
+        /// Метод ищет в базе все продукты по deepsearch
         /// </summary>
         /// <param name="productEntityLit"></param>
         /// <returns></returns>
@@ -97,7 +97,15 @@ namespace TTR43WEB.Controllers
                         bool flag = true;
                         foreach (var item in collection)
                         {
-                            flag = e.Name.ToLower().Contains(item);
+                            if (item.ElementAt(0) == '-')
+                            {
+                                flag = !e.Name.ToLower().Contains(item.Substring(1));
+                            }
+                            else
+                            {
+                                flag = e.Name.ToLower().Contains(item);
+                            }
+
                             if (flag == false)
                             {
                                 return false;
@@ -115,17 +123,17 @@ namespace TTR43WEB.Controllers
                     .Select(e => new ProductEntityLite
                     {
                         Id = e.Id,
-                        MarkingGoods = e.MarkingGoods,
-                        Guid = e.Guid,
-                        Url = e.UrlNavigation.UrlProduct,
-                        Name = e.NameNavigation.NameProduct,
-                        Mass = e.Mass,
-                        Price = e.Price,
-                        PriceWithoutDiscount = e.PriceWithoutDiscount,
-                        PriceOneMass = e.PriceOneKilogram ?? e.PriceOneLiter,
-                        Date = e.Date,
-                        FullEstimatedValue = ProductsExtension.getFullPrice(e),
-                        DimensionProduct = e.DimensionNavigation.DimensionProduct,
+                            MarkingGoods = e.MarkingGoods,
+                            Guid = e.Guid,
+                            Url = e.UrlNavigation.UrlProduct,
+                            Name = e.NameNavigation.NameProduct,
+                            Mass = e.Mass,
+                            Price = e.Price,
+                            PriceWithoutDiscount = e.PriceWithoutDiscount,
+                            PriceOneMass = e.PriceOneKilogram ?? e.PriceOneLiter,
+                            Date = e.Date,
+                            FullEstimatedValue = ProductsExtension.getFullPrice(e),
+                            DimensionProduct = e.DimensionNavigation.DimensionProduct,
                     })
                     .Where(func)
                     .OrderByDescending(e => e.Date);
@@ -151,15 +159,15 @@ namespace TTR43WEB.Controllers
                 .Select(e => new
                 {
                     e.MarkingGoods,
-                    e.UrlNavigation.UrlProduct,
-                    e.NameNavigation.NameProduct,
-                    e.Date,
-                    e.Mass,
-                    e.Price,
-                    e.PriceWithoutDiscount,
-                    PriceOne = e.PriceOneKilogram ?? e.PriceOneLiter,
-                    FullEstimatedValue = ProductsExtension.getFullPrice(e),
-                    e.DimensionNavigation.DimensionProduct,
+                        e.UrlNavigation.UrlProduct,
+                        e.NameNavigation.NameProduct,
+                        e.Date,
+                        e.Mass,
+                        e.Price,
+                        e.PriceWithoutDiscount,
+                        PriceOne = e.PriceOneKilogram ?? e.PriceOneLiter,
+                        FullEstimatedValue = ProductsExtension.getFullPrice(e),
+                        e.DimensionNavigation.DimensionProduct,
                 })
                 .Where(e => e.NameProduct == productEntityLit.Name)
                 .OrderByDescending(e => e.Date);
@@ -246,10 +254,10 @@ namespace TTR43WEB.Controllers
                 .Select(e => new UserFavorite
                 {
                     Guid = e.Guid,
-                    UserGuid = e.UserGuid,
-                    ProductGuid = e.ProductGuid,
-                    DateTimeAdd = e.DateTimeAdd,
-                    Url = e.Url,
+                        UserGuid = e.UserGuid,
+                        ProductGuid = e.ProductGuid,
+                        DateTimeAdd = e.DateTimeAdd,
+                        Url = e.Url,
                 })
                 .Where(e => e.UserGuid == userGuid);
 
@@ -440,14 +448,12 @@ namespace TTR43WEB.Controllers
                     var State = await ProductToFavoriteAdd(_usersContextQueryable, productEntityLite, true);
                 }
 
-
-
                 return Json(new
                 {
                     items = productEntityLite,
-                    isPresent = flag,
-                    itemsMaxCost = max,
-                    itemsMinCost = min,
+                        isPresent = flag,
+                        itemsMaxCost = max,
+                        itemsMinCost = min,
                 });
             }
             catch (Exception ex)

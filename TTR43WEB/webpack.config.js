@@ -115,18 +115,11 @@ module.exports = (env, argv) => {
             ],
         },
         plugins: [
-            // new webpack.ProvidePlugin({
-            //     React: "react",
-            //     ReactDOM: "react-dom",
-            //     PropTypes: "prop-types",
-            //     M: "materialize-css"
-            // }),
             new webpack.SourceMapDevToolPlugin({
                 filename: "[file].map",
                 //lineToLine: true,
                 // noSources: false,
             }),
-            // new WebpackMd5Hash(),
             new CleanWebpackPlugin({
                 cleanOnceBeforeBuildPatterns: devMode
                     ? ["**/*.js", "*****/*", "**/*.map", "***/*.css", "!**/*production*", "!***/*production*"]

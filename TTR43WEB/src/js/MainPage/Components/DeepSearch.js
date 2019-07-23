@@ -1,11 +1,11 @@
 
 import PropTypes from "prop-types";
-import React from "react";
+import React, { createElement } from "react";
 
 import { genTable } from "./../../utils";
 
 /**
- * Метод служит для фильтрации данных в главной таблице (без обращения к контроллеру (только то, что на экране))
+ * Метод служит для поиска элементов в базе данных
  * @param {*} param0 
  */
 const DeepSearch = ({ urlControlAction, handleStateResultObject, textplaceholder = "", texttitle = "", state = {} }) => {
@@ -18,16 +18,39 @@ const DeepSearch = ({ urlControlAction, handleStateResultObject, textplaceholder
      */
     const filterSet = async (e) => {
 
-        const that = String(e.target.value);
-
-        handleStateResultObject({ "deepSearch": that });
-
-        window.localStorage.setItem("deepSearch", JSON.stringify(that));
-
         try {
 
+            let that = e.target;
+
+            if (e.currentTarget.tagName === "BUTTON") {
+                that = e.target
+                    .closest("div")
+                    .parentNode
+                    .querySelector(`input[data-target="search"]`);
+            }
+
+            const data = String(that.value);
+
+            handleStateResultObject({ "deepSearch": data });
+
+            window.localStorage.setItem("deepSearch", JSON.stringify(data));
+
             const tmp = document.getElementById("rootTitle");
-            tmp.innerHTML = `<p>WAIT</p>`;
+            tmp.innerHTML = `
+ <div class="preloader-wrapper big active">
+    <div class="spinner-layer spinner-blue-only">
+      <div class="circle-clipper left">
+        <div class="circle"></div>
+      </div><div class="gap-patch">
+        <div class="circle"></div>
+      </div><div class="circle-clipper right">
+        <div class="circle"></div>
+      </div>
+    </div>
+  </div>
+            `;
+            tmp.classList.add("block");
+            tmp.classList.remove("hide");
 
             const response = await fetch(urlControlAction.urlControlActionAllItemsProductOnId, {
                 method: "POST",
@@ -35,17 +58,14 @@ const DeepSearch = ({ urlControlAction, handleStateResultObject, textplaceholder
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    "name": that,
+                    "name": data,
                 }),
             });
 
             const json = await response.json();
 
-            
-
             tmp.innerHTML = genTable(json, "", "centered striped");
-            tmp.classList.add("block");
-            tmp.classList.remove("hide");
+
 
         } catch (error) {
             console.error(error);
@@ -65,8 +85,22 @@ const DeepSearch = ({ urlControlAction, handleStateResultObject, textplaceholder
 
     return (
         <div className="row">
-            <div className="col s12">
-                <input onBlur={e => filterSet(e)} onKeyDown={e => loginKey(e)} defaultValue={deepSearch} placeholder={textplaceholder} title={texttitle}></input>
+            <div className="col s1">
+                <button
+                    type="button"
+                    className="btn W100"
+                    onClick={e => filterSet(e)}
+                ><i className="material-icons" >search</i>
+                </button>
+            </div>
+            <div className="col s11">
+                <input
+                    data-target="search"
+                    onKeyDown={e => loginKey(e)}
+                    defaultValue={deepSearch}
+                    placeholder={textplaceholder}
+                    title={texttitle}
+                />
             </div>
         </div>
     );

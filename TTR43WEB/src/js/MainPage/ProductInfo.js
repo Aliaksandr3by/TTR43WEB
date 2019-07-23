@@ -168,9 +168,7 @@ const ProductInfo = (props) => {
                                                             el={el}
                                                             urlControlAction={urlControlAction}
                                                         />
-                                                        <div
-                                                            className="hide"
-                                                            id={"rootTitle"}
+                                                        <div className="hide" id={"rootTitle"}
                                                             onDoubleClick={(e) => {
                                                                 const tmp = document.getElementById("rootTitle");
                                                                 tmp.classList.toggle("hide");

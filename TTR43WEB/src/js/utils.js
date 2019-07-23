@@ -136,7 +136,7 @@ export const genTable = (data, title = "", className = "striped highlight") => {
     const dateConverter = (date) => {
         try {
             const newDate = (new Date(date)).toLocaleString("RU-be");
-            console.log(newDate);
+            // console.log(newDate);
             return newDate;
         } catch (error) {
             return date || Date.now;
@@ -157,7 +157,7 @@ export const genTable = (data, title = "", className = "striped highlight") => {
     const TableRowData = (datas, id = "ID") => {
         try {
             let tmpString = ``;
-            console.dir(datas);
+            // console.dir(datas);
             for (const item in datas) {
                 if (item !== "guid" && item !== "url") {
                     if (item.toLowerCase() === "date") {

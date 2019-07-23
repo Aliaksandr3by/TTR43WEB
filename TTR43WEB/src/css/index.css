@@ -23,11 +23,12 @@ details {
     overflow: auto;
     transform: translate3d(1rem, 1rem, 1rem);
     box-shadow: -1rem -0.2rem 0.4em olive, 1rem 0.2rem 0.4em red;
-    left: 0;
-    right: 0;
-    width: 100%;
-    height: 30%;
-    bottom: 0;
+    left: 10%;
+    right: 10%;
+    bottom: 20%;
+    top:20%;
+    width: 70%;
+    height: 70%;
 }
 
 .selected {
