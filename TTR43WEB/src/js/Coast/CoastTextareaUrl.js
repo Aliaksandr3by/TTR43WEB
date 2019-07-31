@@ -217,6 +217,8 @@ class CoastTextareaUrl extends Component {
 
                 if (iterator) {
 
+                    // console.log(iterator);
+
                     const response = await fetch(urlControlAction.urlControlActionGetCoastAsync, {
                         method: "POST", // *GET, POST, PUT, DELETE, etc.
                         headers: {
@@ -244,10 +246,30 @@ class CoastTextareaUrl extends Component {
 
                     } else if (json.isPresent && !json.description) {
 
-                        const { price: priceMin = 0 } = json.itemsMinCost;
-                        const { price: priceMax = 0 } = json.itemsMaxCost;
+                        // console.log(json);
 
-                        M.toast({ html: `Товар ${json.items.name} не изменился [мин:${priceMin}р-мак:${priceMax}р]`, displayLength: 4000, classes: "rounded" });
+                        if (json.itemsMinCost && json.itemsMaxCost) {
+
+                            const { price: priceMin = 0 } = json.itemsMinCost;
+                            const { price: priceMax = 0 } = json.itemsMaxCost;
+                            
+                            M.toast({ html: `Товар ${json.items.name} не изменился [мин:${priceMin}р-мак:${priceMax}р]`, displayLength: 4000, classes: "rounded" }); 
+
+                        } else if (json.itemsMinCost){
+                            const { price: priceMin = 0 } = json.itemsMinCost;
+                            
+                            M.toast({ html: `Товар ${json.items.name} не изменился [мин:${priceMin}]`, displayLength: 4000, classes: "rounded" }); 
+                        }
+                        else if (json.itemsMaxCost){
+
+                            const { price: priceMax = 0 } = json.itemsMaxCost;
+                            
+                            M.toast({ html: `Товар ${json.items.name} не изменился [мак:${priceMax}р]`, displayLength: 4000, classes: "rounded" }); 
+
+                        } else {
+                            M.toast({ html: `Товар ${json.items.name}`, displayLength: 4000, classes: "rounded" }); 
+                        }
+
 
                     } else {
 
