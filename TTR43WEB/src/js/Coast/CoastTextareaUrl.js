@@ -4,11 +4,11 @@ import M from "materialize-css";
 
 class CoastTextareaUrl extends Component {
 
-        /**
-     * Метод форматирует дату полученную с сервера в региональный формат
-     * @param {String} date - текст
-     * @return {Date} - Date
-     */
+    /**
+ * Метод форматирует дату полученную с сервера в региональный формат
+ * @param {String} date - текст
+ * @return {Date} - Date
+ */
     _dateConverter = (date) => {
         try {
             const newDate = (new Date(date)).toLocaleString("RU-be");
@@ -35,6 +35,8 @@ class CoastTextareaUrl extends Component {
             isLoaded: false,
             progress: 0,
             updateFavotite: false,
+            stop: true,
+            index: Number(localStorage.getItem("index") || 0),
         };
         this.textAreaUpdater = this.textAreaUpdater.bind(this);
     }
@@ -53,6 +55,14 @@ class CoastTextareaUrl extends Component {
         this.setState((state, props) => {
             return {
                 [name]: [...state[name], array]
+            };
+        });
+    }
+
+    stateUpdateMono = async (name, result) => {
+        this.setState((state, props) => {
+            return {
+                [name]: result
             };
         });
     }
@@ -252,22 +262,22 @@ class CoastTextareaUrl extends Component {
 
                             const { price: priceMin = 0 } = json.itemsMinCost;
                             const { price: priceMax = 0 } = json.itemsMaxCost;
-                            
-                            M.toast({ html: `Товар ${json.items.name} не изменился [мин:${priceMin}р-мак:${priceMax}р]`, displayLength: 4000, classes: "rounded" }); 
 
-                        } else if (json.itemsMinCost){
+                            M.toast({ html: `Товар ${json.items.name} не изменился [мин:${priceMin}р-мак:${priceMax}р]`, displayLength: 4000, classes: "rounded" });
+
+                        } else if (json.itemsMinCost) {
                             const { price: priceMin = 0 } = json.itemsMinCost;
-                            
-                            M.toast({ html: `Товар ${json.items.name} не изменился [мин:${priceMin}]`, displayLength: 4000, classes: "rounded" }); 
+
+                            M.toast({ html: `Товар ${json.items.name} не изменился [мин:${priceMin}]`, displayLength: 4000, classes: "rounded" });
                         }
-                        else if (json.itemsMaxCost){
+                        else if (json.itemsMaxCost) {
 
                             const { price: priceMax = 0 } = json.itemsMaxCost;
-                            
-                            M.toast({ html: `Товар ${json.items.name} не изменился [мак:${priceMax}р]`, displayLength: 4000, classes: "rounded" }); 
+
+                            M.toast({ html: `Товар ${json.items.name} не изменился [мак:${priceMax}р]`, displayLength: 4000, classes: "rounded" });
 
                         } else {
-                            M.toast({ html: `Товар ${json.items.name}`, displayLength: 4000, classes: "rounded" }); 
+                            M.toast({ html: `Товар ${json.items.name}`, displayLength: 4000, classes: "rounded" });
                         }
 
 
@@ -288,13 +298,26 @@ class CoastTextareaUrl extends Component {
 
     randomInteger = (min = 0, max = 5000) => Math.abs(Math.round(min - 0.5 + Math.random() * (max - min + 1)));
 
-    createDataTable = async () => {
+    createDataTable = async (e) => {
         try {
-            this.setState({ textarea: [] });
-            for (let i = 0; i < 300; i++) {
-                const tmp = `https://gipermall.by/catalog/item_${99508 + i}.html`; //this.randomInteger(95308, 95408)
-                this.handleStateResultArray(tmp, "textarea");
+            await this.stateUpdateMono("stop", true);
+
+            let index = this.state.index;
+
+            while (this.state.stop) {
+                const data = `https://gipermall.by/catalog/item_${index}.html`; //this.randomInteger(95308, 95408)
+
+                const arr = [];
+                arr.push(data);
+                console.log(arr);
+                await this.sendURLsToServer(e, arr, this.props);
+                index++;
+                localStorage.setItem("index", index),
+                await this.stateUpdateMono("index", index);
+
+                if (this.state.index > 100) break;
             }
+
         } catch (error) {
             this.setState({
                 isLoaded: true,
@@ -393,7 +416,19 @@ class CoastTextareaUrl extends Component {
                                                 onClick={(e) => this.createDataTable(e)}
                                                 className="btn waves-effect waves-light"
                                                 type="button"
-                                                name="action">Создать случайные ссылки<i className="material-icons left">create</i>
+                                                title={"перебирает все товары"}
+                                                name="action">Перебор товаров<i className="material-icons left">create</i>
+                                            </button>
+                                            <button
+                                                onClick={(e) => {
+                                                    this.setState((state, props) => {
+                                                        const flag = state.stop;
+                                                        return { stop: !flag };
+                                                    });
+                                                }}
+                                                className="btn red"
+                                                type="button "
+                                                name="action"><i className="material-icons left">{this.state.stop ? `stop` : "play_arrow"}</i>
                                             </button>
                                         </div>
                                         <div className="col s3">
