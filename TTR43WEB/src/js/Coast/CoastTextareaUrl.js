@@ -314,8 +314,6 @@ class CoastTextareaUrl extends Component {
                 index++;
                 localStorage.setItem("index", index),
                 await this.stateUpdateMono("index", index);
-
-                if (this.state.index > 100) break;
             }
 
         } catch (error) {
