@@ -87,23 +87,23 @@ namespace TTR43WEB.Controllers
 
                 if (productEntityLit.MarkingGoods != null)
                 {
-                    func = e => e.MarkingGoods == productEntityLit.MarkingGoods;
+                    func = e => e?.MarkingGoods == productEntityLit.MarkingGoods;
                 }
                 else if (productEntityLit.Name != null)
                 {
                     func = e =>
                     {
                         String[] collection = productEntityLit.Name.ToLower().Split(' ');
-                        bool flag = true;
+                        bool? flag = true;
                         foreach (var item in collection)
                         {
                             if (item.ElementAt(0) == '-')
                             {
-                                flag = !e.Name.ToLower().Contains(item.Substring(1));
+                                flag = !e?.Name?.ToLower().Contains(item.Substring(1));
                             }
                             else
                             {
-                                flag = e.Name.ToLower().Contains(item);
+                                flag = e?.Name?.ToLower().Contains(item);
                             }
 
                             if (flag == false)
@@ -111,7 +111,7 @@ namespace TTR43WEB.Controllers
                                 return false;
                             }
                         }
-                        return flag;
+                        return flag ?? false;
                     };
                 }
                 else

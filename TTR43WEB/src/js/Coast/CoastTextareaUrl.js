@@ -202,10 +202,10 @@ class CoastTextareaUrl extends Component {
 
             const json = await response.json();
 
-            console.log(json);
+            // console.log(json);
 
             if (json.productEntity) {
-                console.log(json.productEntity);
+                // console.log(json.productEntity);
                 await handleStateResultObject(json);
                 this.setState({ "textarea": json.productEntity.map((e) => e.url) });
             }
@@ -242,7 +242,7 @@ class CoastTextareaUrl extends Component {
 
                     const json = await response.json();
 
-                    console.log(json);
+                    // console.log(json);
 
                     this.setState({ progress: await this.getProgress(this.state.progress, data.length) });
 
@@ -309,7 +309,7 @@ class CoastTextareaUrl extends Component {
 
                 const arr = [];
                 arr.push(data);
-                console.log(arr);
+                // console.log(arr);
                 await this.sendURLsToServer(e, arr, this.props);
                 index++;
                 localStorage.setItem("index", index),
