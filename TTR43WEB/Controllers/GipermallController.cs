@@ -18,11 +18,9 @@ using TTR43WEB.Models.Gipermall;
 using TTR43WEB.Models.Product;
 using TTR43WEB.Models.User;
 
-namespace TTR43WEB.Controllers
-{
+namespace TTR43WEB.Controllers {
     // [Authorize]
-    public class GipermallController : Controller
-    {
+    public class GipermallController : Controller {
         private readonly IProductsContextQueryable _productsContextQueryable;
         private readonly IUsersContextQueryable _usersContextQueryable;
 
@@ -31,8 +29,7 @@ namespace TTR43WEB.Controllers
         /// </summary>
         /// <param name="productsContextQueryable">Контекст элементов</param>
         /// <param name="usersContextQueryable">Контекст пользователя</param>
-        public GipermallController(IProductsContextQueryable productsContextQueryable, IUsersContextQueryable usersContextQueryable)
-        {
+        public GipermallController(IProductsContextQueryable productsContextQueryable, IUsersContextQueryable usersContextQueryable) {
             _productsContextQueryable = productsContextQueryable;
             _usersContextQueryable = usersContextQueryable;
         }
@@ -42,8 +39,7 @@ namespace TTR43WEB.Controllers
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
-        public IActionResult Index()
-        {
+        public IActionResult Index() {
             return View();
         }
 
@@ -57,17 +53,13 @@ namespace TTR43WEB.Controllers
         [HttpGet]
         [AllowAnonymous]
         [ContentTypeAddJson]
-        public async Task<IActionResult> ItemsProduct(int pageSize, int productPage, bool favoriteSelect)
-        {
-            try
-            {
+        public async Task<IActionResult> ItemsProduct(int pageSize, int productPage, bool favoriteSelect) {
+            try {
                 Func<Products, DateTime?> sort = e => e.Date;
                 var tmp = new PaginationOptions(_productsContextQueryable.Products, _usersContextQueryable.UserFavorites);
                 var items = await tmp.GetItemsAsync(sort: sort, pageSize: pageSize, productPage: productPage, favoriteSelect: (favoriteSelect));
                 return Json(items);
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 throw;
             }
         }
@@ -79,49 +71,35 @@ namespace TTR43WEB.Controllers
         /// <returns></returns>
         [HttpPost]
         [ContentTypeAddJson]
-        public async Task<IActionResult> AllItemsProductOnId([FromBody] ProductEntityLite productEntityLit)
-        {
-            try
-            {
+        public async Task<IActionResult> AllItemsProductOnId([FromBody] ProductEntityLite productEntityLit) {
+            try {
                 Func<ProductEntityLite, bool> func = null;
 
-                if (productEntityLit.MarkingGoods != null)
-                {
+                if (productEntityLit.MarkingGoods != null) {
                     func = e => e?.MarkingGoods == productEntityLit.MarkingGoods;
-                }
-                else if (productEntityLit.Name != null)
-                {
-                    func = e =>
-                    {
+                } else if (productEntityLit.Name != null) {
+                    func = e => {
                         String[] collection = productEntityLit.Name.ToLower().Split(' ');
                         bool? flag = true;
-                        foreach (var item in collection)
-                        {
-                            if (item.ElementAt(0) == '-')
-                            {
+                        foreach (var item in collection) {
+                            if (item.ElementAt(0) == '-') {
                                 flag = !e?.Name?.ToLower().Contains(item.Substring(1));
-                            }
-                            else
-                            {
+                            } else {
                                 flag = e?.Name?.ToLower().Contains(item);
                             }
 
-                            if (flag == false)
-                            {
+                            if (flag == false) {
                                 return false;
                             }
                         }
                         return flag ?? false;
                     };
-                }
-                else
-                {
+                } else {
                     throw new Exception("не предусмотрен");
                 }
 
                 var items = _productsContextQueryable.Products
-                    .Select(e => new ProductEntityLite
-                    {
+                    .Select(e => new ProductEntityLite {
                         Id = e.Id,
                             MarkingGoods = e.MarkingGoods,
                             Guid = e.Guid,
@@ -139,9 +117,7 @@ namespace TTR43WEB.Controllers
                     .OrderByDescending(e => e.Date);
 
                 return Json(await Task.Run(() => items));
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 throw;
             }
         }
@@ -153,11 +129,9 @@ namespace TTR43WEB.Controllers
         /// <returns></returns>
         [HttpPost]
         [ContentTypeAddJson]
-        public async Task<IActionResult> GetAllGoodsByName([FromBody] ProductEntityLite productEntityLit)
-        {
+        public async Task<IActionResult> GetAllGoodsByName([FromBody] ProductEntityLite productEntityLit) {
             var items = _productsContextQueryable.Products
-                .Select(e => new
-                {
+                .Select(e => new {
                     e.MarkingGoods,
                         e.UrlNavigation.UrlProduct,
                         e.NameNavigation.NameProduct,
@@ -183,8 +157,7 @@ namespace TTR43WEB.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ContentTypeAddJson]
-        public async Task<IActionResult> ItemsProduct([FromBody] GetPageOptions getPageOptions)
-        {
+        public async Task<IActionResult> ItemsProduct([FromBody] GetPageOptions getPageOptions) {
             Func<Products, DateTime?> sort = e => e.Date;
             var tmp = new PaginationOptions(_productsContextQueryable.Products, _usersContextQueryable.UserFavorites);
             var items = await tmp.GetItemsAsync(sort, getPageOptions);
@@ -198,16 +171,13 @@ namespace TTR43WEB.Controllers
         /// <returns></returns>
         [HttpPost]
         [ContentTypeAddJson]
-        public async Task<IActionResult> UpdateFavoritesItems([FromBody] Guid[] guidProducts)
-        {
-            try
-            {
+        public async Task<IActionResult> UpdateFavoritesItems([FromBody] Guid[] guidProducts) {
+            try {
                 var collection = await GetItemsFavorite(_usersContextQueryable);
 
                 List<ProductEntity> productEntityList = new List<ProductEntity>();
 
-                foreach (UserFavorite item in collection)
-                {
+                foreach (UserFavorite item in collection) {
                     var productEntity = await new GetProductFromSite().GetFullDescriptionResult(item.Url);
 
                     var findAddingProduct = _productsContextQueryable.Products.FirstOrDefault<Products>(
@@ -217,8 +187,7 @@ namespace TTR43WEB.Controllers
 
                     var product = _productsContextQueryable.AddProduct(productEntity, findAddingProduct != null);
 
-                    if (product != null && product.Entity != null)
-                    {
+                    if (product != null && product.Entity != null) {
                         productEntity.Guid = product.Entity.Guid;
                         productEntityList.Add(productEntity);
                     }
@@ -226,16 +195,12 @@ namespace TTR43WEB.Controllers
 
                 await _productsContextQueryable.SaveProduct();
 
-                return Json(new
-                {
+                return Json(new {
                     productEntityList,
                 });
 
-            }
-            catch (Exception ex)
-            {
-                return Json(new
-                {
+            } catch (Exception ex) {
+                return Json(new {
                     errorFavorites = ex.Message,
                 });
             }
@@ -246,13 +211,11 @@ namespace TTR43WEB.Controllers
         /// </summary>
         /// <param name="usersContextQueryable">Контекст IUsersContextQueryable</param>
         /// <returns type="IQueryable">UserFavorite</returns>
-        public async Task<IQueryable<UserFavorite>> GetItemsFavorite(IUsersContextQueryable usersContextQueryable)
-        {
+        public async Task<IQueryable<UserFavorite>> GetItemsFavorite(IUsersContextQueryable usersContextQueryable) {
             var userGuid = usersContextQueryable.Users.FirstOrDefault(e => e.Login == HttpContext.User.Identity.Name).Guid;
 
             var items = usersContextQueryable.UserFavorites
-                .Select(e => new UserFavorite
-                {
+                .Select(e => new UserFavorite {
                     Guid = e.Guid,
                         UserGuid = e.UserGuid,
                         ProductGuid = e.ProductGuid,
@@ -271,17 +234,12 @@ namespace TTR43WEB.Controllers
         [HttpPost]
         [ContentTypeAddJson]
         [AccessControlAllowAll]
-        public async Task<IActionResult> GetAllProductsFavorite()
-        {
-            try
-            {
+        public async Task<IActionResult> GetAllProductsFavorite() {
+            try {
                 var favorite = await GetItemsFavorite(_usersContextQueryable);
                 return Json(favorite);
-            }
-            catch (Exception ex)
-            {
-                return Json(new
-                {
+            } catch (Exception ex) {
+                return Json(new {
                     errorFavorites = ex.Message,
                 });
             }
@@ -294,10 +252,8 @@ namespace TTR43WEB.Controllers
         /// <param name="productEntityLite"></param>
         /// <param name="onlyAdd"></param>
         /// <returns></returns>
-        async Task<String> ProductToFavoriteAdd(IUsersContextQueryable _usersContextQueryable, ProductEntityLite productEntityLite, bool onlyAdd = false)
-        {
-            try
-            {
+        async Task<String> ProductToFavoriteAdd(IUsersContextQueryable _usersContextQueryable, ProductEntityLite productEntityLite, bool onlyAdd = false) {
+            try {
                 ProductEntityLite _productEntityLite = productEntityLite;
 
                 var userGuid = _usersContextQueryable.Users.FirstOrDefault(e => e.Login == HttpContext.User.Identity.Name).Guid;
@@ -305,29 +261,22 @@ namespace TTR43WEB.Controllers
                 UserFavorite userFavorite = _usersContextQueryable.UserFavorites
                     .FirstOrDefault(e => e.UserGuid == userGuid && e.ProductGuid == _productEntityLite.Guid);
 
-                if (userFavorite != null)
-                {
-                    if (!onlyAdd)
-                    {
+                if (userFavorite != null) {
+                    if (!onlyAdd) {
                         var favoriteRemove = _usersContextQueryable.RemoveUserFavorite(userFavorite);
 
                         var count = await _usersContextQueryable.SaveChangesAsync();
 
                         return "remove";
-                    }
-                    else
-                    {
+                    } else {
                         var favoriteRemove = _usersContextQueryable.UpdateUserFavorite(userFavorite);
 
                         var count = await _usersContextQueryable.SaveChangesAsync();
 
                         return "update";
                     }
-                }
-                else
-                {
-                    userFavorite = new UserFavorite
-                    {
+                } else {
+                    userFavorite = new UserFavorite {
                         UserGuid = userGuid,
                         ProductGuid = _productEntityLite.Guid,
                         DateTimeAdd = DateTime.Now,
@@ -340,9 +289,7 @@ namespace TTR43WEB.Controllers
 
                     return "add";
                 }
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 throw;
             }
         }
@@ -355,21 +302,15 @@ namespace TTR43WEB.Controllers
         [HttpPost]
         [ContentTypeAddJson]
         [AccessControlAllowAll]
-        public async Task<IActionResult> AddProductToFavorite([FromBody] ProductEntityLite productEntityLite)
-        {
-            try
-            {
+        public async Task<IActionResult> AddProductToFavorite([FromBody] ProductEntityLite productEntityLite) {
+            try {
                 var State = await ProductToFavoriteAdd(_usersContextQueryable, productEntityLite);
 
-                return Json(new
-                {
+                return Json(new {
                     State,
                 });
-            }
-            catch (Exception ex)
-            {
-                return Json(new
-                {
+            } catch (Exception ex) {
+                return Json(new {
                     errorFavorites = ex.Message,
                 });
             }
@@ -384,20 +325,16 @@ namespace TTR43WEB.Controllers
         [AllowAnonymous]
         [ContentTypeAddJson]
         [AccessControlAllowAll]
-        public async Task<IActionResult> GetCoastAsync([FromBody] DataSend dataSend)
-        {
-            try
-            {
+        public async Task<IActionResult> GetCoastAsync([FromBody] DataSend dataSend) {
+            try {
                 // Получает данные
                 GetProductFromSite getDataFromGipermall = new GetProductFromSite(dataSend.IdGoods);
                 // Формирует сущность товара по данным
                 ProductEntity productEntity = await getDataFromGipermall.GetFullDescriptionResult();
 
                 // если отсутствует Marking Goods, что-то не так
-                if (productEntity.MarkingGoods == null)
-                {
-                    return Json(new
-                    {
+                if (productEntity.MarkingGoods == null) {
+                    return Json(new {
                         description = new { error = $"MarkingGoods: {productEntity.MarkingGoods}" },
                     });
                 }
@@ -434,8 +371,7 @@ namespace TTR43WEB.Controllers
 
                 var product = _productsContextQueryable.AddProduct(productEntity, !flag);
 
-                if (product != null)
-                {
+                if (product != null) {
                     await _productsContextQueryable.SaveProduct();
                 }
 
@@ -443,23 +379,18 @@ namespace TTR43WEB.Controllers
                 productEntityLite.Guid = findAddingProduct == null ? product.Entity.Guid : findAddingProduct.Guid;
 
                 // если стоит галочка в избранное то добавляем
-                if (dataSend.FavoriteSelect)
-                {
+                if (dataSend.FavoriteSelect) {
                     var State = await ProductToFavoriteAdd(_usersContextQueryable, productEntityLite, true);
                 }
 
-                return Json(new
-                {
+                return Json(new {
                     items = productEntityLite,
                         isPresent = flag,
                         itemsMaxCost = max,
                         itemsMinCost = min,
                 });
-            }
-            catch (Exception ex)
-            {
-                return Json(new
-                {
+            } catch (Exception ex) {
+                return Json(new {
                     description = new { error = ex.Message },
                 });
             }
@@ -471,15 +402,13 @@ namespace TTR43WEB.Controllers
         /// <returns></returns>
         [HttpPost]
         [ContentTypeAddJson]
-        public IActionResult AllItemsUrls()
-        {
+        public IActionResult AllItemsUrls() {
             var dataContext = _productsContextQueryable.Products;
 
             //var description = (from b in data orderby b.Url descending select b.Url).Distinct();
             var description = dataContext.OrderBy(e => e.UrlNavigation.UrlProduct).Select(e => e.UrlNavigation.UrlProduct).Distinct();
 
-            var result = Json(new
-            {
+            var result = Json(new {
                 description,
             });
 
@@ -487,8 +416,7 @@ namespace TTR43WEB.Controllers
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
+        public IActionResult Error() {
             return View(new Models.ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 

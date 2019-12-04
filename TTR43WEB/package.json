@@ -18,7 +18,7 @@
 		"build": "src/*.js"
 	},
 	"scripts": {
-		"dev": "webpack --env.development --env.platform=web  --config webpack.config.js",
+		"watch": "webpack --env.development --env.platform=web  --config webpack.config.js",
 		"build": "webpack --env.production --env.platform=web --config webpack.config.js",
 		"sass": "sass --watch src:dist"
 	},

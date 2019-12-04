@@ -1,32 +1,13 @@
 {
-    "workbench.editor.enablePreview": true,
-    "workbench.editor.enablePreviewFromQuickOpen": true,
-    "taskExplorer.exclude": [
-        "**/TTR43WEB/TTR43WEB/obj/**",
-        "**/TTR43WEB/bin/**"
-    ],
     "typescript.referencesCodeLens.enabled": true,
     "javascript.referencesCodeLens.enabled": true,
-    "csharpfixformat.style.braces.onSameLine": false,
     "editor.minimap.enabled": false,
     "files.autoSave": "afterDelay",
     "versionlens.showVersionLensesAtStartup": false,
-    // "javascript.suggest.names": false,
-    // "javascript.validate.enable": false,
-    // "typescript.validate.enable": false,
-    // "css.validate": false,
-    // "less.validate": false,
-    // "scss.validate": false,
     "editor.fontFamily": "Consolas, 'Courier New', monospace",
     "editor.fontSize": 14,
-    // "editor.fontLigatures": true,
-    "files.associations": {
-        "*.css": "postcss",
-        ".postcssrc": "json",
-        ".stylelintrc": "json"
-    },
     "code-runner.defaultLanguage": "javascript",
     "csharpfixformat.style.spaces.beforeIndexerBracket": false,
     "csharpfixformat.style.spaces.beforeParenthesis": false,
-
+    "csharpfixformat.style.braces.onSameLine": true,
 }

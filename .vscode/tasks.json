@@ -16,16 +16,6 @@
             "problemMatcher": "$tsc"
         },
         {
-            "label": "publish",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "publish",
-                "${workspaceFolder}/TTR43WEB.sln"
-            ], 
-            "problemMatcher": "$tsc"
-        },
-        {
             "label": "watch",
             "command": "dotnet",
             "type": "process",

@@ -84,34 +84,32 @@ class App extends Component {
      * @memberof App
      */
     getAllProductsFavorite = async () => {
-        if (this.state.AspNetCoreCookies) {
-            try {
-                const response = await fetch(`${this.props.urlControlAction.urlControlActionGetAllProductsFavorite}`, {
-                    method: "POST", // *GET, POST, PUT, DELETE, etc.
-                    mode: "cors", // no-cors, cors, *same-origin
-                    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                    credentials: "same-origin", // include, *same-origin, omit
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    redirect: "follow", // manual, *follow, error
-                    referrer: "no-referrer", // no-referrer, *client
-                    body: JSON.stringify({
-                    }),
-                });
+        try {
+            const response = await fetch(`${this.props.urlControlAction.urlControlActionGetAllProductsFavorite}`, {
+                method: "POST", // *GET, POST, PUT, DELETE, etc.
+                mode: "cors", // no-cors, cors, *same-origin
+                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: "same-origin", // include, *same-origin, omit
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                redirect: "follow", // manual, *follow, error
+                referrer: "no-referrer", // no-referrer, *client
+                body: JSON.stringify({
+                }),
+            });
 
-                const result = await response.json();
+            const result = await response.json();
 
-                this.setState({
-                    "favorite": result,
-                    "favoriteIsLoaded": true,
-                });
+            this.setState({
+                "favorite": result,
+                "favoriteIsLoaded": true,
+            });
 
-                return result;
+            return result;
 
-            } catch (error) {
-                console.error(error);
-            }
+        } catch (error) {
+            console.error(error);
         }
     }
 
