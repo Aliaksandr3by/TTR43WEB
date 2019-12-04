@@ -18,11 +18,11 @@ const LoginForm = ({ errorUser = [], userData = [], handleChange = null, onSignI
             <form>
                 <div className="input-field ">
                     <input className="validate" type="text" data-role="Login" id="Login" value={Login} onChange={handleStateFunctional} onKeyDown={onSignInKeyEnter} />
-                    <label htmlFor="Login">Введите Email/Login/Phone</label>
+                    <label htmlFor="Login">Введите Email/Login/Phone (root)</label>
                 </div>
                 <div className="input-field ">
                     <input className="validate" type="Password" data-role="Password" id="Password" value={Password} onChange={handleStateFunctional} onKeyDown={onSignInKeyEnter} />
-                    <label htmlFor="Password">Введите пароль</label>
+                    <label htmlFor="Password">Введите пароль (root)</label>
                 </div>
                 <div className="input-field ">
                     <button type="button" className="btn" onClick={onSignIn}>Войти</button>

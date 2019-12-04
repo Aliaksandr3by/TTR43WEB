@@ -20,7 +20,7 @@ using TTR43WEB.Models.User;
 
 namespace TTR43WEB.Controllers
 {
-    [Authorize]
+    // [Authorize]
     public class GipermallController : Controller
     {
         private readonly IProductsContextQueryable _productsContextQueryable;

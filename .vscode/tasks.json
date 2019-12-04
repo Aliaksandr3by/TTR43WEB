@@ -22,7 +22,7 @@
             "args": [
                 "publish",
                 "${workspaceFolder}/TTR43WEB.sln"
-            ],
+            ], 
             "problemMatcher": "$tsc"
         },
         {
@@ -51,7 +51,7 @@
                 "-r",
                 "win10-x64",
                 "-o",
-                "C:\\TTR43WEB"
+                "C:/inetpub/wwwroot/TTR43WEB"
             ],
             "problemMatcher": "$tsc"
         }
